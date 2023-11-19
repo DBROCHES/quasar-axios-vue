@@ -129,13 +129,16 @@
               label="Cancelar"
               class="q-ml-sm"
               type="reset"
+              flat
+              v-close-popup
+              @click="reset()"
             />
           </div>
         </q-form>
       </div>
     </q-dialog>
   </div>
-  <pintar-vehicles :vehicles="vehicles" />
+  <pintar-vehicles :vehicles="vehicles" @button-clicked="modificarForm" />
 </template>
 
 <script>
@@ -154,10 +157,12 @@ export default {
     const capacity_with = ref("");
     const total = ref("");
     const manufacturing = ref("");
-    const model = ref(null);
+    const model = ref("");
     const selectedYear = ref(null);
     const myForm = ref(null);
-
+    const inception = ref(false);
+    const SelectedVehicles = ref(false);
+    const tempid = ref("");
     //Arreglo de vehiculos
     const vehicles = ref([]);
     const generateYears = () => {
@@ -167,16 +172,25 @@ export default {
       }
     };
     const procesingForm = async () => {
-      console.log(vehicles.value.length);
-      myForm.value.resetValidation();
-      var lastVehicle;
-      if (vehicles.value.length > 0) {
-        lastVehicle = vehicles.value[vehicles.value.length - 1];
+      myForm.value.validate().then((success) => {
+        if (success) {
+          inception.value = false;
+        }
+      });
+      var currentId = 0;
+      if (!SelectedVehicles.value) {
+        console.log(vehicles.value.length);
+        myForm.value.resetValidation();
+        var lastVehicle;
+        if (vehicles.value.length > 0) {
+          lastVehicle = vehicles.value[vehicles.value.length - 1];
+        }
+        currentId = lastVehicle.vehicleId + 1;
+      } else {
+        currentId = tempid.value;
       }
-      const lastId = lastVehicle.vehicleId;
-
-      const NewVehicle = {
-        vehicleId: lastId + 1,
+      const tempVehicle = {
+        vehicleId: currentId,
         license_Plate_Number: plate.value,
         brand: model.value,
         capacity_Without_Equipement: capacity_without.value,
@@ -186,12 +200,33 @@ export default {
         manufacturing_Mode: manufacturing.value,
       };
       //luego se procesa el formulario
-      await api.post("api/Vehicles", NewVehicle);
-      vehicles.value.push(NewVehicle);
-
+      if (!SelectedVehicles.value) {
+        await api.post("api/Vehicles", tempVehicle);
+        vehicles.value.push(tempVehicle);
+      } else {
+        const index = vehicles.value.findIndex(
+          (v) => v.id === tempVehicle.vehicleId
+        );
+        await api.put("api/Vehicles", tempVehicle);
+        vehicles.value.splice(index, 1, tempVehicle);
+      }
       //restablece los valores del formulario
+      SelectedVehicles.value = false;
       reset();
     };
+    const modificarForm = async (row) => {
+      tempid.value = row.vehicleId;
+      plate.value = row.license_Plate_Number;
+      model.value = row.brand;
+      (capacity_without.value = row.capacity_Without_Equipement),
+        (capacity_with.value = row.capacity_With_Equipement),
+        (total.value = row.total_Capacity),
+        (selectedYear.value = row.year_of_Manufacture),
+        (manufacturing.value = row.manufacturing_Mode);
+      inception.value = true;
+      SelectedVehicles.value = true;
+    };
+
     const prueba = async () => {
       await api
         .get("api/Vehicles")
@@ -229,11 +264,13 @@ export default {
       selectedYear,
       optionsyear,
       myForm,
-      inception: ref(false),
+      inception,
       options: ["Mercedez", "Audi", "Lada", "Mazda", "Peugot"],
       vehicles,
+      // SelectedVehicles,
       procesingForm,
       reset,
+      modificarForm,
       // reset() {
       //   plate.value = null;
       //   capacity_without.value = null;

@@ -18,12 +18,10 @@
             round
             dense
             text-color="black"
-            @click="openDialog(props.row)"
-            icon="edit"
+                        icon="edit"
+@click="handleClick(props.row)"
           />
         </q-td>
-
-        <!-- ... -->
       </q-tr>
     </template>
   </q-table>
@@ -155,49 +153,49 @@
 <script>
 const columns = [
   {
-    name: "plate",
+    name: "license_Plate_Number",
     label: "Matrícula",
     alingn: "center",
     field: "license_Plate_Number",
     sortable: true,
   },
   {
-    name: "model",
+    name: "brand",
     label: "Cadena",
     alingn: "center",
     field: "brand",
     sortable: true,
   },
   {
-    name: "capacity_without",
+    name: "capacity_Without_Equipement",
     label: "Capacidad sin equipaje",
     alingn: "center",
     field: "capacity_Without_Equipement",
     sortable: true,
   },
   {
-    name: "capacity_with",
+    name: "capacity_With_Equipement",
     label: "Capacidad con equipaje",
     alingn: "center",
     field: "capacity_With_Equipement",
     sortable: true,
   },
   {
-    name: "total",
+    name: "total_Capacity",
     label: "Capacidad total",
     alingn: "center",
     field: "total_Capacity",
     sortable: true,
   },
   {
-    name: "year",
+    name: "year_of_Manufacture",
     label: "Año de fabricación",
     alingn: "center",
     field: "year_of_Manufacture",
     sortable: true,
   },
   {
-    name: "manufacturing",
+    name: "manufacturing_Mode",
     label: "Modo de fabricación",
     alingn: "center",
     field: "manufacturing_Mode",
@@ -238,10 +236,14 @@ export default {
       this.dialog = false;
     },
   },
-  setup() {
+  setup(props, { emit }) {
+    const handleClick = (row) => {
+      emit("button-clicked", row);
+};
     return {
       columns,
       rows,
+handleClick,
     };
   },
 };
