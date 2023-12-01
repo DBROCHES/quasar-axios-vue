@@ -97,12 +97,26 @@
               </q-item-section>
               <q-item-section> Vehiculo </q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/hotel">
-              <q-item-section avatar>
-                <q-icon name="drafts" />
-              </q-item-section>
-              <q-item-section> Hotel </q-item-section>
-            </q-item>
+            <q-expansion-item icon="drafts" label="Hotelera" caption="">
+              <q-item clickable v-ripple to="/hotel">
+                <q-item-section avatar>
+                  <q-icon name="drafts" />
+                </q-item-section>
+                <q-item-section> Hoteles </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/room">
+                <q-item-section avatar>
+                  <q-icon name="drafts" />
+                </q-item-section>
+                <q-item-section> Habitaciones </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/meal">
+                <q-item-section avatar>
+                  <q-icon name="drafts" />
+                </q-item-section>
+                <q-item-section> Planes de comida </q-item-section>
+              </q-item>
+            </q-expansion-item>
             <q-item clickable v-ripple to="/activities">
               <q-item-section avatar>
                 <q-icon name="drafts" />

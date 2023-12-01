@@ -1,8 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <h1>Hotel</h1>
-  <div class="q-pa-md">
-    <q-btn label="Nuevo" color="positive" @click="inception = true" />
+  <h2>Hoteles</h2>
+  <div>
+    <q-btn label="Nuevo"  color="positive" @click="inception = true" />
+    <!-- style="margin-left: 18px;" -->
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
@@ -18,7 +19,6 @@
                   outlined
                   label="Nombre"
                   v-model="name"
-                  pattern="[A-Z]\[a-z]"
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || 'Rellene el campo',
@@ -30,7 +30,7 @@
               <div>
                 <q-select
                   outlined
-                  v-model="model"
+                  v-model="chain"
                   :options="options"
                   label="Cadena"
                   lazy-rules
@@ -73,7 +73,7 @@
                   outlined
                   label="Teléfono"
                   v-model="phone"
-                  mask="(7) ### - ####"
+                  mask="7#######"
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || 'Rellene el campo',
@@ -181,14 +181,11 @@
               <div>
                 <q-input
                   outlined
-                  label="Fecha"
-                  v-model="date"
-                  type="date"
-                  hint="Native date"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
-                  ]"
+                  label="Precio"
+                  v-model="price"
+                  placeholder="1"
+                  min="1"
+                  max="3000"
                 />
               </div>
             </div>
@@ -226,14 +223,15 @@
 </template>
 
 <script>
-import { ref } from "vue";
+
 import PintarHoteles from "src/components/PintarHoteles.vue";
+import { ref, onMounted } from "vue";
+import { api } from 'boot/axios';
 
 export default {
   components: { PintarHoteles },
   setup() {
     // Variables reactivas
-    const optionscom = ref([]);
     const name = ref("");
     const province = ref(null);
     const category = ref("");
@@ -244,38 +242,57 @@ export default {
     const dairport = ref("");
     const dcity = ref("");
     const location = ref("");
-    const date = ref("");
-    const model = ref(null);
+    const price = ref("");
+    const chain = ref(null);
     const commercialization = ref(null);
     const myForm = ref(null);
 
     //Arreglo de vehiculos
     const hoteles = ref([]);
 
-    const procesingForm = () => {
-      console.log("me diste click");
+    const getHotels = async () => {
+       await api.get("/api/Hotel")
+       .then((response) =>{
+        hoteles.value = response.data;
+        console.log(hoteles.value);
+       })
+       .catch((error) => {
+          console.error(error);
+       });
+    };
+
+    const procesingForm = async() => {
+
       myForm.value.resetValidation();
-      //luego se procesa el formulario
-      hoteles.value = [
-        ...hoteles.value,
+      // console.log("Hakuna mATATA"+count);
+      const newHotel = 
         {
           name: name.value,
-          model: model.value,
+          chain: chain.value,
+          province:province.value,
           category: category.value,
           phone: phone.value,
           email: email.value,
-          rooms: rooms.value,
-          floors: floors.value,
-          dairport: dairport.value,
-          dcity: dcity.value,
-          commercialization: commercialization.value,
-          location: location.value,
-          date: date.value,
-        },
-      ];
-      //restablece los valores del formulario
+          numberOfRooms: rooms.value,
+          disNearCity: dcity.value,
+          disAirport: dairport.value,
+          numberOfFloors: floors.value,
+          address: location.value,
+          comercializationMode: commercialization.value,
+          price: price.value,
+          enabled:true,
+        };
+       
+        const response = await api.post("/api/Hotel", newHotel);
+
+        hoteles.value = [...hoteles.value, newHotel];
       reset();
-    };
+      fillTable();
+      };
+
+      const fillTable = () => {
+        console.log("Llenando la tabla...");
+      };
     const reset = () => {
       name.value = null;
       category.value = null;
@@ -286,14 +303,18 @@ export default {
       dairport.value = null;
       dcity.value = null;
       location.value = null;
-      date.value = null;
-      model.value = null;
+      price.value = null;
+      chain.value = null;
       commercialization.value = null;
     };
 
+    onMounted(() => {
+      getHotels();
+    });
+
     return {
       name,
-      model,
+      chain,
       category,
       phone,
       email,
@@ -302,7 +323,7 @@ export default {
       dairport,
       dcity,
       location,
-      date,
+      price,
       province,
       commercialization,
       optionscom: ["Alto", "Medio", "Bajo"],
