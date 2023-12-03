@@ -188,6 +188,7 @@ export default {
       visibleColumns: ref(["name","chain","category","price","phone","enabled"]),
     };
   },
+
   methods: {
   async handleClick(row) {
     try {
@@ -199,7 +200,7 @@ export default {
     }
   },
     async confirmDelete(row) {
-      const confirmed = window.confirm('¿Está seguro de borrar este vehículo?');
+      const confirmed = window.confirm('¿Está seguro de borrar este hotel?');
 
         if (confirmed) {
         try {
