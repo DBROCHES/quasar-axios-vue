@@ -114,11 +114,11 @@ export default {
       if (confirmed) {
         try {
           console.log(row.modalityId+"Hakuna Matata");
-          await api.delete("/api/CostPerHour", row.modalityId);
+          await api.delete(`/api/CostPerHour/ ${row.modalityId}`);
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
-          console.error("Error Modalidad no eliminadA", error);
+          console.error("Error Modalidad no eliminada", error);
         }
       }
     };
