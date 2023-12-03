@@ -4,7 +4,7 @@
     class="q-mt-md"
     no-data-label="Sin Modalidades para mostrar"
     :columns="columns"
-    :rows="kilometros"
+    :rows="allkilometers"
   >
     <template v-slot:body="props">
       <q-tr :props="props">
@@ -27,6 +27,8 @@
   </q-table>
 </template>
 <script>
+import { api } from "src/boot/axios";
+import { ref, onMounted, watchEffect } from "vue";
 const columns = [
   {
     name: "cost_per_kilometer",
@@ -61,17 +63,38 @@ const rows = [
 
 export default {
   props: {
-    kilometros: Array,
+    kilometers: Array,
   },
 
   setup(props, { emit }) {
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
+    let allkilometers = ref([...props.kilometers]);
+    //Esta funcion hace que los cambios en la propiedad hours del props se reflejen tambien en el arreglo
+    watchEffect(() => {
+      allkilometers.value = [...props.kilometers];
+    });
+    //Funcion de llenar la tabla
+    const getall = async () => {
+      await api
+        .get("api/MilageCost")
+        .then((response) => {
+          allkilometers.value = response.data;
+          console.log(allkilometers.value);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+    onMounted(() => {
+      getall();
+    });
     return {
       columns,
       rows,
       handleClick,
+      allkilometers,
     };
   },
 };

@@ -4,7 +4,7 @@
     class="q-mt-md"
     no-data-label="Sin Modalidades para mostrar"
     :columns="columns"
-    :rows="tours"
+    :rows="alltours"
   >
     <template v-slot:body="props">
       <q-tr :props="props">
@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import axios from "src/boot/axios";
-import { onMounted } from "vue";
+import { api } from "src/boot/axios";
+import { ref, onMounted, watchEffect } from "vue";
 const columns = [
   {
     name: "rout_description",
@@ -71,11 +71,31 @@ export default {
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
-
+    let alltours = ref([...props.tours]);
+    //Esta funcion hace que los cambios en la propiedad hours del props se reflejen tambien en el arreglo
+    watchEffect(() => {
+      alltours.value = [...props.tours];
+    });
+    //Funcion de llenar la tabla
+    const getall = async () => {
+      await api
+        .get("api/CostPerTour")
+        .then((response) => {
+          alltours.value = response.data;
+          console.log(alltours.value);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+    onMounted(() => {
+      getall();
+    });
     return {
       columns,
       rows,
       handleClick,
+      alltours,
     };
   },
 };

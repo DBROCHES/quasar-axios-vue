@@ -22,6 +22,17 @@
             @click="handleClick(props.row)"
           />
         </q-td>
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
+          />
+        </q-td>
       </q-tr>
     </template>
   </q-table>
@@ -81,7 +92,7 @@ export default {
     let allhours = ref([...props.hours]);
     //Esta funcion hace que los cambios en la propiedad hours del props se reflejen tambien en el arreglo
     watchEffect(() => {
-      allhours.value = [...props.hours];
+      allhours.value.push(...props.hours);
     });
     //Funcion de llenar la tabla
     const getall = async () => {
@@ -95,10 +106,27 @@ export default {
           console.error(error);
         });
     };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar esta modalidad?"
+      );
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId+"Hakuna Matata");
+          await api.delete("/api/CostPerHour", row.modalityId);
+          window.alert("Modalidad eliminada");
+          location.reload();
+        } catch (error) {
+          console.error("Error Modalidad no eliminadA", error);
+        }
+      }
+    };
     onMounted(() => {
       getall();
     });
     return {
+      confirmDelete,
       columns,
       rows,
       handleClick,
