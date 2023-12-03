@@ -113,7 +113,7 @@ export default {
 
       if (confirmed) {
         try {
-          await api.delete("/api/Costperhour", row.modalityId);
+          await api.delete("/api/CostPerHour", row.modalityId);
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
