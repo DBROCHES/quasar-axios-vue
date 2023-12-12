@@ -125,7 +125,7 @@
             </q-item>
             <q-item clickable v-ripple to="/contracts">
               <q-item-section avatar>
-                <q-icon name="drafts" />
+                <q-icon name="book" />
               </q-item-section>
               <q-item-section> Contratos </q-item-section>
             </q-item>
