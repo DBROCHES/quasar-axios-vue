@@ -76,7 +76,7 @@
                 </div>
                 <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
                   <div>
-                    <q-input
+                    <q-select
                       outlined
                       label="Tipo de servicio"
                       v-model="servicio"
@@ -106,7 +106,7 @@
                 </div>
                 <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
                   <div>
-                    <q-input
+                    <q-select
                       outlined
                       label="Servicio por provincia"
                       v-model="provincia"
