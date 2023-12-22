@@ -6,15 +6,13 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+            <img src="assets\CC.jpg" />
           </q-avatar>
           ConoceCuba
         </q-toolbar-title>
 
         <q-btn round @click="card = true">
-          <q-avatar size="42px">
-            <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
-          </q-avatar>
+          <q-avatar size="42px"> </q-avatar>
         </q-btn>
         <q-dialog v-model="card">
           <div class="q-pa-lg">
@@ -147,9 +145,6 @@
     <q-footer bordered class="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
           <div>Title</div>
         </q-toolbar-title>
       </q-toolbar>

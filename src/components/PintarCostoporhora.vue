@@ -17,7 +17,7 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             icon="edit"
             @click="handleClick(props.row)"
           />
@@ -113,7 +113,7 @@ export default {
 
       if (confirmed) {
         try {
-          console.log(row.modalityId+"Hakuna Matata");
+          console.log(row.modalityId + "Hakuna Matata");
           await api.delete(`/api/CostPerHour/ ${row.modalityId}`);
           window.alert("Modalidad eliminada");
           location.reload();

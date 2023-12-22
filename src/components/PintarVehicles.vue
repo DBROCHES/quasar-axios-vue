@@ -32,7 +32,7 @@
     <q-card class="q-col-gutter-y-sm">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
-          @submit.prevent="procesingForm"
+          @submit.prevent="saveVehicle()"
           @reset="reset"
           ref="myForm"
           style="width: 100%"
@@ -147,7 +147,7 @@
 
       <q-card-actions align="right">
         <q-btn flat label="Cancelar" color="primary" v-close-popup />
-        <q-btn flat label="Guardar" color="primary" @click="saveVehicle" />
+        <q-btn flat label="Guardar" color="primary" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -222,19 +222,58 @@ export default {
     vehicles: Array,
   },
   data() {
+    const optionsyear = ref([]);
+    const plate = ref("");
+    const capacity_without = ref("");
+    const capacity_with = ref("");
+    const total = ref("");
+    const manufacturing = ref("");
+    const model = ref(null);
+    const selectedYear = ref(null);
+    const myForm = ref(null);
+    const tempid = ref("");
     return {
       dialog: false,
       selectedVehicle: null,
+      optionsyear,
+      plate,
+      capacity_without,
+      capacity_with,
+      total,
+      manufacturing,
+      model,
+      selectedYear,
+      myForm,
+      tempid,
       // ...
     };
   },
   methods: {
-    openDialog(vehicle) {
-      this.selectedVehicle = { ...vehicle };
+    openDialog(row) {
+      this.tempid = row.VehicleId;
+      this.capacity_with = row.capacity_With_Equipement;
+      this.capacity_without = row.capacity_Without_Equipement;
+      this.selectedYear = row.year_of_Manufacture;
+      this.total = row.total_Capacity;
+      this.manufacturing = row.manufacturing_Mode;
+      this.model = row.brand;
+      this.plate = row.license_Plate_Number;
       this.dialog = true;
     },
-    saveVehicle() {
-      // Aquí puedes actualizar los datos del vehículo...
+    async saveVehicle() {
+      const temp = {
+        VehicleId: this.tempid,
+        capacity_With_Equipement: this.capacity_with,
+        capacity_Without_Equipement: this.capacity_without,
+        year_of_Manufacture: this.selectedYear,
+        total_Capacity: this.total,
+        manufacturing_Mode: this.manufacturing,
+        brand: this.model,
+        license_Plate_Number: this.plate,
+      };
+
+      await api.put("api/Vehicle", temp);
+      location.reload();
       this.dialog = false;
     },
   },
