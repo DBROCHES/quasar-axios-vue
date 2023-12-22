@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 
 <template>
-  <h1>Vehicle</h1>
+  <h2>Vehículos</h2>
   <div class="q-pa-md">
     <q-btn label="Nuevo" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">

@@ -1,7 +1,6 @@
 <template>
   <q-table
     class="q-mt-md"
-    title="Actividades"
     no-data-label="Sin actividades para mostrar"
     :columns="columns"
     :rows="activities"

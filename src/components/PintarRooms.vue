@@ -81,14 +81,8 @@
       };
     },
     methods: {
-    async handleClick(row) {
-      try {
-        const response = await api.delete(`/api/Room/${row.id}`);
-        console.log("Fila eliminada de la API", response);
-        location.reload();
-      } catch (error) {
-        console.error("Error al eliminar la fila de la API", error);
-      }
+      handleClick(row){
+        this.$emit("buttonClicked", row);
     },
     async confirmDelete(row) {
         const confirmed = window.confirm('¿Está seguro de borrar este vehículo?');

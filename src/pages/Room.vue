@@ -91,7 +91,7 @@
         </div>
       </q-dialog>
     </div>
-    <pintar-rooms :rooms ="rooms" />
+    <pintar-rooms :rooms ="rooms" @buttonClicked = "updateRoom"/>
   </template>
   
   
@@ -111,7 +111,7 @@
       const options = ref([]);
       const selectedOptions = ref(null);
       const myForm = ref(null);
-  
+      const selectedRoom = ref(false);
       //Arreglo de vehiculos
       const rooms = ref([])
   
@@ -143,7 +143,6 @@
             myForm.value.resetValidation();
 
             const hotelId = selectedOptions.value ? selectedOptions.value : null;
-
             const newRoom = {
                 name: name.value,
                 description: description.value,
@@ -156,6 +155,8 @@
             reset();
             fillTable();
         };
+
+
   
         const fillTable = () => {
         console.log("Llenando la tabla...");
