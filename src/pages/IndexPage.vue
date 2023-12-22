@@ -12,9 +12,9 @@
       @mouseenter="autoplay = false"
       @mouseleave="autoplay = true"
     >
-      <q-carousel-slide :name="1" img-src="~assets/bar.jpg" />
-      <q-carousel-slide :name="2" img-src="~assets/acropolis.jpg" />
-      <q-carousel-slide :name="3" img-src="~assets/beach.jpg" />
+      <q-carousel-slide :name="1" img-src="~assets/beach.jpg" />
+      <q-carousel-slide :name="2" img-src="~assets/bar.jpg" />
+      <q-carousel-slide :name="3" img-src="~assets/acropolis.jpg" />
       <q-carousel-slide :name="4" img-src="~assets/city.jpg" />
       <q-carousel-slide :name="5" img-src="~assets/diving.jpg" />
       <q-carousel-slide :name="6" img-src="~assets/lighthouse.jpg" />
@@ -150,6 +150,8 @@
 import { ref } from "vue";
 import { defineComponent } from "vue";
 
+
+
 export default defineComponent({
   name: "IndexPage",
   setup() {
@@ -159,4 +161,6 @@ export default defineComponent({
     };
   },
 });
+
+
 </script>

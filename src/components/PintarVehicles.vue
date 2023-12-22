@@ -1,6 +1,5 @@
 <template>
   <q-table
-    title="Vehículos"
     class="q-mt-md"
     no-data-label="Sin vehículos para mostrar"
     :columns="columns"
@@ -17,13 +16,24 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             @click="openDialog(props.row)"
             icon="edit"
           />
         </q-td>
 
-        <!-- ... -->
+        <!-- Botón "Delete" -->
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
+          />
+        </q-td>
       </q-tr>
     </template>
   </q-table>
@@ -258,6 +268,24 @@ export default {
       this.manufacturing = row.manufacturing_Mode;
       this.model = row.brand;
       this.plate = row.license_Plate_Number;
+    },
+
+    async confirmDelete(row) {
+      const confirmed = window.confirm("¿Está seguro de borrar este vehículo?");
+
+      if (confirmed) {
+        try {
+          const response = await api.delete(`/api/Vehicles/${row.vehicleId}`);
+          window.alert("Vehículo eliminado");
+          location.reload();
+        } catch (error) {
+          window.alert("Error, Vehículo no eliminado", error);
+        }
+      }
+      this.confirmationVisible = false;
+    },
+    openDialog(vehicle) {
+      this.selectedVehicle = { ...vehicle };
       this.dialog = true;
     },
     async saveVehicle() {
