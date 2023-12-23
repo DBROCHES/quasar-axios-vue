@@ -284,10 +284,6 @@ export default {
       }
       this.confirmationVisible = false;
     },
-    openDialog(vehicle) {
-      this.selectedVehicle = { ...vehicle };
-      this.dialog = true;
-    },
     async saveVehicle() {
       const temp = {
         VehicleId: this.tempid,
