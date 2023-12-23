@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Costo por viaje"
     class="q-mt-md"
-    no-data-label="Sin Modalidades para mostrar"
+    :no-data-label="$t('noModalitys')"
     :columns="columns"
     :rows="alltours"
   >
@@ -30,29 +29,6 @@
 <script>
 import { api } from "src/boot/axios";
 import { ref, onMounted, watchEffect } from "vue";
-const columns = [
-  {
-    name: "rout_description",
-    alingn: "center",
-    label: "Descripción del viaje",
-    field: "rout_description",
-    sortable: true,
-  },
-  {
-    name: "route_cost",
-    label: "Costo de la ruta",
-    alingn: "center",
-    field: "route_cost",
-    sortable: true,
-  },
-  {
-    name: "round_trip_cost",
-    label: "Costo de ida y vuelta",
-    alingn: "center",
-    field: "round_trip_cost",
-    sortable: true,
-  },
-];
 
 const rows = [
   {
@@ -92,10 +68,37 @@ export default {
       getall();
     });
     return {
-      columns,
       rows,
       handleClick,
       alltours,
+    };
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "rout_description",
+          alingn: "center",
+          label: this.$t("tripDesc"),
+          field: "rout_description",
+          sortable: true,
+        },
+        {
+          name: "route_cost",
+          label: this.$t("routCost"),
+          alingn: "center",
+          field: "route_cost",
+          sortable: true,
+        },
+        {
+          name: "round_trip_cost",
+          label: this.$t("goback"),
+          alingn: "center",
+          field: "round_trip_cost",
+          sortable: true,
+        },
+      ],
     };
   },
 };

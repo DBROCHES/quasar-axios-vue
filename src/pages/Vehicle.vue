@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 
 <template>
-  <h1>Vehicle</h1>
+  <h1>{{ $t("vehicle") }}</h1>
   <div class="q-pa-md">
-    <q-btn label="Nuevo" color="positive" @click="inception = true" />
+    <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <save-vehicle :vehicle="vehicle" />

@@ -11,6 +11,9 @@
           ConoceCuba
         </q-toolbar-title>
 
+        <q-btn label="Español" @click="$i18n.locale = 'es'"></q-btn>
+        <q-btn label="English" @click="$i18n.locale = 'en-US'"></q-btn>
+
         <q-btn round @click="card = true">
           <q-avatar size="42px">
             <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
@@ -19,43 +22,39 @@
         <q-dialog v-model="card">
           <div class="q-pa-lg">
             <q-form
-              @submit="onSubmit"
+              @submit.prevent="iniciarSesion()"
               @reset="onReset"
               class="bg-white q-pa-lg"
             >
               <q-input
                 filled
                 v-model="name"
-                label="Your name *"
-                hint="Name and surname"
+                :label="$t('name')"
                 lazy-rules
                 :rules="[
-                  (val) => (val && val.length > 0) || 'Please type something',
+                  (val) => (val && val.length > 0) || this.$t('errUser'),
                 ]"
               />
 
               <q-input
                 filled
-                type="number"
-                v-model="age"
-                label="Your age *"
+                v-model="password"
+                :label="$t('password')"
                 lazy-rules
                 :rules="[
-                  (val) =>
-                    (val !== null && val !== '') || 'Please type your age',
-                  (val) => (val > 0 && val < 100) || 'Please type a real age',
+                  (val) => (val && val.length > 6) || this.$t('errPassword'),
                 ]"
               />
 
-              <q-toggle
-                v-model="accept"
-                label="I accept the license and terms"
-              />
+              <!-- <q-toggle
+                  v-model="accept"
+                  label="Acepto las licencias y lo términos"
+                /> -->
 
               <div>
-                <q-btn label="Submit" type="submit" color="primary" />
+                <q-btn :label="$t('ingresar')" type="submit" color="primary" />
                 <q-btn
-                  label="Reset"
+                  :label="$t('reset')"
                   type="reset"
                   color="primary"
                   flat
@@ -79,7 +78,14 @@
               <q-icon name="inbox" />
             </q-item-section>
 
-            <q-item-section> Inicio</q-item-section>
+            <q-item-section> {{ $t("inicio") }}</q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/tourPackage">
+            <q-item-section avatar>
+              <q-icon name="tourPackage" />
+            </q-item-section>
+            <q-item-section> {{ $t("tourPackage") }} </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/about" active-class="my-menu-link">
@@ -87,54 +93,65 @@
               <q-icon name="star" />
             </q-item-section>
 
-            <q-item-section> About </q-item-section>
+            <q-item-section> {{ $t("about") }} </q-item-section>
           </q-item>
 
-          <q-expansion-item icon="drafts" label="Gestión" caption="">
-            <q-item clickable v-ripple to="/vehicle">
-              <q-item-section avatar>
-                <q-icon name="drafts" />
-              </q-item-section>
-              <q-item-section> Vehiculo </q-item-section>
-            </q-item>
-            <q-expansion-item icon="drafts" label="Hotelera" caption="">
-              <q-item clickable v-ripple to="/hotel">
-                <q-item-section avatar>
-                  <q-icon name="drafts" />
-                </q-item-section>
-                <q-item-section> Hoteles </q-item-section>
-              </q-item>
-              <q-item clickable v-ripple to="/room">
-                <q-item-section avatar>
-                  <q-icon name="drafts" />
-                </q-item-section>
-                <q-item-section> Habitaciones </q-item-section>
-              </q-item>
-              <q-item clickable v-ripple to="/meal">
-                <q-item-section avatar>
-                  <q-icon name="drafts" />
-                </q-item-section>
-                <q-item-section> Planes de comida </q-item-section>
-              </q-item>
-            </q-expansion-item>
-            <q-item clickable v-ripple to="/activities">
-              <q-item-section avatar>
-                <q-icon name="drafts" />
-              </q-item-section>
-              <q-item-section> Actividades </q-item-section>
-            </q-item>
+          <!-- v-if="rol === 'admin'" -->
+          <q-expansion-item icon="inventory_2" label="Gestión" caption="">
             <q-item clickable v-ripple to="/contracts">
               <q-item-section avatar>
                 <q-icon name="book" />
               </q-item-section>
-              <q-item-section> Contratos </q-item-section>
+              <q-item-section> {{ $t("contracts") }} </q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/modality">
+            <q-expansion-item
+              icon="business"
+              :label="$t('hotelera')"
+              caption=""
+            >
+              <q-item clickable v-ripple to="/hotel">
+                <q-item-section avatar>
+                  <q-icon name="hotel" />
+                </q-item-section>
+                <q-item-section> {{ $t("hoteles") }} </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/room">
+                <q-item-section avatar>
+                  <q-icon name="bed" />
+                </q-item-section>
+                <q-item-section> {{ $t("room") }} </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/meal">
+                <q-item-section avatar>
+                  <q-icon name="restaurant_menu" />
+                </q-item-section>
+                <q-item-section> {{ $t("meals") }} </q-item-section>
+              </q-item>
+            </q-expansion-item>
+            <q-item clickable v-ripple to="/activities">
               <q-item-section avatar>
-                <q-icon name="drafts" />
+                <q-icon name="list" />
               </q-item-section>
-              <q-item-section> Modalidad</q-item-section>
+              <q-item-section> {{ $t("actividades") }} </q-item-section>
             </q-item>
+            <q-expansion-item
+              icon="local_shipping"
+              :label="$t('transort')"
+              caption=""
+            >
+              <q-item clickable v-ripple to="/vehicle">
+                <q-item-section avatar>
+                  <q-icon name="directions_car" />
+                </q-item-section>
+                <q-item-section> {{ $t("vehicles") }} </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/modality">
+                <q-item-section avatar>
+                  <q-icon name="grid_view" />
+                </q-item-section>
+                <q-item-section> {{ $t("modality") }}</q-item-section>
+              </q-item>
+            </q-expansion-item>
           </q-expansion-item>
         </q-list>
       </q-scroll-area>
@@ -158,19 +175,23 @@
 </template>
 
 <script>
+import { api } from "src/boot/axios";
 import { defineComponent, ref } from "vue";
+import VueJwtDecode from "vue-jwt-decode";
 
 export default {
   setup() {
     const leftDrawerOpen = ref(false);
     const name = ref(null);
-    const age = ref(null);
+    const password = ref(null);
     const accept = ref(false);
+    const rol = ref(null);
     return {
-      name,
-      age,
+      password,
       accept,
+      name,
       leftDrawerOpen,
+      rol: localStorage.getItem("role"),
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
@@ -194,11 +215,52 @@ export default {
 
       onReset() {
         name.value = null;
-        age.value = null;
+        password.value = null;
         accept.value = false;
       },
       card: ref(false),
     };
+  },
+  methods: {
+    async iniciarSesion() {
+      try {
+        const response = await api.post(
+          `/api/User/api/login/${this.name}/${this.password}`
+        );
+
+        api.defaults.headers.common["Authorization"] =
+          "Bearer " + response.data.token;
+        localStorage.setItem("token", response.data.token);
+
+        const decodedToken = VueJwtDecode(response.data.token);
+        const userName =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+          ];
+        const email =
+          decodedToken[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email"
+          ];
+        const role =
+          decodedToken[
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+          ];
+
+        localStorage.setItem("userName", userName);
+        localStorage.setItem("email", email);
+        localStorage.setItem("role", role);
+
+        console.log(localStorage.getItem("id"));
+        console.log(localStorage.getItem("userName"));
+        console.log(localStorage.getItem("email"));
+        console.log(localStorage.getItem("role"));
+
+        // Redirigir al usuario
+        this.$router.push("/");
+      } catch (error) {
+        console.error(this.$t("errInicio"), error);
+      }
+    },
   },
 };
 </script>
