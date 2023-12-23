@@ -5,7 +5,26 @@
     :no-data-label="$t('noActivities')"
     :columns="columns"
     :rows="activities"
-  />
+  >
+    <template v-slot:body="props">
+      <q-tr :props="props">
+        <q-td v-for="col in props.cols" :key="col.field">
+          {{ props.row[col.field] }}
+        </q-td>
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="amber"
+            round
+            dense
+            text-color="white"
+            icon="edit"
+            @click="handleClick(props.row)"
+          />
+        </q-td>
+      </q-tr>
+    </template>
+  </q-table>
 </template>
 
 <script>

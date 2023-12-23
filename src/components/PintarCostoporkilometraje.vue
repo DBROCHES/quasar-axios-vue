@@ -16,9 +16,20 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             icon="edit"
             @click="handleClick(props.row)"
+          />
+        </q-td>
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
           />
         </q-td>
       </q-tr>
@@ -63,6 +74,22 @@ export default {
           console.error(error);
         });
     };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar esta modalidad?"
+      );
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId + "Hakuna Matata");
+          await api.delete(`/api/MilageCost/ ${row.modalityId}`);
+          window.alert("Modalidad eliminada");
+          location.reload();
+        } catch (error) {
+          console.error("Error Modalidad no eliminada", error);
+        }
+      }
+    };
     onMounted(() => {
       getall();
     });
@@ -70,6 +97,7 @@ export default {
       rows,
       handleClick,
       allkilometers,
+      confirmDelete,
     };
   },
 

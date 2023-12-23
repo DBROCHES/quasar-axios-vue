@@ -16,7 +16,7 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             icon="edit"
             @click="handleClick(props.row)"
           />

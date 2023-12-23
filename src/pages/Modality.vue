@@ -267,7 +267,6 @@
               { label: this.$t('costPV'), value: 'viaje' },
               { label: this.$t('kilometer'), value: 'kilometraje' },
             ]"
-            :disable="buttonstate"
           />
         </div>
       </div>
@@ -293,16 +292,19 @@
         animated
         class="bg-orange-1 text-dark text-center"
       >
-        <q-tab-panel name="cost_per_hour" class="bg-lime-1 text-dark">
-          <PintarCostoporhora :hours="phour" @button-clicked="updatingHour" />
+        <q-tab-panel name="hour" class="bg-lime-1 text-dark">
+          <PintarCostoporhora
+            :hours="phour"
+            @button-clicked="updatingHour"
+          ></PintarCostoporhora>
         </q-tab-panel>
-        <q-tab-panel name="cost_per_tour" class="bg-lime-1 text-dark">
+        <q-tab-panel name="travel" class="bg-lime-1 text-dark">
           <PintarCostoporViaje
             :tours="ptravel"
             @button-clicked="updatingTour"
           />
         </q-tab-panel>
-        <q-tab-panel name="mileage_cost" class="bg-lime-1 text-dark">
+        <q-tab-panel name="kilometer" class="bg-lime-1 text-dark">
           <PintarCostoporkilometraje
             :kilometers="pkilometer"
             @button-clicked="updatingMileage"
@@ -316,7 +318,6 @@
 <script>
 import { ref } from "vue";
 import PintarCostoporhora from "src/components/PintarCostoporhora.vue";
-
 import { api } from "src/boot/axios";
 import PintarCostoporViaje from "src/components/PintarCostoporViaje.vue";
 import PintarCostoporkilometraje from "src/components/PintarCostoporkilometraje.vue";
@@ -484,7 +485,7 @@ export default {
       phour,
       ptravel,
       pkilometer,
-      tab: ref("cost_per_hour"),
+      tab: ref("hour"),
       buttonstate,
       updatingHour,
       updatingMileage,

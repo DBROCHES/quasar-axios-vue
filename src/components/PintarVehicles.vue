@@ -16,13 +16,24 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             @click="openDialog(props.row)"
             icon="edit"
           />
         </q-td>
 
-        <!-- ... -->
+        <!-- Botón "Delete" -->
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
+          />
+        </q-td>
       </q-tr>
     </template>
   </q-table>
@@ -31,7 +42,7 @@
     <q-card class="q-col-gutter-y-sm">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
-          @submit.prevent="procesingForm"
+          @submit.prevent="saveVehicle()"
           @reset="reset"
           ref="myForm"
           style="width: 100%"
@@ -174,6 +185,16 @@ export default {
     vehicles: Array,
   },
   data() {
+    const optionsyear = ref([]);
+    const plate = ref("");
+    const capacity_without = ref("");
+    const capacity_with = ref("");
+    const total = ref("");
+    const manufacturing = ref("");
+    const model = ref(null);
+    const selectedYear = ref(null);
+    const myForm = ref(null);
+    const tempid = ref("");
     return {
       dialog: false,
       selectedVehicle: null,
@@ -231,12 +252,45 @@ export default {
     };
   },
   methods: {
-    openDialog(vehicle) {
-      this.selectedVehicle = { ...vehicle };
-      this.dialog = true;
+    openDialog(row) {
+      this.tempid = row.VehicleId;
+      this.capacity_with = row.capacity_With_Equipement;
+      this.capacity_without = row.capacity_Without_Equipement;
+      this.selectedYear = row.year_of_Manufacture;
+      this.total = row.total_Capacity;
+      this.manufacturing = row.manufacturing_Mode;
+      this.model = row.brand;
+      this.plate = row.license_Plate_Number;
     },
-    saveVehicle() {
-      // Aquí puedes actualizar los datos del vehículo...
+
+    async confirmDelete(row) {
+      const confirmed = window.confirm("¿Está seguro de borrar este vehículo?");
+
+      if (confirmed) {
+        try {
+          const response = await api.delete(`/api/Vehicles/${row.vehicleId}`);
+          window.alert("Vehículo eliminado");
+          location.reload();
+        } catch (error) {
+          window.alert("Error, Vehículo no eliminado", error);
+        }
+      }
+      this.confirmationVisible = false;
+    },
+    async saveVehicle() {
+      const temp = {
+        VehicleId: this.tempid,
+        capacity_With_Equipement: this.capacity_with,
+        capacity_Without_Equipement: this.capacity_without,
+        year_of_Manufacture: this.selectedYear,
+        total_Capacity: this.total,
+        manufacturing_Mode: this.manufacturing,
+        brand: this.model,
+        license_Plate_Number: this.plate,
+      };
+
+      await api.put("api/Vehicle", temp);
+      location.reload();
       this.dialog = false;
     },
   },

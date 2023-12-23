@@ -6,7 +6,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+            <img src="assets\CC.jpg" />
           </q-avatar>
           ConoceCuba
         </q-toolbar-title>
@@ -15,9 +15,7 @@
         <q-btn label="English" @click="$i18n.locale = 'en-US'"></q-btn>
 
         <q-btn round @click="card = true">
-          <q-avatar size="42px">
-            <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
-          </q-avatar>
+          <q-avatar size="42px"> </q-avatar>
         </q-btn>
         <q-dialog v-model="card">
           <div class="q-pa-lg">
@@ -86,6 +84,13 @@
               <q-icon name="tourPackage" />
             </q-item-section>
             <q-item-section> {{ $t("tourPackage") }} </q-item-section>
+          </q-item>
+
+          <q-item clickable v-ripple to="/tourPackage">
+            <q-item-section avatar>
+              <q-icon name="tourPackage" />
+            </q-item-section>
+            <q-item-section> Paquetes Turísticos </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/about" active-class="my-menu-link">
@@ -164,9 +169,6 @@
     <q-footer bordered class="bg-grey-8 text-white">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
           <div>Title</div>
         </q-toolbar-title>
       </q-toolbar>
@@ -176,7 +178,7 @@
 
 <script>
 import { api } from "src/boot/axios";
-import { defineComponent, ref } from "vue";
+import { DefineComponent, ref } from "vue";
 import VueJwtDecode from "vue-jwt-decode";
 
 export default {

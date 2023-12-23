@@ -148,10 +148,8 @@ export default {
       if (vehicles.value.length > 0) {
         lastVehicle = vehicles.value[vehicles.value.length - 1];
       }
-      const lastId = lastVehicle.vehicleId;
 
       const NewVehicle = {
-        vehicleId: lastId + 1,
         license_Plate_Number: plate.value,
         brand: model.value,
         capacity_Without_Equipement: capacity_without.value,
