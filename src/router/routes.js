@@ -43,6 +43,10 @@ const routes = [
         path: "/modality",
         component: () => import("pages/Modality.vue"),
       },
+      {
+        path: "/season",
+        component: () => import("pages/Season.vue"),
+      },
     ],
   },
 

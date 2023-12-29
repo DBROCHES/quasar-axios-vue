@@ -123,11 +123,11 @@ export default {
         price: price.value,
       };
       if (!selectedActivitie.value) {
-        await api.post("api/Costperhour", tempactivitie);
+        await api.post("api/DayliActivities", tempactivitie);
         phour.value.push(cphour);
         //location.reload();
       } else {
-        await api.put("api/Costperhour", tempactivitie);
+        await api.put("api/DayliActivities", tempactivitie);
         location.reload();
       }
       //restablece los valores del formulario
@@ -137,6 +137,7 @@ export default {
       date.value = row.day;
       description.value = row.description;
       price.value = row.price;
+      tempid.value = row.activityId;
       selectedActivitie.value = true;
       inception.value = true;
     };
