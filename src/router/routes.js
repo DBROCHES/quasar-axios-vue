@@ -63,6 +63,11 @@ const routes = [
         path: "/season",
         component: () => import("pages/Season.vue"),
       },
+      {
+        path: "/PintartourPackage",
+        name: "PintartourPackage",
+        component: () => import("components/PintartourPackage.vue"),
+      },
     ],
   },
 
