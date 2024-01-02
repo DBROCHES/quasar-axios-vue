@@ -1,5 +1,4 @@
 <!-- eslint-disable vue/multi-word-component-names -->
-
 <template>
   <h2>{{ $t("room") }}</h2>
   <div>
@@ -19,71 +18,17 @@
         >
           <div padding class="q-col-gutter-y-sm">
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
-  <h2>{{ $t("room") }}</h2>
-  <div>
-    <q-btn
-      :label="$t('nuevo')"
-      color="positive"
-      class="boton"
-      @click="inception = true"
-    />
-    <q-dialog v-model="inception">
-      <div padding class="bg-white q-pa-xl" style="width: 80%">
-        <q-form
-          @submit.prevent="procesingForm"
-          @reset="reset"
-          ref="myForm"
-          style="width: 100%"
-        >
-          <div padding class="q-col-gutter-y-sm">
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
               <div>
                 <q-input
                   outlined
-                  :label="$t('type')"
                   :label="$t('type')"
                   v-model="name"
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || this.$t('rellene'),
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div class="form-floating">
-                <q-input
-                  v-model="description"
-                  outlined
-                  type="textarea"
-                  :label="$t('descripcion')"
-                  rows="3"
-                  maxlength="400"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-input
-                  outlined
-                  :label="$t('precio')"
-                  v-model="price"
-                  placeholder="2"
-                  min="1"
-                  max="300"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
             </div>
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div class="form-floating">
@@ -192,7 +137,6 @@ export default {
        });
     };
 
-    const getOptions = async () => {
     const getOptions = async () => {
       try {
         const response = await api.get("/api/Hotel", {

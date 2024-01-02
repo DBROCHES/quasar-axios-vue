@@ -4,9 +4,6 @@
       flat
       bordered
       :no-data-label="$t('noMeals')"
-      flat
-      bordered
-      :no-data-label="$t('noMeals')"
       :columns="columns"
       :rows="meals"
     >
@@ -15,39 +12,7 @@
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.value }}
           </q-td>
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.value }}
-          </q-td>
 
-          <!-- Botón "Edit" -->
-          <q-td auto-width>
-            <q-btn
-              size="sm"
-              color="orange"
-              round
-              dense
-              text-color="white"
-              icon="edit"
-              @click="handleEditClick(props.row)"
-            />
-          </q-td>
-          <!-- Botón "Delete" -->
-          <q-td auto-width>
-            <q-btn
-              size="sm"
-              color="red"
-              round
-              dense
-              text-color="white"
-              icon="delete"
-              @click="confirmDelete(props.row)"
-            />
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
           <!-- Botón "Edit" -->
           <q-td auto-width>
             <q-btn
@@ -113,40 +78,7 @@ export default {
           required: true,
         },
       ],
-import { api } from "boot/axios";
-
-export default {
-  props: {
-    meals: Array,
-  },
-  data() {
-    return {
-      columns: [
-        {
-          name: "name",
-          label: this.$t("nombre"),
-          align: "left",
-          field: "name",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "description",
-          label: this.$t("descripcion"),
-          align: "left",
-          field: "description",
-          sortable: true,
-          required: true,
-        },
-        {
-          name: "price",
-          label: this.$t("precio"),
-          align: "left",
-          field: "price",
-          sortable: true,
-          required: true,
-        },
-      ],
+      token: localStorage.getItem('token'),
     };
   },
   methods: {
@@ -164,7 +96,7 @@ export default {
       }
     },
     async confirmDelete(row) {
-      const confirmed = window.confirm("¿Está seguro de borrar este vehículo?");
+      const confirmed = window.confirm("¿Está seguro de borrar este plan de comida?");
 
       if (confirmed) {
       if (confirmed) {
@@ -186,6 +118,6 @@ export default {
       this.confirmationVisible = false;
     },
   },
-  },
 };
+
 </script>
