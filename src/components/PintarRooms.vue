@@ -39,6 +39,46 @@
           </q-td>
         </q-tr>
       </template>
+  <div class="q-mt-md">
+    <q-table
+      flat
+      bordered
+      :no-data-label="$t('noRooms')"
+      :columns="columns"
+      :rows="rooms"
+    >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.value }}
+          </q-td>
+
+          <!-- Botón "Edit" -->
+          <q-td auto-width>
+            <q-btn
+              size="sm"
+              color="orange"
+              round
+              dense
+              text-color="white"
+              icon="edit"
+              @click="handleEditClick(props.row)"
+            />
+          </q-td>
+          <!-- Botón "Delete" -->
+          <q-td auto-width>
+            <q-btn
+              size="sm"
+              color="red"
+              round
+              dense
+              text-color="white"
+              icon="delete"
+              @click="confirmDelete(props.row)"
+            />
+          </q-td>
+        </q-tr>
+      </template>
     </q-table>
   </div>
 </template>

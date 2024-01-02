@@ -317,62 +317,65 @@
 
 <script>
 import { ref } from "vue";
-import PintarVehicles from "src/components/PintarVehicles.vue";
+import PintarCostoporhora from "src/components/PintarCostoporhora.vue";
+import { api } from "src/boot/axios";
+import PintarCostoporViaje from "src/components/PintarCostoporViaje.vue";
+import PintarCostoporkilometraje from "src/components/PintarCostoporkilometraje.vue";
 
 export default {
   // components: { PintarVehicles },
   setup() {
     // Variables reactivas
+    // variables de Costo por hora
     const phours = ref("");
     const ehours = ref("");
     const pkilometers = ref("");
     const ekilometers = ref("");
-
+    // Variables de Costo por viaje
     const description = ref("");
     const rute = ref("");
     const goback = ref("");
-
+    //Variables de Costo por Kilometraje
     const kilometer = ref("");
     const back = ref("");
     const wait = ref("");
-
+    //Variables auxiliares
     const myForm = ref(null);
-
-    //Arreglo de vehiculos
+    const inception = ref(false);
+    const tempid = ref("");
+    const selectedModalitY = ref(false);
+    const slide = ref("hora");
+    const buttonstate = ref(true);
+    //Arreglos de modalidades
     const phour = ref([]);
     const ptravel = ref([]);
     const pkilometer = ref([]);
-
-    const procesingForm = () => {
+    const procesingForm = async () => {
+      myForm.value.validate().then((success) => {
+        if (success) {
+          inception.value = false;
+        }
+      });
+      //myForm.value.resetValidation();
       console.log("me diste click");
-      myForm.value.resetValidation();
+
       //luego se procesa el formulario
-      phour.value = [
-        ...phour.value,
-        {
-          phours: phours.value,
-          ehours: ehours.value,
-          pkilometers: pkilometers.value,
-          ekilometers: ekilometers.value,
-        },
-      ];
-      ptravel.value = [
-        ...ptravel.value,
-        {
-          description: description.value,
-          rute: rute.value,
-          goback: goback.value,
-        },
-      ];
-      pkilometer.value = [
-        ...pkilometer.value,
-        {
-          kilometer: kilometer.value,
-          back: back.value,
-          wait: wait.value,
-        },
-      ];
+      switch (slide.value) {
+        case "hora":
+          costPerHourActions();
+          break;
+        case "viaje":
+          costPerTourActions();
+          break;
+        case "kilometraje":
+          mileageCostActions();
+          break;
+        default:
+          break;
+      }
+
       //restablece los valores del formulario
+      inception.value = false;
       reset();
     };
     const reset = () => {
@@ -380,40 +383,121 @@ export default {
       ehours.value = null;
       pkilometers.value = null;
       ekilometers.value = null;
-
       description.value = null;
       rute.value = null;
       goback.value = null;
-
       kilometer.value = null;
       back.value = null;
       wait.value = null;
     };
-
+    const costPerHourActions = async () => {
+      const cphour = {
+        modalityId: selectedModalitY.value ? tempid.value : 0,
+        cost_per_hour: phours.value,
+        cost_per_kilometer_traveled: pkilometers.value,
+        extra_kilometer_cost: ekilometers.value,
+        extra_hour_cost: ehours.value,
+      };
+      if (!selectedModalitY.value) {
+        await api.post("api/Costperhour", cphour);
+        phour.value.push(cphour);
+        //location.reload();
+      } else {
+        await api.put("api/Costperhour", cphour);
+        location.reload();
+      }
+    };
+    const costPerTourActions = async () => {
+      const cptour = {
+        modalityId: selectedModalitY.value ? tempid.value : 0,
+        rout_description: description.value,
+        route_cost: rute.value,
+        round_trip_cost: goback.value,
+      };
+      if (!selectedModalitY.value) {
+        await api.post("api/CostPerTour", cptour);
+        ptravel.value.push(cptour);
+        //location.reload();
+      } else {
+        await api.put("api/CostPerTour", cptour);
+        location.reload();
+      }
+    };
+    const mileageCostActions = async () => {
+      const mileagec = {
+        modalityId: selectedModalitY.value ? tempid.value : 0,
+        cost_per_kilometer: kilometer.value,
+        cost_per_round_trip: back.value,
+        cost_per_waiting_hour: wait.value,
+      };
+      if (!selectedModalitY.value) {
+        await api.post("api/MilageCost", mileagec);
+        pkilometer.value.push(mileagec);
+        //location.reload();
+      } else {
+        await api.put("api/MilageCost", mileagec);
+        location.reload();
+      }
+    };
+    // funciones de modificar
+    const updatingHour = (row) => {
+      tempid.value = row.modalityId;
+      phours.value = row.cost_per_hour;
+      pkilometers.value = row.cost_per_kilometer_traveled;
+      ekilometers.value = row.extra_kilometer_cost;
+      ehours.value = row.extra_hour_cost;
+      selectedModalitY.value = true;
+      inception.value = true;
+      slide.value = "hora";
+    };
+    const updatingTour = (row) => {
+      tempid.value = row.modalityId;
+      description.value = row.rout_description;
+      rute.value = row.route_cost;
+      goback.value = row.round_trip_cost;
+      selectedModalitY.value = true;
+      inception.value = true;
+      slide.value = "viaje";
+    };
+    const updatingMileage = (row) => {
+      tempid.value = row.modalityId;
+      kilometer.value = row.cost_per_kilometer;
+      back.value = row.cost_per_round_trip;
+      wait.value = row.cost_per_waiting_hour;
+      selectedModalitY.value = true;
+      inception.value = true;
+      slide.value = "kilometraje";
+    };
     return {
       phours,
       ehours,
       pkilometers,
       ekilometers,
-
       description,
       rute,
       goback,
-
       kilometer,
       back,
       wait,
-
       myForm,
-      inception: ref(false),
-
+      inception,
+      slide,
       phour,
       ptravel,
       pkilometer,
-      slide: ref("hora"),
+      tab: ref("hour"),
+      buttonstate,
+      updatingHour,
+      updatingMileage,
+      updatingTour,
       procesingForm,
       reset,
     };
+  },
+  components: {
+    PintarCostoporhora,
+    PintarCostoporViaje,
+    PintarCostoporkilometraje,
   },
 };
 </script>

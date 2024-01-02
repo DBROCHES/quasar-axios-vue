@@ -59,6 +59,15 @@ const routes = [
         path: "/reportActiveHotels",
         component: () => import("pages/ReportActiveHotels.vue"),
       },
+      {
+        path: "/season",
+        component: () => import("pages/Season.vue"),
+      },
+      {
+        path: "/PintartourPackage",
+        name: "PintartourPackage",
+        component: () => import("components/PintartourPackage.vue"),
+      },
     ],
   },
 

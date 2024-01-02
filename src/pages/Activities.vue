@@ -108,25 +108,38 @@ export default {
     const description = ref("");
     const price = ref("");
     const myForm = ref(null);
-
-    //Arreglo de vehiculos
+    const selectedActivitie = ref(false);
+    const tempid = ref(""); //Arreglo de vehiculos
     const activities = ref([]);
 
-    const procesingForm = () => {
+    const procesingForm = async () => {
       console.log("me diste click");
       myForm.value.resetValidation();
       //luego se procesa el formulario
-      activities.value = [
-        ...activities.value,
-        {
-          date: date.value,
-          hour: hour.value,
-          description: description.value,
-          price: price.value,
-        },
-      ];
+      const tempactivitie = {
+        activityId: selectedActivitie.value ? tempid.value : 0,
+        day: date.value,
+        description: description.value,
+        price: price.value,
+      };
+      if (!selectedActivitie.value) {
+        await api.post("api/DayliActivities", tempactivitie);
+        phour.value.push(cphour);
+        //location.reload();
+      } else {
+        await api.put("api/DayliActivities", tempactivitie);
+        location.reload();
+      }
       //restablece los valores del formulario
       reset();
+    };
+    const updatingactivitie = (row) => {
+      date.value = row.day;
+      description.value = row.description;
+      price.value = row.price;
+      tempid.value = row.activityId;
+      selectedActivitie.value = true;
+      inception.value = true;
     };
     const reset = () => {
       date.value = null;

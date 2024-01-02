@@ -49,14 +49,14 @@
               @reset="onReset"
               class="bg-white q-pa-lg"
             >
-            <q-input
-                 filled
-                 v-model="name"
-                 label="Su nombre*"
-                 lazy-rules
-                 :rules="[
-                   (val) => (val && val.length > 0) || 'Usuario incorrecta',
-                 ]"
+              <q-input
+                filled
+                v-model="name"
+                label="Su nombre*"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || 'Usuario incorrecta',
+                ]"
               />
 
               <q-input
@@ -267,17 +267,6 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-
-    <q-footer bordered class="bg-grey-8 text-white">
-      <q-toolbar>
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-          </q-avatar>
-          <div>Title</div>
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-footer>
   </q-layout>
 </template>
 
@@ -347,11 +336,14 @@ export default {
   },
   methods: {
     async iniciarSesion() {
-        try {
-          const response = await api.post(`/api/User/api/login/${this.name}/${this.password}`);
+      try {
+        const response = await api.post(
+          `/api/User/api/login/${this.name}/${this.password}`
+        );
 
-          api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
-          localStorage.setItem('token', response.data.token);
+        api.defaults.headers.common["Authorization"] =
+          "Bearer " + response.data.token;
+        localStorage.setItem("token", response.data.token);
 
           const base64Url = response.data.token.split('.')[1];
           const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -377,8 +369,7 @@ export default {
       this.$i18n.locale = this.locale;
       localStorage.setItem('userLocale', this.locale); 
     },
-
-    },
+  },
 };
 </script>
 <style lang="scss">
