@@ -20,6 +20,7 @@
       <q-carousel-slide :name="6" img-src="~assets/lighthouse.jpg" />
       <q-carousel-slide :name="7" img-src="~assets/safari.jpg" />
     </q-carousel>
+    
   </div>
   <div class="row items-center flex-center" style="height: 300px">
     <div class="q-pa-md row items-start q-gutter-md">

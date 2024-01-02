@@ -1,7 +1,7 @@
 <template>
   <q-table
     class="q-mt-md"
-    no-data-label="Sin vehículos para mostrar"
+    :no-data-label="$t('noVehicles')"
     :columns="columns"
     :rows="vehicles"
   >
@@ -24,16 +24,16 @@
 
         <!-- Botón "Delete" -->
         <q-td auto-width>
-            <q-btn
-              size="sm"
-              color="red"
-              round
-              dense
-              text-color="white"
-              icon="delete"
-              @click="confirmDelete(props.row)"
-            />
-          </q-td> 
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
+          />
+        </q-td>
       </q-tr>
     </template>
   </q-table>
@@ -42,7 +42,7 @@
     <q-card class="q-col-gutter-y-sm">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
-          @submit.prevent="procesingForm"
+          @submit.prevent="saveVehicle()"
           @reset="reset"
           ref="myForm"
           style="width: 100%"
@@ -52,13 +52,13 @@
               <div>
                 <q-input
                   outlined
-                  label="Matrícula"
+                  :label="$t('plate')"
                   v-model="selectedVehicle.license_Plate_Number"
                   pattern="[A-Z]\d{5}"
                   placeholder="******"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -69,10 +69,10 @@
                   outlined
                   v-model="model"
                   :options="options"
-                  label="Modelo"
+                  :label="$t('model')"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -81,14 +81,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Capacidad sin equipaje"
+                  :label="$t('capacity_without')"
                   v-model="capacity_without"
                   placeholder="2"
                   min="2"
                   max="40"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -97,14 +97,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Capacidad con equipaje"
+                  :label="$t('capacity_with')"
                   v-model="capacity_with"
                   placeholder="2"
                   min="2"
                   max="40"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -113,14 +113,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Capacidad total"
+                  :label="$t('totalCapacity')"
                   v-model="total"
                   placeholder="2"
                   min="2"
                   max="40"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -131,7 +131,7 @@
                   v-model="selectedYear"
                   outlined
                   :options="optionsyear"
-                  label="Select a year"
+                  :label="$t('selectedYear')"
                 />
               </div>
             </div>
@@ -141,12 +141,12 @@
                   v-model="manufacturing"
                   outlined
                   type="textarea"
-                  label="Modo de fabricación"
+                  :label="$t('manufacturing')"
                   rows="3"
                   maxlength="200"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -156,65 +156,19 @@
       </div>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancelar" color="primary" v-close-popup />
-        <q-btn flat label="Guardar" color="primary" @click="saveVehicle" />
+        <q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
+        <q-btn
+          flat
+          :label="$t('guardar')"
+          color="primary"
+          @click="saveVehicle"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 <script>
-const columns = [
-  {
-    name: "plate",
-    label: "Matrícula",
-    alingn: "center",
-    field: "license_Plate_Number",
-    sortable: true,
-  },
-  {
-    name: "model",
-    label: "Cadena",
-    alingn: "center",
-    field: "brand",
-    sortable: true,
-  },
-  {
-    name: "capacity_without",
-    label: "Capacidad sin equipaje",
-    alingn: "center",
-    field: "capacity_Without_Equipement",
-    sortable: true,
-  },
-  {
-    name: "capacity_with",
-    label: "Capacidad con equipaje",
-    alingn: "center",
-    field: "capacity_With_Equipement",
-    sortable: true,
-  },
-  {
-    name: "total",
-    label: "Capacidad total",
-    alingn: "center",
-    field: "total_Capacity",
-    sortable: true,
-  },
-  {
-    name: "year",
-    label: "Año de fabricación",
-    alingn: "center",
-    field: "year_of_Manufacture",
-    sortable: true,
-  },
-  {
-    name: "manufacturing",
-    label: "Modo de fabricación",
-    alingn: "center",
-    field: "manufacturing_Mode",
-    sortable: true,
-  },
-];
-
+import { ref, onMounted, watchEffect } from "vue";
 const rows = [
   {
     plate: "A12365",
@@ -232,42 +186,117 @@ export default {
     vehicles: Array,
   },
   data() {
+    const optionsyear = ref([]);
+    const plate = ref("");
+    const capacity_without = ref("");
+    const capacity_with = ref("");
+    const total = ref("");
+    const manufacturing = ref("");
+    const model = ref(null);
+    const selectedYear = ref(null);
+    const myForm = ref(null);
+    const tempid = ref("");
     return {
       dialog: false,
       selectedVehicle: null,
-      // ...
+      columns: [
+        {
+          name: "plate",
+          label: this.$t("plate"),
+          alingn: "center",
+          field: "license_Plate_Number",
+          sortable: true,
+        },
+        {
+          name: "model",
+          label: this.$t("chain"),
+          alingn: "center",
+          field: "brand",
+          sortable: true,
+        },
+        {
+          name: "capacity_without",
+          label: this.$t("capacity_without"),
+          alingn: "center",
+          field: "capacity_Without_Equipement",
+          sortable: true,
+        },
+        {
+          name: "capacity_with",
+          label: this.$t("capacity_with"),
+          alingn: "center",
+          field: "capacity_With_Equipement",
+          sortable: true,
+        },
+        {
+          name: "total",
+          label: this.$t("totalCapacity"),
+          alingn: "center",
+          field: "total_Capacity",
+          sortable: true,
+        },
+        {
+          name: "year",
+          label: this.$t("year"),
+          alingn: "center",
+          field: "year_of_Manufacture",
+          sortable: true,
+        },
+        {
+          name: "manufacturing",
+          label: this.$t("manufacturing"),
+          alingn: "center",
+          field: "manufacturing_Mode",
+          sortable: true,
+        },
+      ],
     };
   },
   methods: {
-    async confirmDelete(row) {
-      const confirmed = window.confirm('¿Está seguro de borrar este vehículo?');
+    openDialog(row) {
+      this.tempid = row.VehicleId;
+      this.capacity_with = row.capacity_With_Equipement;
+      this.capacity_without = row.capacity_Without_Equipement;
+      this.selectedYear = row.year_of_Manufacture;
+      this.total = row.total_Capacity;
+      this.manufacturing = row.manufacturing_Mode;
+      this.model = row.brand;
+      this.plate = row.license_Plate_Number;
+    },
 
-        if (confirmed) {
+    async confirmDelete(row) {
+      const confirmed = window.confirm("¿Está seguro de borrar este vehículo?");
+
+      if (confirmed) {
         try {
           const response = await api.delete(`/api/Vehicles/${row.vehicleId}`);
           window.alert("Vehículo eliminado");
-          location.reload();  
+          location.reload();
         } catch (error) {
           window.alert("Error, Vehículo no eliminado", error);
         }
-       }
+      }
       this.confirmationVisible = false;
+    },
+    async saveVehicle() {
+      const temp = {
+        VehicleId: this.tempid,
+        capacity_With_Equipement: this.capacity_with,
+        capacity_Without_Equipement: this.capacity_without,
+        year_of_Manufacture: this.selectedYear,
+        total_Capacity: this.total,
+        manufacturing_Mode: this.manufacturing,
+        brand: this.model,
+        license_Plate_Number: this.plate,
+      };
 
-    },
-    openDialog(vehicle) {
-      this.selectedVehicle = { ...vehicle };
-      this.dialog = true;
-    },
-    saveVehicle() {
-      // Aquí puedes actualizar los datos del vehículo...
+      await api.put("api/Vehicle", temp);
+      location.reload();
       this.dialog = false;
     },
-
-
   },
   setup() {
     return {
-      columns,
       rows,
     };
   },

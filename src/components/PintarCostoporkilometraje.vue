@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Costo por kilometros"
     class="q-mt-md"
-    no-data-label="Sin Modalidades para mostrar"
+    :no-data-label="$t('noModalitys')"
     :columns="columns"
     :rows="allkilometers"
   >
@@ -17,9 +16,20 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             icon="edit"
             @click="handleClick(props.row)"
+          />
+        </q-td>
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
           />
         </q-td>
       </q-tr>
@@ -29,29 +39,6 @@
 <script>
 import { api } from "src/boot/axios";
 import { ref, onMounted, watchEffect } from "vue";
-const columns = [
-  {
-    name: "cost_per_kilometer",
-    label: "Costo por kilometro",
-    alingn: "center",
-    field: "cost_per_kilometer",
-    sortable: true,
-  },
-  {
-    name: "cost_per_round_trip",
-    label: "Costo por viaje de ida y vuelta",
-    alingn: "center",
-    field: "cost_per_round_trip",
-    sortable: true,
-  },
-  {
-    name: "cost_per_waiting_hour",
-    label: "Costo por horas de espera",
-    alingn: "center",
-    field: "cost_per_waiting_hour",
-    sortable: true,
-  },
-];
 
 const rows = [
   {
@@ -87,14 +74,58 @@ export default {
           console.error(error);
         });
     };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar esta modalidad?"
+      );
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId + "Hakuna Matata");
+          await api.delete(`/api/MilageCost/ ${row.modalityId}`);
+          window.alert("Modalidad eliminada");
+          location.reload();
+        } catch (error) {
+          console.error("Error Modalidad no eliminada", error);
+        }
+      }
+    };
     onMounted(() => {
       getall();
     });
     return {
-      columns,
       rows,
       handleClick,
       allkilometers,
+      confirmDelete,
+    };
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "cost_per_kilometer",
+          label: this.$t("kilometer"),
+          alingn: "center",
+          field: "cost_per_kilometer",
+          sortable: true,
+        },
+        {
+          name: "cost_per_round_trip",
+          label: this.$t("goback"),
+          alingn: "center",
+          field: "cost_per_round_trip",
+          sortable: true,
+        },
+        {
+          name: "cost_per_waiting_hour",
+          label: this.$t("wait"),
+          alingn: "center",
+          field: "cost_per_waiting_hour",
+          sortable: true,
+        },
+      ],
     };
   },
 };

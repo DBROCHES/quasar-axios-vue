@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Contratos de Transportes"
     class="q-mt-md"
-    no-data-label="Sin Contratos para mostrar"
+    :no-data-label="$t('noContracts')"
     :columns="columns"
     :rows="allContracts"
   >
@@ -40,64 +39,6 @@
 <script>
 import { ref, onMounted, watchEffect } from "vue";
 import { api } from "src/boot/axios";
-const columns = [
-  {
-    name: "desc",
-    label: "Descripción",
-    alingn: "center",
-    field: "desc",
-    sortable: true,
-  },
-  {
-    name: "starDate",
-    label: "Fecha de inicio",
-    alingn: "center",
-    field: "starDate",
-    sortable: true,
-  },
-  {
-    name: "endTime",
-    label: "Fecha de fin",
-    alingn: "center",
-    field: "endTime",
-    sortable: true,
-  },
-  {
-    name: "concilTime ",
-    label: "Fecha de conciliación",
-    alingn: "center",
-    field: "concilTime",
-    sortable: true,
-  },
-  {
-    name: "transportationProvider",
-    label: "Proveedor",
-    alingn: "center",
-    field: "transportationProvider",
-    sortable: true,
-  },
-  {
-    name: "incluedVehicles",
-    label: "Vehículos incluídos",
-    alingn: "center",
-    field: "incluedVehicles",
-    sortable: true,
-  },
-  {
-    name: "licensePlateNumber",
-    label: "Matrícula",
-    alingn: "center",
-    field: "licensePlateNumber",
-    sortable: true,
-  },
-  {
-    name: "enabled",
-    label: "Estado",
-    align: "left",
-    field: "enabled",
-    sortable: true,
-  },
-];
 
 export default {
   props: {
@@ -125,28 +66,92 @@ export default {
           console.error(error);
         });
     };
-    const confirmDelete = async (row) => {
-      const confirmed = window.confirm("¿Está seguro de borrar este contrato?");
+    onMounted(() => {
+      getall();
+    });
+    return {
+      handleClick,
+      allContracts,
+    };
+  },
+
+  methods: {
+    async confirmDelete(row) {
+      const confirmed = window.confirm(this.$t("deleteConfCont"));
 
       if (confirmed) {
         try {
           console.log(row.id + "Hakuna Matata");
           await api.delete(`/api/TransportationContract/ ${row.id}`);
-          window.alert("Contrato eliminado");
+          window.alert(this.$t("deleteCont"));
           location.reload();
         } catch (error) {
-          console.error("Error Contrato no eliminado", error);
+          console.error(this.$t("errContDelet"), error);
         }
       }
-    };
-    onMounted(() => {
-      getall();
-    });
+    },
+  },
+
+  data() {
     return {
-      confirmDelete,
-      columns,
-      handleClick,
-      allContracts,
+      columns: [
+        {
+          name: "desc",
+          label: this.$t("descripcion"),
+          alingn: "center",
+          field: "desc",
+          sortable: true,
+        },
+        {
+          name: "starDate",
+          label: this.$t("startDate"),
+          alingn: "center",
+          field: "starDate",
+          sortable: true,
+        },
+        {
+          name: "endTime",
+          label: this.$t("endTime"),
+          alingn: "center",
+          field: "endTime",
+          sortable: true,
+        },
+        {
+          name: "concilTime ",
+          label: this.$t("concilTime"),
+          alingn: "center",
+          field: "concilTime",
+          sortable: true,
+        },
+        {
+          name: "transportationProvider",
+          label: this.$t("provider"),
+          alingn: "center",
+          field: "transportationProvider",
+          sortable: true,
+        },
+        {
+          name: "incluedVehicles",
+          label: this.$t("includVehic"),
+          alingn: "center",
+          field: "incluedVehicles",
+          sortable: true,
+        },
+        {
+          name: "licensePlateNumber",
+          label: this.$t("plate"),
+          alingn: "center",
+          field: "licensePlateNumber",
+          sortable: true,
+        },
+        {
+          name: "enabled",
+          label: this.$t("enabled"),
+          align: "left",
+          field: "enabled",
+          sortable: true,
+        },
+      ],
     };
   },
 };

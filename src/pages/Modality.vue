@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 
 <template>
-  <h2>Modalidad</h2>
+  <h2>{{ $t("modality") }}</h2>
   <div class="q-pa-md">
-    <q-btn label="Nuevo" color="positive" @click="inception = true" />
+    <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">
       <div class="q-pa-md q-gutter-sm">
         <q-carousel animated v-model="slide" infinite>
@@ -20,7 +20,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por horas"
+                      :label="$t('phours')"
                       v-model="phours"
                       type="number"
                       placeholder="1"
@@ -28,7 +28,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -37,7 +37,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por horas extras"
+                      :label="$t('ehours')"
                       v-model="ehours"
                       type="number"
                       placeholder="1"
@@ -45,7 +45,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -54,7 +54,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por kilometros recorridos"
+                      :label="$t('pkilometers')"
                       v-model="pkilometers"
                       type="number"
                       placeholder="1"
@@ -62,7 +62,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -71,7 +71,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por kilometros extras"
+                      :label="$t('ekilometers')"
                       v-model="ekilometers"
                       type="number"
                       placeholder="1"
@@ -79,7 +79,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -88,13 +88,13 @@
               <div>
                 <q-btn
                   color="primary"
-                  label="Aceptar"
+                  :label="$t('aceptar')"
                   class="q-ml-sm"
                   type="submit"
                 />
                 <q-btn
                   color="primary"
-                  label="Cancelar"
+                  :label="$t('reset')"
                   class="q-ml-sm"
                   type="reset"
                 />
@@ -117,12 +117,12 @@
                       v-model="description"
                       outlined
                       type="textarea"
-                      label="Descripcion de la ruta"
+                      :label="$t('routDescrip')"
                       rows="3"
                       maxlength="200"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -131,7 +131,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo de la ruta"
+                      :label="$t('routCost')"
                       v-model="rute"
                       type="number"
                       placeholder="1"
@@ -139,7 +139,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -148,7 +148,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por ida y regreso"
+                      :label="$t('goback')"
                       v-model="goback"
                       type="number"
                       placeholder="1"
@@ -156,7 +156,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -165,13 +165,13 @@
               <div>
                 <q-btn
                   color="primary"
-                  label="Aceptar"
+                  :label="$t('aceptar')"
                   class="q-ml-sm"
                   type="submit"
                 />
                 <q-btn
                   color="primary"
-                  label="Cancelar"
+                  :label="$t('reset')"
                   class="q-ml-sm"
                   type="reset"
                 />
@@ -192,7 +192,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por kilometraje"
+                      :label="$t('kilometer')"
                       v-model="kilometer"
                       type="number"
                       placeholder="1"
@@ -200,7 +200,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -209,7 +209,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por regreso"
+                      :label="$t('back')"
                       v-model="back"
                       type="number"
                       placeholder="1"
@@ -217,7 +217,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -226,7 +226,7 @@
                   <div>
                     <q-input
                       outlined
-                      label="Costo por horas de espera"
+                      :label="$t('wait')"
                       v-model="wait"
                       type="number"
                       placeholder="1"
@@ -234,7 +234,7 @@
                       max="200000"
                       lazy-rules
                       :rules="[
-                        (val) => (val && val.length > 0) || 'Rellene el campo',
+                        (val) => (val && val.length > 0) || this.$t('rellene'),
                       ]"
                     />
                   </div>
@@ -243,13 +243,13 @@
               <div>
                 <q-btn
                   color="primary"
-                  label="Aceptar"
+                  :label="$t('aceptar')"
                   class="q-ml-sm"
                   type="submit"
                 />
                 <q-btn
                   color="primary"
-                  label="Cancelar"
+                  :label="$t('reset')"
                   class="q-ml-sm"
                   type="reset"
                 />
@@ -263,19 +263,55 @@
             glossy
             v-model="slide"
             :options="[
-              { label: 'Costo por hora', value: 'hora' },
-              { label: 'Costo por viaje', value: 'viaje' },
-              { label: 'Costo por kilometraje', value: 'kilometraje' },
+              { label: this.$t('costPH'), value: 'hora' },
+              { label: this.$t('costPV'), value: 'viaje' },
+              { label: this.$t('kilometer'), value: 'kilometraje' },
             ]"
           />
         </div>
       </div>
     </q-dialog>
-    <q-btn-group spread>
-      <q-btn color="primary" label="Costo por hora" />
-      <q-btn color="primary" label="Costo por viaje" />
-      <q-btn color="primary" label="Costo por kilometraje" />
-    </q-btn-group>
+
+    <q-card>
+      <q-tabs
+        v-model="tab"
+        class="bg-blue text-white"
+        align="justify"
+        narrow-indicator
+      >
+        <q-tab name="cost_per_hour" :label="$t('costPH')" />
+        <q-tab name="cost_per_tour" :label="$t('costPV')" />
+        <q-tab name="mileage_cost" :label="$t('kilometer')" />
+      </q-tabs>
+
+      <q-separator />
+
+      <q-tab-panels
+        v-model="tab"
+        style="height: auto"
+        animated
+        class="bg-orange-1 text-dark text-center"
+      >
+        <q-tab-panel name="hour" class="bg-lime-1 text-dark">
+          <PintarCostoporhora
+            :hours="phour"
+            @button-clicked="updatingHour"
+          ></PintarCostoporhora>
+        </q-tab-panel>
+        <q-tab-panel name="travel" class="bg-lime-1 text-dark">
+          <PintarCostoporViaje
+            :tours="ptravel"
+            @button-clicked="updatingTour"
+          />
+        </q-tab-panel>
+        <q-tab-panel name="kilometer" class="bg-lime-1 text-dark">
+          <PintarCostoporkilometraje
+            :kilometers="pkilometer"
+            @button-clicked="updatingMileage"
+          />
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-card>
   </div>
 </template>
 

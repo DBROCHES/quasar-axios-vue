@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Costo por horas"
     class="q-mt-md"
-    no-data-label="Sin Modalidades para mostrar"
+    :no-data-label="$t('noModalitys')"
     :columns="columns"
     :rows="allhours"
   >
@@ -17,7 +16,7 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             icon="edit"
             @click="handleClick(props.row)"
           />
@@ -40,36 +39,6 @@
 <script>
 import { ref, onMounted, watchEffect } from "vue";
 import { api } from "src/boot/axios";
-const columns = [
-  {
-    name: "cost_per_hour",
-    label: "Costo por hora",
-    alingn: "center",
-    field: "cost_per_hour",
-    sortable: true,
-  },
-  {
-    name: "cost_per_kilometer_traveled",
-    label: "Costo por kilometros recorridos",
-    alingn: "center",
-    field: "cost_per_kilometer_traveled",
-    sortable: true,
-  },
-  {
-    name: "extra_kilometer_cost",
-    label: "Costo por Kilometros extras",
-    alingn: "center",
-    field: "extra_kilometer_cost",
-    sortable: true,
-  },
-  {
-    name: "extra_hour_cost ",
-    label: "Costo por horas extras",
-    alingn: "center",
-    field: "extra_hour_cost",
-    sortable: true,
-  },
-];
 
 const rows = [
   {
@@ -106,31 +75,65 @@ export default {
           console.error(error);
         });
     };
-    const confirmDelete = async (row) => {
-      const confirmed = window.confirm(
-        "¿Está seguro de borrar esta modalidad?"
-      );
-
-      if (confirmed) {
-        try {
-          console.log(row.modalityId+"Hakuna Matata");
-          await api.delete(`/api/CostPerHour/ ${row.modalityId}`);
-          window.alert("Modalidad eliminada");
-          location.reload();
-        } catch (error) {
-          console.error("Error Modalidad no eliminada", error);
-        }
-      }
-    };
     onMounted(() => {
       getall();
     });
     return {
-      confirmDelete,
-      columns,
       rows,
       handleClick,
       allhours,
+    };
+  },
+
+  methods: {
+    async confirmDelete(row) {
+      const confirmed = window.confirm(this.$t("deleteModalityConf"));
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId + "Hakuna Matata");
+          await api.delete(`/api/CostPerHour/ ${row.modalityId}`);
+          window.alert(this.$t("deletedModality"));
+          location.reload();
+        } catch (error) {
+          console.error(this.$t("errDeletModality"), error);
+        }
+      }
+    },
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "cost_per_hour",
+          label: this.$t("costPH"),
+          alingn: "center",
+          field: "cost_per_hour",
+          sortable: true,
+        },
+        {
+          name: "cost_per_kilometer_traveled",
+          label: this.$t("pkilometers"),
+          alingn: "center",
+          field: "cost_per_kilometer_traveled",
+          sortable: true,
+        },
+        {
+          name: "extra_kilometer_cost",
+          label: this.$t("ekilometers"),
+          alingn: "center",
+          field: "extra_kilometer_cost",
+          sortable: true,
+        },
+        {
+          name: "extra_hour_cost ",
+          label: this.$t("ehours"),
+          alingn: "center",
+          field: "extra_hour_cost",
+          sortable: true,
+        },
+      ],
     };
   },
 };

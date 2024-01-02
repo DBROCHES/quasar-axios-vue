@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Contratos Complementarios"
     class="q-mt-md"
-    no-data-label="Sin Contratos para mostrar"
+    :no-data-label="$t('noContracts')"
     :columns="columns"
     :rows="allContracts"
   >
@@ -40,73 +39,6 @@
 <script>
 import { ref, onMounted, watchEffect } from "vue";
 import { api } from "src/boot/axios";
-const columns = [
-  {
-    name: "desc",
-    label: "Descripción",
-    alingn: "center",
-    field: "desc",
-    sortable: true,
-  },
-  {
-    name: "starDate",
-    label: "Fecha de inicio",
-    alingn: "center",
-    field: "starDate",
-    sortable: true,
-  },
-  {
-    name: "endTime",
-    label: "Fecha de fin",
-    alingn: "center",
-    field: "endTime",
-    sortable: true,
-  },
-  {
-    name: "concilTime ",
-    label: "Fecha de conciliación",
-    alingn: "center",
-    field: "concilTime",
-    sortable: true,
-  },
-  {
-    name: "serviceType ",
-    label: "Tipo de Servicio",
-    alingn: "center",
-    field: "serviceType",
-    sortable: true,
-  },
-  {
-    name: "costPerPerson",
-    label: "Costo por persona",
-    alingn: "center",
-    field: "costPerPerson",
-    sortable: true,
-  },
-  {
-    name: "complementaryServiceProvince",
-    label: "Servicio por provincia",
-    alingn: "center",
-    field: "complementaryServiceProvince",
-    sortable: true,
-  },
-  {
-    name: "enabled",
-    label: "Estado",
-    align: "left",
-    field: "enabled",
-    sortable: true,
-  },
-];
-
-// const rows = [
-//   {
-//     cost_per_hour: "20",
-//     cost_per_kilometer_traveled: "20",
-//     extra_kilometer_cost: "2",
-//     extra_kilometer_cost: "2",
-//   },
-// ];
 
 export default {
   props: {
@@ -134,26 +66,10 @@ export default {
           console.error(error);
         });
     };
-    const confirmDelete = async (row) => {
-      const confirmed = window.confirm("¿Está seguro de borrar este contrato?");
-
-      if (confirmed) {
-        try {
-          console.log(row.id + "Hakuna Matata");
-          await api.delete(`/api/ComplementaryContract/ ${row.id}`);
-          window.alert("Contrato eliminado");
-          location.reload();
-        } catch (error) {
-          console.error("Error Contrato no eliminado", error);
-        }
-      }
-    };
     onMounted(() => {
       getall();
     });
     return {
-      confirmDelete,
-      columns,
       visibleColumns: ref([
         "desc",
         "starDate",
@@ -165,6 +81,86 @@ export default {
       ]),
       handleClick,
       allContracts,
+    };
+  },
+
+  methods: {
+    async confirmDelete(row) {
+      const confirmed = window.confirm(this.$t("deleteConfCont"));
+
+      if (confirmed) {
+        try {
+          console.log(row.id + "Hakuna Matata");
+          await api.delete(`/api/ComplementaryContract/ ${row.id}`);
+          window.alert(this.$t("deleteCont"));
+          location.reload();
+        } catch (error) {
+          console.error(this.$t("errContDelet"), error);
+        }
+      }
+    },
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "desc",
+          label: this.$t("descripcion"),
+          alingn: "center",
+          field: "desc",
+          sortable: true,
+        },
+        {
+          name: "starDate",
+          label: this.$t("startDate"),
+          alingn: "center",
+          field: "starDate",
+          sortable: true,
+        },
+        {
+          name: "endTime",
+          label: this.$t("endTime"),
+          alingn: "center",
+          field: "endTime",
+          sortable: true,
+        },
+        {
+          name: "concilTime ",
+          label: this.$t("concilTime"),
+          alingn: "center",
+          field: "concilTime",
+          sortable: true,
+        },
+        {
+          name: "serviceType ",
+          label: this.$t("typeService"),
+          alingn: "center",
+          field: "serviceType",
+          sortable: true,
+        },
+        {
+          name: "costPerPerson",
+          label: this.$t("costPP"),
+          alingn: "center",
+          field: "costPerPerson",
+          sortable: true,
+        },
+        {
+          name: "complementaryServiceProvince",
+          label: this.$t("servProv"),
+          alingn: "center",
+          field: "complementaryServiceProvince",
+          sortable: true,
+        },
+        {
+          name: "enabled",
+          label: this.$t("enabled"),
+          align: "left",
+          field: "enabled",
+          sortable: true,
+        },
+      ],
     };
   },
 };

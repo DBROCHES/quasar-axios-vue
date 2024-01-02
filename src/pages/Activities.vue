@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 
 <template>
-  <h2>Actividades</h2>
-  <div class="q-pa-md">
-    <q-btn label="Nuevo" color="positive" @click="inception = true" />
+  <h1>{{ $t("actividades") }}</h1>
+  <div class="q-pa-md" id="act">
+    <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
@@ -17,12 +17,12 @@
               <div>
                 <q-input
                   outlined
-                  label="Fecha"
+                  :label="$t('fecha')"
                   v-model="date"
                   type="date"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -31,12 +31,12 @@
               <div>
                 <q-input
                   outlined
-                  label="Hora"
+                  :label="$t('hora')"
                   v-model="hour"
                   type="time"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -48,12 +48,12 @@
                   v-model="description"
                   outlined
                   type="textarea"
-                  label="Descripción"
+                  :label="$t('descripcion')"
                   rows="3"
                   maxlength="200"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -62,13 +62,13 @@
               <div>
                 <q-input
                   outlined
-                  label="Precio"
+                  :label="$t('precio')"
                   v-model="price"
                   min="0"
                   max="200000"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -77,13 +77,13 @@
           <div>
             <q-btn
               color="primary"
-              label="Aceptar"
+              :label="$t('aceptar')"
               class="q-ml-sm"
               type="submit"
             />
             <q-btn
               color="primary"
-              label="Cancelar"
+              :label="$t('reset')"
               class="q-ml-sm"
               type="reset"
             />

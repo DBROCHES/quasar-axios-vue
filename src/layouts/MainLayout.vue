@@ -8,15 +8,41 @@
           <q-avatar>
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
           </q-avatar>
-          ConoceCuba
+          {{userName}} {{ $t("saludo") }}
         </q-toolbar-title>
 
-        <q-btn round @click="card = true">
-          <q-avatar size="42px">
-            <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
-          </q-avatar>
-        </q-btn>
-        <q-dialog v-model="card">
+        <select 
+          v-model="locale" 
+          @change="cambiarIdioma(locale)"
+          class="custom-select">
+          <option value="en-US">English</option>
+          <option value="es">Español</option>
+          <!-- Agrega más opciones aquí para otros idiomas -->
+        </select>
+          <q-btn round @click="men = true">
+            <q-avatar size="42px">
+              <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
+            </q-avatar>
+          </q-btn>
+          <template class="row justify-end items-center">
+          <q-menu v-model="men" >
+            <q-list class="column justify-center items-start" style="min-width: 100px">
+              <q-item clickable v-close-popup v-if="rol === null">
+                <q-item-section @click="cardUno = true">Registrarse</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup v-if="rol === null">
+                <q-item-section  @click="card = true">Iniciar sesión</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup v-if="rol !== null">
+                <q-item-section @click="clear">Cerrar sesión</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </template>
+
+      </q-toolbar>
+      
+      <q-dialog v-model="card">
           <div class=" q-pa-lg">
             <q-form
               @submit.prevent="iniciarSesion()"
@@ -41,12 +67,8 @@
                  :rules="[
                    (val) => (val && val.length > 6) || 'Contraseña incorrecta',
                  ]"
+                 type="password"
               />
-
-                <!-- <q-toggle
-                  v-model="accept"
-                  label="Acepto las licencias y lo términos"
-                /> -->
 
                 <div>
                   <q-btn label="Ingresar" type="submit" color="primary" />
@@ -61,7 +83,60 @@
             </q-form>
           </div>
         </q-dialog>
-      </q-toolbar>
+
+        <q-dialog v-model="cardUno">
+          <div class=" q-pa-lg">
+            <q-form
+              @submit.prevent="register()"
+              @reset="onResetUno"
+              ref="myForm"
+              class="bg-white q-pa-lg"
+            >
+            <q-input
+                 filled
+                 v-model="nameU"
+                 label="Su nombre*"
+                 lazy-rules
+                 :rules="[
+                   (val) => (val && val.length > 0) || 'Usuario incorrecta',
+                 ]"
+              />
+
+              <q-input
+                  filled
+                  v-model="email"
+                  label="Email"
+                  type="email"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                  ]"
+                />
+
+              <q-input
+                 filled
+                 v-model="passW"
+                 label="Su contraseña *"
+                 lazy-rules
+                 :rules="[
+                   (val) => (val && val.length > 6) || 'Contraseña incorrecta',
+                 ]"
+                 type="password"
+              />
+
+                <div>
+                  <q-btn label="Registar" type="submit" color="primary" />
+                  <q-btn
+                    label="Reset"
+                    type="reset"
+                    color="primary"
+                    flat
+                    class="q-ml-sm"
+                  />
+                </div>
+            </q-form>
+          </div>
+        </q-dialog>
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
@@ -75,14 +150,14 @@
               <q-icon name="inbox" />
             </q-item-section>
 
-            <q-item-section> Inicio</q-item-section>
+            <q-item-section> {{ $t("inicio") }}</q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/tourPackage">
-                <q-item-section avatar>
-                  <q-icon name="tourPackage" />
-                </q-item-section>
-                <q-item-section> Paquetes Turísticos </q-item-section>
+            <q-item-section avatar>
+              <q-icon name="tourPackage" />
+            </q-item-section>
+            <q-item-section> {{ $t("tourPackage") }} </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="/about" active-class="my-menu-link">
@@ -90,58 +165,101 @@
               <q-icon name="star" />
             </q-item-section>
 
-            <q-item-section> Acerca de </q-item-section>
+            <q-item-section> {{ $t("about") }} </q-item-section>
           </q-item>
 
           <!-- v-if="rol === 'admin'" -->
-          <q-expansion-item  icon="inventory_2" label="Gestión" caption="">
+          <q-expansion-item
+            v-if="rol === 'Admin'"
+            icon="inventory_2"
+            :label="$t('gestion')"
+            caption=""
+          >
             <q-item clickable v-ripple to="/contracts">
               <q-item-section avatar>
                 <q-icon name="book" />
               </q-item-section>
-              <q-item-section> Contratos </q-item-section>
+              <q-item-section> {{ $t("contracts") }} </q-item-section>
             </q-item>
-            <q-expansion-item icon="business" label="Hotelera" caption="">
+            <q-expansion-item
+              icon="business"
+              :label="$t('hotelera')"
+              caption=""
+            >
               <q-item clickable v-ripple to="/hotel">
                 <q-item-section avatar>
                   <q-icon name="hotel" />
                 </q-item-section>
-                <q-item-section> Hoteles </q-item-section>
+                <q-item-section> {{ $t("hoteles") }} </q-item-section>
               </q-item>
               <q-item clickable v-ripple to="/room">
                 <q-item-section avatar>
                   <q-icon name="bed" />
                 </q-item-section>
-                <q-item-section> Habitaciones </q-item-section>
+                <q-item-section> {{ $t("room") }} </q-item-section>
               </q-item>
               <q-item clickable v-ripple to="/meal">
                 <q-item-section avatar>
                   <q-icon name="restaurant_menu" />
                 </q-item-section>
-                <q-item-section> Planes de comida </q-item-section>
+                <q-item-section> {{ $t("meals") }} </q-item-section>
               </q-item>
             </q-expansion-item>
             <q-item clickable v-ripple to="/activities">
               <q-item-section avatar>
+                <q-icon name="directions_run" />
+              </q-item-section>
+              <q-item-section> {{ $t("actividades") }} </q-item-section>
+            </q-item>
+            <q-expansion-item
+              icon="local_shipping"
+              :label="$t('transort')"
+              caption=""
+            >
+              <q-item clickable v-ripple to="/vehicle">
+                <q-item-section avatar>
+                  <q-icon name="directions_car" />
+                </q-item-section>
+                <q-item-section> {{ $t("vehicles") }} </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple to="/modality">
+                <q-item-section avatar>
+                  <q-icon name="grid_view" />
+                </q-item-section>
+                <q-item-section> {{ $t("modality") }}</q-item-section>
+              </q-item>
+            </q-expansion-item>
+          </q-expansion-item>
+          <q-expansion-item v-if="rol === 'Admin'" icon="list" label="Reportes" caption="">
+            <q-item clickable v-ripple to="/reportHotelContracts">
+              <q-item-section avatar>
                 <q-icon name="list" />
               </q-item-section>
-              <q-item-section> Actividades </q-item-section>
+              <q-item-section>
+                Contratos de Hoteles Conciliados
+              </q-item-section>
             </q-item>
-              <q-expansion-item icon="local_shipping" label="Transporte" caption="">
-                <q-item clickable v-ripple to="/vehicle">
-                  <q-item-section avatar>
-                    <q-icon name="directions_car" />
-                  </q-item-section>
-                  <q-item-section> Vehiculo </q-item-section>
-                </q-item>
-                <q-item clickable v-ripple to="/modality">
-                  <q-item-section avatar>
-                    <q-icon name="grid_view" />
-                  </q-item-section>
-                  <q-item-section> Modalidad</q-item-section>
-                </q-item>
-              </q-expansion-item>
-            </q-expansion-item>
+            <q-item clickable v-ripple to="/reportHotelSeason">
+              <q-item-section avatar>
+                <q-icon name="list" />
+              </q-item-section>
+              <q-item-section>
+                Listado de Temporadas de los Contratos de Hoteles
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple to="/reportListTransportContract">
+              <q-item-section avatar>
+                <q-icon name="list" />
+              </q-item-section>
+              <q-item-section> Listado de Contratos Transporte </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple to="/reportActiveHotels">
+              <q-item-section avatar>
+                <q-icon name="list" />
+              </q-item-section>
+              <q-item-section> Listado de Hoteles Activos </q-item-section>
+            </q-item>
+          </q-expansion-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -165,50 +283,67 @@
 
 <script>
 import { api } from "src/boot/axios";
-import { defineComponent, ref } from "vue";
-import VueJwtDecode from 'vue-jwt-decode';
+import { ref } from "vue";
+
 
 export default {
   setup() {
     const leftDrawerOpen = ref(false);
     const name = ref(null);
     const password = ref(null);
+    const nameU = ref("");
+    const email = ref("");
+    const passW = ref("");
     const accept = ref(false);
-    const rol = ref(null);
+    const myForm = ref(null);
+
+    const register = async() => {
+      myForm.value.resetValidation();
+      const newUser ={
+        userName: nameU.value,
+        password: passW.value,
+        email: email.value,
+      }
+      const response = await api.post("/api/User", newUser);
+
+    }
     return {
       password,
       accept,
       name,
+      nameU,
+      passW,
+      email,
+      myForm,
       leftDrawerOpen,
       rol: localStorage.getItem('role'),
+      userName: localStorage.getItem('username'),
+      locale: localStorage.getItem('userLocale') || 'en-US',
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
+        onReset()
       },
-      onSubmit() {
-        if (accept.value !== true) {
-          $q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: "You need to accept the license and terms first",
-          });
-        } else {
-          $q.notify({
-            color: "green-4",
-            textColor: "white",
-            icon: "cloud_done",
-            message: "Submitted",
-          });
-        }
+      clear(){
+        localStorage.clear();
+        location.reload();
       },
-
       onReset() {
         name.value = null;
         password.value = null;
-        accept.value = false;
       },
+      onResetUno() {
+        nameU.value = null;
+        email.value = null;
+        passW.value = null;
+      },
+      men : ref(false),
       card: ref(false),
+      cardUno: ref(false),
+      register,
     };
+  },
+  created() {
+    this.$i18n.locale = this.locale; 
   },
   methods: {
     async iniciarSesion() {
@@ -218,29 +353,30 @@ export default {
           api.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
           localStorage.setItem('token', response.data.token);
 
-          const decodedToken = VueJwtDecode(response.data.token);
-          const userName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
-          const email = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email'];
-          const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+          const base64Url = response.data.token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
         
-          localStorage.setItem('userName', userName);
-          localStorage.setItem('email', email);
-          localStorage.setItem('role', role);
+          const data = JSON.parse(jsonPayload);
+          const roles = Object.keys(data).filter(key => key.includes('role')).map(key => data[key]);
 
+          localStorage.setItem('username',data.UserName);
+          localStorage.setItem('email',data.Email);
+          localStorage.setItem('role',roles[0]);
 
-          console.log(localStorage.getItem('id'));
-          console.log(localStorage.getItem('userName'));
-          console.log(localStorage.getItem('email'));
-          console.log(localStorage.getItem('role'));
-        
-          // Redirigir al usuario
           this.$router.push('/');
+          location.reload();
         } catch (error) {
           console.error("Error al iniciar sesión:", error);
         }
     },
-    
-
+    cambiarIdioma(locale) {
+      this.locale = locale;
+      this.$i18n.locale = this.locale;
+      localStorage.setItem('userLocale', this.locale); 
+    },
 
     },
 };
@@ -248,5 +384,22 @@ export default {
 <style lang="scss">
 .my-menu-link {
   color: #1976d2;
+}
+.custom-select {
+  background-color: #1976d2; 
+  color: white; 
+  border: none; 
+  border-radius: 4px; 
+}
+
+.custom-select option {
+  background-color: white; 
+  color: black; 
+  border: none; 
+  border-radius: 2px; 
+}
+
+.custom-select:focus {
+  outline: none; /* borde blanco al seleccionar */
 }
 </style>

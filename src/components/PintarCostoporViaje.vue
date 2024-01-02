@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Costo por viaje"
     class="q-mt-md"
-    no-data-label="Sin Modalidades para mostrar"
+    :no-data-label="$t('noModalitys')"
     :columns="columns"
     :rows="alltours"
   >
@@ -17,9 +16,20 @@
             color="amber"
             round
             dense
-            text-color="black"
+            text-color="white"
             icon="edit"
             @click="handleClick(props.row)"
+          />
+        </q-td>
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
           />
         </q-td>
       </q-tr>
@@ -30,29 +40,6 @@
 <script>
 import { api } from "src/boot/axios";
 import { ref, onMounted, watchEffect } from "vue";
-const columns = [
-  {
-    name: "rout_description",
-    alingn: "center",
-    label: "Descripción del viaje",
-    field: "rout_description",
-    sortable: true,
-  },
-  {
-    name: "route_cost",
-    label: "Costo de la ruta",
-    alingn: "center",
-    field: "route_cost",
-    sortable: true,
-  },
-  {
-    name: "round_trip_cost",
-    label: "Costo de ida y vuelta",
-    alingn: "center",
-    field: "round_trip_cost",
-    sortable: true,
-  },
-];
 
 const rows = [
   {
@@ -88,14 +75,58 @@ export default {
           console.error(error);
         });
     };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar esta modalidad?"
+      );
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId + "Hakuna Matata");
+          await api.delete(`/api/CostPerTour/ ${row.modalityId}`);
+          window.alert("Modalidad eliminada");
+          location.reload();
+        } catch (error) {
+          console.error("Error Modalidad no eliminada", error);
+        }
+      }
+    };
     onMounted(() => {
       getall();
     });
     return {
-      columns,
       rows,
       handleClick,
       alltours,
+      confirmDelete,
+    };
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "rout_description",
+          alingn: "center",
+          label: this.$t("tripDesc"),
+          field: "rout_description",
+          sortable: true,
+        },
+        {
+          name: "route_cost",
+          label: this.$t("routCost"),
+          alingn: "center",
+          field: "route_cost",
+          sortable: true,
+        },
+        {
+          name: "round_trip_cost",
+          label: this.$t("goback"),
+          alingn: "center",
+          field: "round_trip_cost",
+          sortable: true,
+        },
+      ],
     };
   },
 };
