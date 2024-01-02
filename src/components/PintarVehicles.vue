@@ -168,6 +168,9 @@
   </q-dialog>
 </template>
 <script>
+import { ref } from "vue";
+import { api } from "boot/axios";
+
 import { ref, onMounted, watchEffect } from "vue";
 const rows = [
   {
@@ -185,7 +188,7 @@ export default {
   props: {
     vehicles: Array,
   },
-  data() {
+  setup() {
     const optionsyear = ref([]);
     const plate = ref("");
     const capacity_without = ref("");
@@ -196,89 +199,8 @@ export default {
     const selectedYear = ref(null);
     const myForm = ref(null);
     const tempid = ref("");
-    return {
-      dialog: false,
-      selectedVehicle: null,
-      columns: [
-        {
-          name: "plate",
-          label: this.$t("plate"),
-          alingn: "center",
-          field: "license_Plate_Number",
-          sortable: true,
-        },
-        {
-          name: "model",
-          label: this.$t("chain"),
-          alingn: "center",
-          field: "brand",
-          sortable: true,
-        },
-        {
-          name: "capacity_without",
-          label: this.$t("capacity_without"),
-          alingn: "center",
-          field: "capacity_Without_Equipement",
-          sortable: true,
-        },
-        {
-          name: "capacity_with",
-          label: this.$t("capacity_with"),
-          alingn: "center",
-          field: "capacity_With_Equipement",
-          sortable: true,
-        },
-        {
-          name: "total",
-          label: this.$t("totalCapacity"),
-          alingn: "center",
-          field: "total_Capacity",
-          sortable: true,
-        },
-        {
-          name: "year",
-          label: this.$t("year"),
-          alingn: "center",
-          field: "year_of_Manufacture",
-          sortable: true,
-        },
-        {
-          name: "manufacturing",
-          label: this.$t("manufacturing"),
-          alingn: "center",
-          field: "manufacturing_Mode",
-          sortable: true,
-        },
-      ],
-    };
-  },
-  methods: {
-    openDialog(row) {
-      this.tempid = row.VehicleId;
-      this.capacity_with = row.capacity_With_Equipement;
-      this.capacity_without = row.capacity_Without_Equipement;
-      this.selectedYear = row.year_of_Manufacture;
-      this.total = row.total_Capacity;
-      this.manufacturing = row.manufacturing_Mode;
-      this.model = row.brand;
-      this.plate = row.license_Plate_Number;
-    },
 
-    async confirmDelete(row) {
-      const confirmed = window.confirm("¿Está seguro de borrar este vehículo?");
-
-      if (confirmed) {
-        try {
-          const response = await api.delete(`/api/Vehicles/${row.vehicleId}`);
-          window.alert("Vehículo eliminado");
-          location.reload();
-        } catch (error) {
-          window.alert("Error, Vehículo no eliminado", error);
-        }
-      }
-      this.confirmationVisible = false;
-    },
-    async saveVehicle() {
+    const savevehicles = async () => {
       const temp = {
         VehicleId: this.tempid,
         capacity_With_Equipement: this.capacity_with,
@@ -293,11 +215,49 @@ export default {
       await api.put("api/Vehicle", temp);
       location.reload();
       this.dialog = false;
-    },
-  },
-  setup() {
+    };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm("¿Está seguro de borrar este vehículo?");
+
+      if (confirmed) {
+        try {
+          const response = await api.delete(`/api/Vehicles/${row.vehicleId}`);
+          window.alert("Vehículo eliminado");
+          location.reload();
+        } catch (error) {
+          window.alert("Error, Vehículo no eliminado", error);
+        }
+      }
+      this.confirmationVisible = false;
+    };
+    const openDialog = async (row) => {
+      this.tempid = row.VehicleId;
+      this.capacity_with = row.capacity_With_Equipement;
+      this.capacity_without = row.capacity_Without_Equipement;
+      this.selectedYear = row.year_of_Manufacture;
+      this.total = row.total_Capacity;
+      this.manufacturing = row.manufacturing_Mode;
+      this.model = row.brand;
+      this.plate = row.license_Plate_Number;
+    };
     return {
+      dialog: false,
+      selectedVehicle: null,
+      optionsyear,
+      plate,
+      capacity_without,
+      capacity_with,
+      total,
+      manufacturing,
+      model,
+      selectedYear,
+      myForm,
+      tempid,
+      columns,
       rows,
+      confirmDelete,
+      savevehicles,
+      openDialog,
     };
   },
 };

@@ -59,6 +59,10 @@ const routes = [
         path: "/reportActiveHotels",
         component: () => import("pages/ReportActiveHotels.vue"),
       },
+      {
+        path: "/season",
+        component: () => import("pages/Season.vue"),
+      },
     ],
   },
 
