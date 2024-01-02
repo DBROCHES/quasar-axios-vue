@@ -2,7 +2,7 @@
 
 <template>
   <h1>{{ $t("actividades") }}</h1>
-  <div class="q-pa-md">
+  <div class="q-pa-md" id="act">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">

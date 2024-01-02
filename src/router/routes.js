@@ -43,6 +43,22 @@ const routes = [
         path: "/modality",
         component: () => import("pages/Modality.vue"),
       },
+      {
+        path: "/reportHotelContracts",
+        component: () => import("pages/ReportHotelContracts.vue"),
+      },
+      {
+        path: "/reportListTransportContract",
+        component: () => import("pages/ReportListTransportContract.vue"),
+      },
+      {
+        path: "/reportHotelSeason",
+        component: () => import("pages/ReportHotelContBySeason.vue"),
+      },
+      {
+        path: "/reportActiveHotels",
+        component: () => import("pages/ReportActiveHotels.vue"),
+      },
     ],
   },
 

@@ -219,7 +219,7 @@
       </div>
     </q-dialog>
   </div>
-  <pintar-hoteles :hoteles="hoteles"  @buttonClicked = "updateHotel" />
+  <pintar-hoteles :hoteles="hoteles" @buttonClicked="updateHotel" />
 </template>
 
 <script>

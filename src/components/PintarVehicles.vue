@@ -168,6 +168,7 @@
   </q-dialog>
 </template>
 <script>
+import { ref, onMounted, watchEffect } from "vue";
 const rows = [
   {
     plate: "A12365",
