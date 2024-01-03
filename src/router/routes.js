@@ -68,6 +68,14 @@ const routes = [
         name: "PintartourPackage",
         component: () => import("components/PintartourPackage.vue"),
       },
+      {
+        path: "/provinces",
+        component: () => import("pages/Provinces.vue"),
+      },
+      {
+        path: "/users",
+        component: () => import("pages/Users.vue"),
+      },
     ],
   },
 

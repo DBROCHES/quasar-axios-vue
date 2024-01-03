@@ -1,8 +1,8 @@
 <template>
   <q-page padding>
-    <h3>Planificador de Vacaciones</h3>
+    <h3>{{ $t("planVac") }}</h3>
 
-    <h5>Hoteles</h5>
+    <h5>{{ $t("hoteles") }}</h5>
     <div class="row">
       <q-list class="row fit" v-for="hotel in hotels" :key="hotel.name">
         <q-item v-ripple class="fit">
@@ -55,22 +55,21 @@ export default {
       hotels: [
         {
           name: "Hotel 1",
-          description:
-            "Descripción del Hotel 1 fidgufisdhgfoudfhoidafgofgharuagugjdhyhhdhhhhhhhhhhhhh",
+          description: this.$t("descipHotel1"),
           image: "https://source.unsplash.com/random?hotel",
           chain: "Iberostal",
           category: 4,
         },
         {
           name: "Hotel 2",
-          description: "Descripción del Hotel 2",
+          description: this.$t("descipHotel2"),
           image: "https://source.unsplash.com/random?hotel",
           chain: "Iberostal",
           category: 4,
         },
         {
           name: "Hotel 3",
-          description: "Descripción del Hotel 3",
+          description: this.$t("descipHotel3"),
           image: "https://source.unsplash.com/random?hotel",
           chain: "Iberostal",
           category: 4,
