@@ -219,7 +219,7 @@
       </div>
     </q-dialog>
   </div>
-  <pintar-hoteles :hoteles="hoteles" @buttonClicked="updateHotel" />
+  <pintar-hoteles :hoteles="hoteles"/>
 </template>
 
 <script>
@@ -245,7 +245,7 @@ export default {
     const chain = ref(null);
     const commercialization = ref(null);
     const myForm = ref(null);
-
+    const token = localStorage.getItem('token');
     //Arreglo de vehiculos
     const hoteles = ref([]);
 
@@ -259,7 +259,11 @@ export default {
 
     const getHotels = async () => {
       await api
-        .get("/api/Hotel")
+        .get("/api/Hotel", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })   
         .then((response) => {
           hoteles.value = response.data;
           console.log(hoteles.value);
@@ -289,7 +293,11 @@ export default {
         enabled: true,
       };
 
-      const response = await api.post("/api/Hotel", newHotel);
+      const response = await api.post("/api/Hotel", newHotel, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+      });   
 
       hoteles.value = [...hoteles.value, newHotel];
       reset();
@@ -328,6 +336,7 @@ export default {
       floors,
       dairport,
       dcity,
+      token,
       location,
       price,
       province,

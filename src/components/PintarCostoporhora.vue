@@ -84,24 +84,6 @@ export default {
       allhours,
     };
   },
-
-  methods: {
-    async confirmDelete(row) {
-      const confirmed = window.confirm(this.$t("deleteModalityConf"));
-
-      if (confirmed) {
-        try {
-          console.log(row.modalityId + "Hakuna Matata");
-          await api.delete(`/api/CostPerHour/ ${row.modalityId}`);
-          window.alert(this.$t("deletedModality"));
-          location.reload();
-        } catch (error) {
-          console.error(this.$t("errDeletModality"), error);
-        }
-      }
-    },
-  },
-
   data() {
     return {
       columns: [
@@ -134,7 +116,28 @@ export default {
           sortable: true,
         },
       ],
+      token: localStorage.getItem('token'),
     };
+  },
+  methods: {
+    async confirmDelete(row) {
+      const confirmed = window.confirm(this.$t("deleteModalityConf"));
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId + "Hakuna Matata");
+          await api.delete(`/api/CostPerHour/ ${row.modalityId}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        });
+          window.alert(this.$t("deletedModality"));
+          location.reload();
+        } catch (error) {
+          console.error(this.$t("errDeletModality"), error);
+        }
+      }
+    },
   },
 };
 </script>

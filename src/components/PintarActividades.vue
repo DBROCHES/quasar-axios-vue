@@ -64,6 +64,40 @@ export default {
           sortable: true,
         },
       ],
+      token: localStorage.getItem('token'),
+    };
+  },
+  setup(props, { emit }) {
+    const handleClick = (row) => {
+      emit("button-clicked", row);
+    };
+    let allactivities = ref([...props.activities]);
+    //Esta funcion hace que los cambios en la propiedad hours del props se reflejen tambien en el arreglo
+    watchEffect(() => {
+      allactivities.value.push(...props.activities);
+    });
+    //Funcion de llenar la tabla
+    const getall = async () => {
+      await api
+        .get("api/Vehicles", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+          allactivities.value = response.data;
+          console.log(allactivities.value);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+    onMounted(() => {
+      getall();
+    });
+    return {
+      allactivities,
+      handleClick,
     };
   },
 };

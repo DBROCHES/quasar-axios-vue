@@ -57,7 +57,11 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/ComplementaryContract")
+        .get("api/ComplementaryContract", {
+          headers: {
+            'Authorization': `Bearer ${this.token}`
+          }
+        })
         .then((response) => {
           allContracts.value = response.data;
           console.log(allContracts.value);
@@ -81,6 +85,7 @@ export default {
       ]),
       handleClick,
       allContracts,
+      token: localStorage.getItem('token'),
     };
   },
 
@@ -91,7 +96,11 @@ export default {
       if (confirmed) {
         try {
           console.log(row.id + "Hakuna Matata");
-          await api.delete(`/api/ComplementaryContract/ ${row.id}`);
+          await api.delete(`/api/ComplementaryContract/ ${row.id}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+          });
           window.alert(this.$t("deleteCont"));
           location.reload();
         } catch (error) {

@@ -91,13 +91,14 @@
         </q-form>
       </div>
     </q-dialog>
-    <pintar-actividades :activities="activities" />
+    <pintar-actividades :activities="activities" @button-clicked="updatingactivitie"/>
   </div>
 </template>
 
 <script>
 import { ref } from "vue";
 import PintarActividades from "src/components/PintarActividades.vue";
+import { api } from 'boot/axios';
 
 export default {
   components: { PintarActividades },
@@ -111,6 +112,7 @@ export default {
     const selectedActivitie = ref(false);
     const tempid = ref(""); //Arreglo de vehiculos
     const activities = ref([]);
+    const token = localStorage.getItem('token');
 
     const procesingForm = async () => {
       console.log("me diste click");
@@ -123,11 +125,19 @@ export default {
         price: price.value,
       };
       if (!selectedActivitie.value) {
-        await api.post("api/DayliActivities", tempactivitie);
-        phour.value.push(cphour);
+        await api.post("api/DayliActivities", tempactivitie, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        activities.value.push(tempactivitie);
         //location.reload();
       } else {
-        await api.put("api/DayliActivities", tempactivitie);
+        await api.put("api/DayliActivities", tempactivitie, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         location.reload();
       }
       //restablece los valores del formulario
@@ -154,10 +164,12 @@ export default {
       description,
       price,
       myForm,
+      token,
       inception: ref(false),
       activities,
       procesingForm,
       reset,
+      updatingactivitie,
     };
   },
 };

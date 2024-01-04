@@ -132,7 +132,7 @@ export default {
     const model = ref(null);
     const selectedYear = ref(null);
     const myForm = ref(null);
-
+    const token = localStorage.getItem('token');
     //Arreglo de vehiculos
     const vehicles = ref([]);
     const generateYears = () => {
@@ -159,7 +159,11 @@ export default {
         manufacturing_Mode: manufacturing.value,
       };
       //luego se procesa el formulario
-      await api.post("api/Vehicles", NewVehicle);
+      await api.post("api/Vehicles", NewVehicle, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       vehicles.value.push(NewVehicle);
 
       //restablece los valores del formulario
@@ -168,7 +172,11 @@ export default {
     };
     const prueba = async () => {
       await api
-        .get("api/Vehicles")
+        .get("api/Vehicles", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           vehicles.value = response.data;
           console.log(vehicles.value);
@@ -203,6 +211,7 @@ export default {
       selectedYear,
       optionsyear,
       myForm,
+      token,
       inception: ref(false),
       options: ["Mercedez", "Audi", "Lada", "Mazda", "Peugot"],
       vehicles,

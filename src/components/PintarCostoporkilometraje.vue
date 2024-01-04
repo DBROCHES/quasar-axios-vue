@@ -54,6 +54,9 @@ export default {
   },
 
   setup(props, { emit }) {
+
+    const token = localStorage.getItem('token');
+
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -65,7 +68,11 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/MilageCost")
+        .get("api/MilageCost", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           allkilometers.value = response.data;
           console.log(allkilometers.value);
@@ -82,7 +89,11 @@ export default {
       if (confirmed) {
         try {
           console.log(row.modalityId + "Hakuna Matata");
-          await api.delete(`/api/MilageCost/ ${row.modalityId}`);
+          await api.delete(`/api/MilageCost/ ${row.modalityId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
@@ -98,6 +109,7 @@ export default {
       handleClick,
       allkilometers,
       confirmDelete,
+      token,
     };
   },
 

@@ -38,10 +38,15 @@ export default {
 
     //Arreglo de vehiculos
     const vehicles = ref([]);
+    const token = localStorage.getItem('token');
 
     const prueba = async () => {
       await api
-        .get("api/Vehicles")
+        .get("api/Vehicles", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           vehicles.value = response.data;
           console.log(vehicles.value);
@@ -59,6 +64,7 @@ export default {
       inception: ref(false),
       vehicle,
       vehicles,
+      token,
     };
   },
 };

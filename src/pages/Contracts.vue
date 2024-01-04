@@ -488,6 +488,7 @@ export default {
     const comp = ref([]);
     const hotls = ref([]);
     const transp = ref([]);
+    const token = localStorage.getItem('token');
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
         if (success) {
@@ -542,11 +543,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/ComplementaryContract", ccomplementario);
+        await api.post("api/ComplementaryContract", ccomplementario,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         comp.value.push(ccomplementario);
         location.reload();
       } else {
-        await api.put("api/ComplementaryContract", ccomplementario);
+        await api.put("api/ComplementaryContract", ccomplementario,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         location.reload();
       }
     };
@@ -562,11 +571,23 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/HotelContract", choteles);
-        hotls.value.push(choteles);
+        await api.post("api/HotelContract", choteles,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        hotls.value.push(choteles,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         //location.reload();
       } else {
-        await api.put("api/HotelContract", choteles);
+        await api.put("api/HotelContract", choteles,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         location.reload();
       }
     };
@@ -583,11 +604,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/TransportationContract", ctransporte);
+        await api.post("api/TransportationContract", ctransporte,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         transp.value.push(ctransporte);
         //location.reload();
       } else {
-        await api.put("api/TransportationContract", ctransporte);
+        await api.put("api/TransportationContract", ctransporte,{
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
         location.reload();
       }
     };
@@ -651,6 +680,7 @@ export default {
       slide,
       comp,
       hotls,
+      token,
       transp,
       tab: ref("complementaryContract"),
       buttonstate,

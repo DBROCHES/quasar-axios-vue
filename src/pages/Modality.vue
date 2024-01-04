@@ -350,6 +350,9 @@ export default {
     const phour = ref([]);
     const ptravel = ref([]);
     const pkilometer = ref([]);
+    const token = localStorage.getItem('token');
+
+
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
         if (success) {
@@ -399,11 +402,19 @@ export default {
         extra_hour_cost: ehours.value,
       };
       if (!selectedModalitY.value) {
-        await api.post("api/Costperhour", cphour);
+        await api.post("api/Costperhour", cphour, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
         phour.value.push(cphour);
         //location.reload();
       } else {
-        await api.put("api/Costperhour", cphour);
+        await api.put("api/Costperhour", cphour, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
         location.reload();
       }
     };
@@ -415,11 +426,19 @@ export default {
         round_trip_cost: goback.value,
       };
       if (!selectedModalitY.value) {
-        await api.post("api/CostPerTour", cptour);
+        await api.post("api/CostPerTour", cptour, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
         ptravel.value.push(cptour);
         //location.reload();
       } else {
-        await api.put("api/CostPerTour", cptour);
+        await api.put("api/CostPerTour", cptour, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
         location.reload();
       }
     };
@@ -431,11 +450,19 @@ export default {
         cost_per_waiting_hour: wait.value,
       };
       if (!selectedModalitY.value) {
-        await api.post("api/MilageCost", mileagec);
+        await api.post("api/MilageCost", mileagec, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
         pkilometer.value.push(mileagec);
         //location.reload();
       } else {
-        await api.put("api/MilageCost", mileagec);
+        await api.put("api/MilageCost", mileagec, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
         location.reload();
       }
     };
@@ -487,6 +514,7 @@ export default {
       pkilometer,
       tab: ref("hour"),
       buttonstate,
+      token,
       updatingHour,
       updatingMileage,
       updatingTour,

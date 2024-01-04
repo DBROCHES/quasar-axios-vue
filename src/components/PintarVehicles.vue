@@ -171,22 +171,65 @@
 import { ref } from "vue";
 import { api } from "boot/axios";
 
-import { ref, onMounted, watchEffect } from "vue";
-const rows = [
-  {
-    plate: "A12365",
-    model: "Audi",
-    capacity_without: "2",
-    capacity_with: "2",
-    total: "2",
-    year: "2000",
-    manufacturing: "industrial",
-  },
-];
-
 export default {
   props: {
     vehicles: Array,
+  },
+  data() {
+
+  return {
+    columns: [
+      {
+        name: "plate",
+        label: this.$t("plate"),
+        alingn: "center",
+        field: "license_Plate_Number",
+        sortable: true,
+      },
+      {
+        name: "model",
+        label: this.$t("chain"),
+        alingn: "center",
+        field: "brand",
+        sortable: true,
+      },
+      {
+        name: "capacity_without",
+        label: this.$t("capacity_without"),
+        alingn: "center",
+        field: "capacity_Without_Equipement",
+        sortable: true,
+      },
+      {
+        name: "capacity_with",
+        label: this.$t("capacity_with"),
+        alingn: "center",
+        field: "capacity_With_Equipement",
+        sortable: true,
+      },
+      {
+        name: "total",
+        label: this.$t("totalCapacity"),
+        alingn: "center",
+        field: "total_Capacity",
+        sortable: true,
+      },
+      {
+        name: "year",
+        label: this.$t("year"),
+        alingn: "center",
+        field: "year_of_Manufacture",
+        sortable: true,
+      },
+      {
+        name: "manufacturing",
+        label: this.$t("manufacturing"),
+        alingn: "center",
+        field: "manufacturing_Mode",
+        sortable: true,
+      },
+    ],
+  };
   },
   setup() {
     const optionsyear = ref([]);
@@ -199,6 +242,7 @@ export default {
     const selectedYear = ref(null);
     const myForm = ref(null);
     const tempid = ref("");
+    const token = localStorage.getItem('token');
 
     const savevehicles = async () => {
       const temp = {
@@ -212,7 +256,11 @@ export default {
         license_Plate_Number: this.plate,
       };
 
-      await api.put("api/Vehicle", temp);
+      await api.put("api/Vehicle", temp, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       location.reload();
       this.dialog = false;
     };
@@ -221,7 +269,11 @@ export default {
 
       if (confirmed) {
         try {
-          const response = await api.delete(`/api/Vehicles/${row.vehicleId}`);
+          const response = await api.delete(`/api/Vehicles/${row.vehicleId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
           window.alert("Vehículo eliminado");
           location.reload();
         } catch (error) {
@@ -253,8 +305,7 @@ export default {
       selectedYear,
       myForm,
       tempid,
-      columns,
-      rows,
+      token,
       confirmDelete,
       savevehicles,
       openDialog,

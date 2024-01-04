@@ -196,25 +196,24 @@ export default {
         "phone",
         "enabled",
       ]),
+      token: localStorage.getItem('token'),
     };
   },
 
   methods: {
-    async handleClick(row) {
-      try {
-        const response = await api.delete(`/api/Hotel/${row.id}`);
-        console.log(this.$t("RowDelet"), response);
-        location.reload();
-      } catch (error) {
-        console.error(this.$t("errRowDelet"), error);
-      }
+    handleClick(row){
+        this.$emit("buttonClicked", row);
     },
     async confirmDelete(row) {
       const confirmed = window.confirm(this.$t("deletHotel"));
 
       if (confirmed) {
         try {
-          const response = await api.delete(`/api/Hotel/${row.id}`);
+          const response = await api.delete(`/api/Hotel/${row.hotelId}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        });
           window.alert(this.$t("deletConfHotel"));
           location.reload();
         } catch (error) {
@@ -225,10 +224,15 @@ export default {
     },
 
     async changeStatus(row) {
-      row.enabled = !row.enabled;
 
-      await api.patch(`/api/Hotel/${row.id}/${row.enabled}`);
+      await api.patch(`/api/Hotel/${row.HotelId}/${row.enabled}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        });
+        row.enabled = !row.enabled;
     },
   },
+  
 };
 </script>
