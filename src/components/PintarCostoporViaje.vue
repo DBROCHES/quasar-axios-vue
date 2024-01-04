@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Costo por viaje"
     class="q-mt-md"
-    no-data-label="Sin Modalidades para mostrar"
+    :no-data-label="$t('noModalitys')"
     :columns="columns"
     :rows="alltours"
   >
@@ -41,29 +40,6 @@
 <script>
 import { api } from "src/boot/axios";
 import { ref, onMounted, watchEffect } from "vue";
-const columns = [
-  {
-    name: "rout_description",
-    alingn: "center",
-    label: "Descripción del viaje",
-    field: "rout_description",
-    sortable: true,
-  },
-  {
-    name: "route_cost",
-    label: "Costo de la ruta",
-    alingn: "center",
-    field: "route_cost",
-    sortable: true,
-  },
-  {
-    name: "round_trip_cost",
-    label: "Costo de ida y vuelta",
-    alingn: "center",
-    field: "round_trip_cost",
-    sortable: true,
-  },
-];
 
 const rows = [
   {
@@ -79,6 +55,7 @@ export default {
   },
 
   setup(props, { emit }) {
+    const token = localStorage.getItem('token');
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -90,7 +67,11 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/CostPerTour")
+        .get("api/CostPerTour", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           alltours.value = response.data;
           console.log(alltours.value);
@@ -107,7 +88,11 @@ export default {
       if (confirmed) {
         try {
           console.log(row.modalityId + "Hakuna Matata");
-          await api.delete(`/api/CostPerTour/ ${row.modalityId}`);
+          await api.delete(`/api/CostPerTour/ ${row.modalityId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
@@ -119,11 +104,39 @@ export default {
       getall();
     });
     return {
-      columns,
       rows,
       handleClick,
       alltours,
       confirmDelete,
+      token,
+    };
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "rout_description",
+          alingn: "center",
+          label: this.$t("tripDesc"),
+          field: "rout_description",
+          sortable: true,
+        },
+        {
+          name: "route_cost",
+          label: this.$t("routCost"),
+          alingn: "center",
+          field: "route_cost",
+          sortable: true,
+        },
+        {
+          name: "round_trip_cost",
+          label: this.$t("goback"),
+          alingn: "center",
+          field: "round_trip_cost",
+          sortable: true,
+        },
+      ],
     };
   },
 };

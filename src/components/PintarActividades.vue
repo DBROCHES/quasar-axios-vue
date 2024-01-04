@@ -1,7 +1,8 @@
 <template>
   <q-table
     class="q-mt-md"
-    no-data-label="Sin actividades para mostrar"
+    :title="$t('actividades')"
+    :no-data-label="$t('noActivities')"
     :columns="columns"
     :rows="activities"
   >
@@ -27,34 +28,44 @@
 </template>
 
 <script>
-import { ref, onMounted, watchEffect } from "vue";
-import { api } from "src/boot/axios";
-const columns = [
-  {
-    name: "date",
-    label: "Día",
-    align: "left",
-    field: "day",
-    sortable: true,
-  },
-  {
-    name: "description",
-    label: "Descripción",
-    align: "left",
-    field: "description",
-    sortable: true,
-  },
-  {
-    name: "price",
-    label: "Precio",
-    align: "left",
-    field: "price",
-    sortable: true,
-  },
-];
 export default {
   props: {
     activities: Array,
+  },
+  data() {
+    return {
+      columns: [
+        {
+          name: "date",
+          label: this.$t("fecha"),
+          align: "left",
+          field: "date",
+          sortable: true,
+        },
+        {
+          name: "hour",
+          label: this.$t("hora"),
+          align: "left",
+          field: "hour",
+          sortable: true,
+        },
+        {
+          name: "description",
+          label: this.$t("descripcion"),
+          align: "left",
+          field: "description",
+          sortable: true,
+        },
+        {
+          name: "price",
+          label: this.$t("precio"),
+          align: "left",
+          field: "price",
+          sortable: true,
+        },
+      ],
+      token: localStorage.getItem('token'),
+    };
   },
   setup(props, { emit }) {
     const handleClick = (row) => {
@@ -68,7 +79,11 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/Vehicles")
+        .get("api/Vehicles", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           allactivities.value = response.data;
           console.log(allactivities.value);
@@ -83,7 +98,6 @@ export default {
     return {
       allactivities,
       handleClick,
-      columns,
     };
   },
 };

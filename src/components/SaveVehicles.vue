@@ -10,12 +10,12 @@
         <div>
           <q-input
             outlined
-            label="Matrícula"
+            :label="$t('plate')"
             v-model="plate"
             pattern="[A-Z]\d{5}"
             placeholder="******"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+            :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
           />
         </div>
       </div>
@@ -25,9 +25,9 @@
             outlined
             v-model="model"
             :options="options"
-            label="Modelo"
+            :label="$t('model')"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+            :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
           />
         </div>
       </div>
@@ -35,13 +35,13 @@
         <div>
           <q-input
             outlined
-            label="Capacidad sin equipaje"
+            :label="$t('capacity_without')"
             v-model="capacity_without"
             placeholder="2"
             min="2"
             max="40"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+            :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
           />
         </div>
       </div>
@@ -49,13 +49,13 @@
         <div>
           <q-input
             outlined
-            label="Capacidad con equipaje"
+            :label="$t('capacity_with')"
             v-model="capacity_with"
             placeholder="2"
             min="2"
             max="40"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+            :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
           />
         </div>
       </div>
@@ -63,13 +63,13 @@
         <div>
           <q-input
             outlined
-            label="Capacidad total"
+            :label="$t('totalCapacity')"
             v-model="total"
             placeholder="2"
             min="2"
             max="40"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+            :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
           />
         </div>
       </div>
@@ -79,7 +79,7 @@
             v-model="selectedYear"
             outlined
             :options="optionsyear"
-            label="Select a year"
+            :label="$t('selectedYear')"
           />
         </div>
       </div>
@@ -89,18 +89,28 @@
             v-model="manufacturing"
             outlined
             type="textarea"
-            label="Modo de fabricación"
+            :label="$t('manufacturing')"
             rows="3"
             maxlength="200"
             lazy-rules
-            :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+            :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
           />
         </div>
       </div>
     </div>
     <div>
-      <q-btn color="primary" label="Aceptar" class="q-ml-sm" type="submit" />
-      <q-btn color="primary" label="Cancelar" class="q-ml-sm" type="reset" />
+      <q-btn
+        color="primary"
+        :label="$t('aceptar')"
+        class="q-ml-sm"
+        type="submit"
+      />
+      <q-btn
+        color="primary"
+        :label="$t('reset')"
+        class="q-ml-sm"
+        type="reset"
+      />
     </div>
   </q-form>
 </template>
@@ -122,7 +132,7 @@ export default {
     const model = ref(null);
     const selectedYear = ref(null);
     const myForm = ref(null);
-
+    const token = localStorage.getItem('token');
     //Arreglo de vehiculos
     const vehicles = ref([]);
     const generateYears = () => {
@@ -149,7 +159,11 @@ export default {
         manufacturing_Mode: manufacturing.value,
       };
       //luego se procesa el formulario
-      await api.post("api/Vehicles", NewVehicle);
+      await api.post("api/Vehicles", NewVehicle, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       vehicles.value.push(NewVehicle);
 
       //restablece los valores del formulario
@@ -158,7 +172,11 @@ export default {
     };
     const prueba = async () => {
       await api
-        .get("api/Vehicles")
+        .get("api/Vehicles", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           vehicles.value = response.data;
           console.log(vehicles.value);
@@ -193,6 +211,7 @@ export default {
       selectedYear,
       optionsyear,
       myForm,
+      token,
       inception: ref(false),
       options: ["Mercedez", "Audi", "Lada", "Mazda", "Peugot"],
       vehicles,

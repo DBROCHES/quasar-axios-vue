@@ -1,8 +1,7 @@
 <template>
   <q-table
-    title="Costo por kilometros"
     class="q-mt-md"
-    no-data-label="Sin Modalidades para mostrar"
+    :no-data-label="$t('noModalitys')"
     :columns="columns"
     :rows="allkilometers"
   >
@@ -40,29 +39,6 @@
 <script>
 import { api } from "src/boot/axios";
 import { ref, onMounted, watchEffect } from "vue";
-const columns = [
-  {
-    name: "cost_per_kilometer",
-    label: "Costo por kilometro",
-    alingn: "center",
-    field: "cost_per_kilometer",
-    sortable: true,
-  },
-  {
-    name: "cost_per_round_trip",
-    label: "Costo por viaje de ida y vuelta",
-    alingn: "center",
-    field: "cost_per_round_trip",
-    sortable: true,
-  },
-  {
-    name: "cost_per_waiting_hour",
-    label: "Costo por horas de espera",
-    alingn: "center",
-    field: "cost_per_waiting_hour",
-    sortable: true,
-  },
-];
 
 const rows = [
   {
@@ -78,6 +54,9 @@ export default {
   },
 
   setup(props, { emit }) {
+
+    const token = localStorage.getItem('token');
+
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -89,7 +68,11 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/MilageCost")
+        .get("api/MilageCost", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           allkilometers.value = response.data;
           console.log(allkilometers.value);
@@ -106,7 +89,11 @@ export default {
       if (confirmed) {
         try {
           console.log(row.modalityId + "Hakuna Matata");
-          await api.delete(`/api/MilageCost/ ${row.modalityId}`);
+          await api.delete(`/api/MilageCost/ ${row.modalityId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        });
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
@@ -118,11 +105,39 @@ export default {
       getall();
     });
     return {
-      columns,
       rows,
       handleClick,
       allkilometers,
       confirmDelete,
+      token,
+    };
+  },
+
+  data() {
+    return {
+      columns: [
+        {
+          name: "cost_per_kilometer",
+          label: this.$t("kilometer"),
+          alingn: "center",
+          field: "cost_per_kilometer",
+          sortable: true,
+        },
+        {
+          name: "cost_per_round_trip",
+          label: this.$t("goback"),
+          alingn: "center",
+          field: "cost_per_round_trip",
+          sortable: true,
+        },
+        {
+          name: "cost_per_waiting_hour",
+          label: this.$t("wait"),
+          alingn: "center",
+          field: "cost_per_waiting_hour",
+          sortable: true,
+        },
+      ],
     };
   },
 };

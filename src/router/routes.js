@@ -44,6 +44,22 @@ const routes = [
         component: () => import("pages/Modality.vue"),
       },
       {
+        path: "/reportHotelContracts",
+        component: () => import("pages/ReportHotelContracts.vue"),
+      },
+      {
+        path: "/reportListTransportContract",
+        component: () => import("pages/ReportListTransportContract.vue"),
+      },
+      {
+        path: "/reportHotelSeason",
+        component: () => import("pages/ReportHotelContBySeason.vue"),
+      },
+      {
+        path: "/reportActiveHotels",
+        component: () => import("pages/ReportActiveHotels.vue"),
+      },
+      {
         path: "/season",
         component: () => import("pages/Season.vue"),
       },
@@ -56,6 +72,14 @@ const routes = [
         path: "/Booking",
         name: "Booking",
         component: () => import("pages/Booking.vue"),
+      },
+      {
+        path: "/provinces",
+        component: () => import("pages/Provinces.vue"),
+      },
+      {
+        path: "/users",
+        component: () => import("pages/Users.vue"),
       },
     ],
   },

@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <h2>Hoteles</h2>
+  <h2>{{ $t("hoteles") }}</h2>
   <div>
-    <q-btn label="Nuevo"  color="positive" @click="inception = true" />
+    <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <!-- style="margin-left: 18px;" -->
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
@@ -17,11 +17,11 @@
               <div>
                 <q-input
                   outlined
-                  label="Nombre"
+                  :label="$t('nombre')"
                   v-model="name"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -32,10 +32,10 @@
                   outlined
                   v-model="chain"
                   :options="options"
-                  label="Cadena"
+                  :label="$t('chain')"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -46,10 +46,10 @@
                   outlined
                   v-model="province"
                   :options="provinces"
-                  label="Provincia"
+                  :label="$t('province')"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -58,11 +58,11 @@
               <div>
                 <q-input
                   outlined
-                  label="Categoría"
+                  :label="$t('category')"
                   v-model="category"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -71,12 +71,12 @@
               <div>
                 <q-input
                   outlined
-                  label="Teléfono"
+                  :label="$t('phone')"
                   v-model="phone"
                   mask="7#######"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -85,12 +85,12 @@
               <div>
                 <q-input
                   outlined
-                  label="Email"
+                  :label="$t('email')"
                   v-model="email"
                   type="email"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -99,14 +99,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Número de habitaciones"
+                  :label="$t('rooms')"
                   v-model="rooms"
                   placeholder="10"
                   min="10"
                   max="300"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -115,14 +115,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Número de pisos"
+                  :label="$t('floors')"
                   v-model="floors"
                   placeholder="1"
                   min="1"
                   max="40"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -131,14 +131,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Distancia al aeropuerto"
+                  :label="$t('dairport')"
                   v-model="dairport"
                   placeholder="1"
                   min="1"
                   max="1200"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -147,14 +147,14 @@
               <div>
                 <q-input
                   outlined
-                  label="Distancia a la ciudad"
+                  :label="$t('dcity')"
                   v-model="dcity"
                   placeholder="0"
                   min="0"
                   max="1200"
                   lazy-rules
                   :rules="[
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -164,15 +164,15 @@
                 <q-input
                   v-model="location"
                   outlined
-                  placeholder="Calle A entre 8 y 10 15811 localidad provincia"
-                  label="Dirección"
+                  :placeholder="$t('ejAddress')"
+                  :label="$t('address')"
                   lazy-rules
                   :rules="[
                     // (val) =>
                     //   /^Calle\s[A-Za-z]\d+\sentre\s[A-Za-z]\d+\sy\s[A-Za-z]\d+\s\d+\s[A-Za-z]+\s[A-Za-z]+$/.test(
                     //     val
                     //   ) || 'La dirección no sigue el patrón requerido',
-                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
                   ]"
                 />
               </div>
@@ -181,7 +181,7 @@
               <div>
                 <q-input
                   outlined
-                  label="Precio"
+                  :label="$t('precio')"
                   v-model="price"
                   placeholder="1"
                   min="1"
@@ -194,8 +194,8 @@
                 <q-select
                   v-model="commercialization"
                   outlined
-                  :options="optionscom"
-                  label="Modo de comercialización"
+                  :options="getOptions()"
+                  :label="$t('commercialization')"
                 />
               </div>
             </div>
@@ -204,13 +204,13 @@
           <div>
             <q-btn
               color="primary"
-              label="Aceptar"
+              :label="$t('aceptar')"
               class="q-ml-sm"
               type="submit"
             />
             <q-btn
               color="primary"
-              label="Cancelar"
+              :label="$t('reset')"
               class="q-ml-sm"
               type="reset"
             />
@@ -219,14 +219,13 @@
       </div>
     </q-dialog>
   </div>
-  <pintar-hoteles :hoteles="hoteles"  @buttonClicked = "updateHotel" />
+  <pintar-hoteles :hoteles="hoteles"/>
 </template>
 
 <script>
-
 import PintarHoteles from "src/components/PintarHoteles.vue";
 import { ref, onMounted } from "vue";
-import { api } from 'boot/axios';
+import { api } from "boot/axios";
 
 export default {
   components: { PintarHoteles },
@@ -246,53 +245,68 @@ export default {
     const chain = ref(null);
     const commercialization = ref(null);
     const myForm = ref(null);
-
+    const token = localStorage.getItem('token');
     //Arreglo de vehiculos
     const hoteles = ref([]);
 
-    const getHotels = async () => {
-       await api.get("/api/Hotel")
-       .then((response) =>{
-        hoteles.value = response.data;
-        console.log(hoteles.value);
-       })
-       .catch((error) => {
-          console.error(error);
-       });
+    const lang = ref("es");
+
+    const getOptions = () => {
+      return lang.value == "es"
+        ? ["Alto", "Medio", "Bajo"]
+        : ["High", "Medium", "Low"];
     };
 
-    const procesingForm = async() => {
+    const getHotels = async () => {
+      await api
+        .get("/api/Hotel", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })   
+        .then((response) => {
+          hoteles.value = response.data;
+          console.log(hoteles.value);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
 
+    const procesingForm = async () => {
       myForm.value.resetValidation();
       // console.log("Hakuna mATATA"+count);
-      const newHotel = 
-        {
-          name: name.value,
-          chain: chain.value,
-          province:province.value,
-          category: category.value,
-          phone: phone.value,
-          email: email.value,
-          numberOfRooms: rooms.value,
-          disNearCity: dcity.value,
-          disAirport: dairport.value,
-          numberOfFloors: floors.value,
-          address: location.value,
-          comercializationMode: commercialization.value,
-          price: price.value,
-          enabled:true,
-        };
-       
-        const response = await api.post("/api/Hotel", newHotel);
+      const newHotel = {
+        name: name.value,
+        chain: chain.value,
+        province: province.value,
+        category: category.value,
+        phone: phone.value,
+        email: email.value,
+        numberOfRooms: rooms.value,
+        disNearCity: dcity.value,
+        disAirport: dairport.value,
+        numberOfFloors: floors.value,
+        address: location.value,
+        comercializationMode: commercialization.value,
+        price: price.value,
+        enabled: true,
+      };
 
-        hoteles.value = [...hoteles.value, newHotel];
+      const response = await api.post("/api/Hotel", newHotel, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+      });   
+
+      hoteles.value = [...hoteles.value, newHotel];
       reset();
       fillTable();
-      };
+    };
 
-      const fillTable = () => {
-        console.log("Llenando la tabla...");
-      };
+    const fillTable = () => {
+      console.log(this.$t("llenar"));
+    };
     const reset = () => {
       name.value = null;
       category.value = null;
@@ -322,11 +336,12 @@ export default {
       floors,
       dairport,
       dcity,
+      token,
       location,
       price,
       province,
       commercialization,
-      optionscom: ["Alto", "Medio", "Bajo"],
+      // optionscom: ["Alto", "Medio", "Bajo"],
       myForm,
       inception: ref(false),
       options: ["Melia", "Iberostar", "GranCaribe", "Royalton", "Barcelo"],
@@ -349,6 +364,8 @@ export default {
         " Isla de la Juventud",
       ],
       hoteles,
+      lang,
+      getOptions,
       procesingForm,
       reset,
     };

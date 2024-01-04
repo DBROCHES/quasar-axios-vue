@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 
 <template>
-  <h2>Vehículos</h2>
+  <h1>{{ $t("vehicle") }}</h1>
   <div class="q-pa-md">
-    <q-btn label="Nuevo" color="positive" @click="inception = true" />
+    <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <save-vehicle :vehicle="vehicle" />
@@ -38,10 +38,15 @@ export default {
 
     //Arreglo de vehiculos
     const vehicles = ref([]);
+    const token = localStorage.getItem('token');
 
     const prueba = async () => {
       await api
-        .get("api/Vehicles")
+        .get("api/Vehicles", {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+        })
         .then((response) => {
           vehicles.value = response.data;
           console.log(vehicles.value);
@@ -59,6 +64,7 @@ export default {
       inception: ref(false),
       vehicle,
       vehicles,
+      token,
     };
   },
 };
