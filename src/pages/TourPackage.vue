@@ -5,6 +5,12 @@
     <!-- <div class="q-pa-md">
       <q-list class="q-gutter-md row" v-for="hotel in hotels" :key="hotel.name">
         <q-item v-ripple class="q-col-xs-12 q-col-sm-6 q-col-md-4 fit">
+    <h3>{{ $t("planVac") }}</h3>
+
+    <h5>{{ $t("hoteles") }}</h5>
+    <div class="row">
+      <q-list class="row fit" v-for="hotel in hotels" :key="hotel.name">
+        <q-item v-ripple class="fit">
           <q-item-section>
             <q-card class="my-card">
               <q-card-section horizontal>
