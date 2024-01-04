@@ -1,77 +1,17 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-layout view="hHh lpR fFf">
     <q-page-container>
       <q-page padding>
         <q-stepper v-model="step" ref="stepper" color="primary" animated>
           <q-step :name="1" title="Hotel" icon="hotel" :done="step > 1">
-            <div class="row q-col-gutter-md">
-              <q-card class="my-card fit" animated>
-                <q-img src="https://source.unsplash.com/random?hotel" />
-                <q-card-section>
-                  <div class="text-h5">
-                    {{
-                      "Hotel " + selectedhotel.chain + " " + selectedhotel.name
-                    }}
-                  </div>
-                  <q-rating
-                    v-model="selectedhotel.category"
-                    readonly
-                    size="1.5em"
-                    icon="star"
-                  />
-                </q-card-section>
-                <q-card-section>
-                  <q-card-section>
-                    <div class="text-h6">
-                      Seleccione el Plan de Comida que Desea:
-                    </div>
-                    <q-select
-                      v-model="selectedMeal"
-                      :options="meals"
-                      option-label="name"
-                      label="Plan de comida"
-                      filled
-                    />
-                    <q-card-section v-if="selectedMeal !== null">
-                      <div class="text-subtitle2">Descripcion:</div>
-                      <div>
-                        {{ selectedMeal.descripcion }}
-                      </div>
-                    </q-card-section>
-                  </q-card-section>
-                  <div class="text-h6">
-                    Seleccione Las Habitaciones que desee
-                  </div>
-                  <q-list>
-                    <q-item
-                      v-for="(room, index) in rooms"
-                      v-show="
-                        selectedRoomindex === -1 || selectedRoomindex === index
-                      "
-                      :key="index"
-                      clickable
-                    >
-                      <q-item-section>
-                        <q-item-label>{{ room.name }}</q-item-label>
-                        <q-item-label caption>{{
-                          room.description
-                        }}</q-item-label>
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-btn
-                          :color="selectedRoom !== null ? 'green' : 'primary'"
-                          @click="selectRoom(index)"
-                        >
-                          <q-icon name="check" v-if="selectedRoom !== null" />
-                          {{ selectedRoom !== null ? " " : "Seleccionar" }}
-                        </q-btn>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-card-section>
-              </q-card>
-              <!-- Repite el patrón anterior para otros campos como hotel, cuarto del hotel, plan de comida, etc. -->
-            </div>
+            <PintarbookingStep1
+              :meals="meals"
+              :rooms="rooms"
+              :selectedHotel="selectedhotel"
+              @saveroom="selectRoom"
+              @savemeal="selectMeal"
+            />
           </q-step>
 
           <q-step
@@ -278,9 +218,7 @@
                     <div>{{ "$" + selectedMeal.price }}</div>
                   </q-item-section>
                   <q-item-section>
-                    <div class="text-h6 text-bold" style="text-align: end">
-                      Total:
-                    </div>
+                    <div class="text-h6 text-bold">Total:</div>
                     <div
                       class="text-subtitle2 text-bold"
                       style="text-align: end"
@@ -313,9 +251,7 @@
                 </q-item>
                 <q-item v-if="activitiesOn.length !== 0">
                   <q-item-section>
-                    <q-item-label class="text-bold"
-                      >Actividades Seleccionadas</q-item-label
-                    >
+                    <q-item-label>Actividades Seleccionadas</q-item-label>
                     <div>{{ activitiesOn.length }}</div>
                   </q-item-section>
                   <q-item-section>
@@ -327,15 +263,13 @@
                     </div>
                   </q-item-section>
                 </q-item>
-                <q-item>
-                  <q-item-section>
-                    <div class="text-h6 text-bold" style="text-align: end">
-                      Precio del paquete:
-                    </div>
-                    <div class="text-h6 text-bold" style="text-align: end">
-                      {{ "$" + calcularTotal() }}
-                    </div>
-                  </q-item-section>
+                <q-item
+                  ><div class="text-h6 text-bold" style="text-align: end">
+                    Precio del pequete
+                  </div>
+                  <div class="text-h6 text-bold" style="text-align: end">
+                    {{ "$" + calcularTotal() }}
+                  </div>
                 </q-item>
               </q-list>
             </q-form>
@@ -390,7 +324,10 @@
 
 <script>
 import { ref } from "vue";
+import PintarbookingStep1 from "src/components/PintarbookingStep1.vue";
+
 export default {
+  components: { PintarbookingStep1 },
   data() {
     return {
       selectedRoom: null,
@@ -537,14 +474,11 @@ export default {
     calcularPrecio() {
       // Aquí va la lógica para calcular el precio
     },
-    selectRoom(index) {
-      if (this.selectedRoomindex === index) {
-        this.selectedRoom = null;
-        this.selectedRoomindex = -1;
-      } else {
-        this.selectedRoom = this.rooms[index];
-        this.selectedRoomindex = index;
-      }
+    selectRoom(room) {
+      this.selectedRoom = room;
+    },
+    selectMeal(meal) {
+      this.selectedMeal = meal;
     },
     selectVehicle(index) {
       if (this.selectedVehicleIndex === index) {
@@ -606,7 +540,7 @@ export default {
     calcularTotal() {
       if (this.selectedMeal !== null && this.selectedRoom !== null)
         return (
-          this.rooms[this.selectedRoomindex].price +
+          this.rooms[selectedRoomindex].price +
           this.selectedMeal.price +
           this.selectedModality +
           this.sumallactivities()

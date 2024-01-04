@@ -6,7 +6,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="assets\CC.jpg" />
+            <img src="C:/Franco/proyectos/quasar-axios-vue/src/assets/CC.jpg" />
           </q-avatar>
           ConoceCuba
         </q-toolbar-title>

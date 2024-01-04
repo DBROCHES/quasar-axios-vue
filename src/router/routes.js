@@ -52,6 +52,11 @@ const routes = [
         name: "PintartourPackage",
         component: () => import("components/PintartourPackage.vue"),
       },
+      {
+        path: "/Booking",
+        name: "Booking",
+        component: () => import("pages/Booking.vue"),
+      },
     ],
   },
 
