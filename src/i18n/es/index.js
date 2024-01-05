@@ -137,7 +137,7 @@ export default {
   phone: "Teléfono",
   phours: "Costo por horas",
   pkilometers: "Costo por kilómetros recorridos",
-  planVac: "Planificador de Vacaciones",
+  planVac: "Confeccione sus vacaciones soñadas",
   plate: "Matrícula",
   precio: "Precio",
   price: "Precio:",

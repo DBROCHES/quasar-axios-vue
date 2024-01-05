@@ -10,7 +10,7 @@
                 <q-card-section>
                   <div class="text-h5">
                     {{
-                      "Hotel " + selectedhotel.chain + " " + selectedhotel.name
+                      "Hotel " + this.selectedhotel.chain + " " + this.selectedhotel.name
                     }}
                   </div>
                   <q-rating
@@ -410,12 +410,8 @@ export default {
       white: "white",
       selectedRoomindex: -1,
       provincia: "",
-      selectedhotel: {
-        name: "Arenas Doradas",
-        chain: "Gran Caribe",
-        category: 4,
-        descripcion: this.$t("hotelGood"),
-      },
+      hotel: null,
+      selectedhotel: null,
       selectedMeal: null,
       selectedMealtype: "",
       mealstypes: [
@@ -537,8 +533,12 @@ export default {
       ],
     };
   },
-
   methods: {
+    gethotel(){
+      this.hotel = sessionStorage.getItem('slchotel');
+      console.log(this.hotel.value);
+      this.selectedhotel = JSON.parse(this.hotel);
+    },
     calcularPrecio() {
       // Aquí va la lógica para calcular el precio
     },
@@ -621,7 +621,11 @@ export default {
       }
     },
   },
+  created() {
+    this.gethotel();
+  },
 };
+
 </script>
 
 <style scoped>
