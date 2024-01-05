@@ -6,7 +6,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
+            <img src="C:/Franco/proyectos/quasar-axios-vue/src/assets/CC.jpg" />
           </q-avatar>
           {{ userName }} {{ $t("saludo") }}
         </q-toolbar-title>

@@ -97,6 +97,7 @@
 
 <script>
 import { ref } from "vue";
+import { api } from "src/boot/axios";
 import PintarActividades from "src/components/PintarActividades.vue";
 import { api } from 'boot/axios';
 
