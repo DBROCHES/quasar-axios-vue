@@ -6,7 +6,7 @@
 
         <q-toolbar-title>
           <q-avatar>
-            <img src="C:/Franco/proyectos/quasar-axios-vue/src/assets/CC.jpg" />
+            <img src="~assets/CC.jpg" />
           </q-avatar>
           {{ userName }} {{ $t("saludo") }}
         </q-toolbar-title>
@@ -25,7 +25,7 @@
             <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
           </q-avatar>
         </q-btn>
-        <template class="row justify-end items-center">
+        <template class="items-center">
           <q-menu v-model="men">
             <q-list
               class="column justify-center items-start"
@@ -43,6 +43,15 @@
               </q-item>
               <q-item clickable v-close-popup v-if="rol !== null">
                 <q-item-section @click="clear">Cerrar sesión</q-item-section>
+              </q-item>
+              <q-item v-if="rol !== null">
+                <q-item-section>
+                  <img src="https://cdn.quasar.dev/img/avatar2.jpg" alt="Foto de perfil" class="perfil-foto" />
+                </q-item-section>
+                <q-item-section>
+                  <div>{{ userName }}</div>
+                  <div>{{ Email}}</div>
+                </q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -169,9 +178,8 @@
             <q-item-section> {{ $t("about") }} </q-item-section>
           </q-item>
 
-          <!-- v-if="rol === 'admin'" -->
           <q-expansion-item
-            v-if="rol === 'Admin'"
+            v-if="rol === 'Admin' || rol === 'SuperAdmin'"
             icon="inventory_2"
             :label="$t('gestion')"
             caption=""
@@ -244,7 +252,7 @@
             </q-item>
           </q-expansion-item>
           <q-expansion-item
-            v-if="rol === 'Admin'"
+            v-if="rol === 'Admin' || rol === 'SuperAdmin'"
             icon="list"
             label="Reportes"
             caption=""
@@ -322,6 +330,7 @@ export default {
       leftDrawerOpen,
       rol: localStorage.getItem("role"),
       userName: localStorage.getItem("username"),
+      Email: localStorage.getItem("email"),
       locale: localStorage.getItem("userLocale") || "en-US",
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -414,5 +423,11 @@ export default {
 
 .custom-select:focus {
   outline: none; /* borde blanco al seleccionar */
+}
+
+.perfil-foto {
+  width: 30px; /* Ajusta el tamaño según tus necesidades */
+  height: 30px;
+  border-radius: 50%;
 }
 </style>

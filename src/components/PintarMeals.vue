@@ -86,7 +86,7 @@ export default {
       try {
         const response = await api.delete(`/api/Meal/${row.id}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer ${this.token}`
             }
         });
         console.log("Fila eliminada", response);
@@ -99,11 +99,10 @@ export default {
       const confirmed = window.confirm("¿Está seguro de borrar este plan de comida?");
 
       if (confirmed) {
-      if (confirmed) {
         try {
           const response = await api.delete(`/api/Meal/${row.id}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer ${this.token}`
             }
         });
           console.log("Fila eliminada", response);
@@ -114,7 +113,7 @@ export default {
           console.error("Error al eliminar", error);
         }
       }
-      }
+      
       this.confirmationVisible = false;
     },
   },

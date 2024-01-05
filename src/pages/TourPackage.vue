@@ -7,7 +7,7 @@
     <div class="row items-center flex-center" style="height: 300px">
     <div class="q-pa-md row items-start q-gutter-md">
       <q-card class="my-card" flat bordered v-for="hotel in hotels" :key="hotel.name">
-        <q-img src="https://source.unsplash.com/random?hotels" />
+        <q-img class = "full-width-image" src="https://source.unsplash.com/random?hotels" />
 
         <q-card-section>
           <div class="row no-wrap items-center">
@@ -106,6 +106,10 @@ export default {
 .fixed-size {
   width: 300px; /* Ajusta este valor al tamaño deseado para tu imagen */
   height: 200px; /* Ajusta este valor al tamaño deseado para tu imagen */
+}
+
+.full-width-image {
+  height: 250px;
 }
 
 @keyframes fadeIn {

@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { ref, onMounted,toRaw, nextTick  } from "vue";
+import { api } from 'boot/axios';
 export default {
   props: {
     activities: Array,
