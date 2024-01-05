@@ -77,6 +77,14 @@ export default {
           sortable: true,
           required: true,
         },
+        {
+          name: "amountofPeople",
+          label: this.$t("amountofPeople"),
+          align: "left",
+          field: "amountofPeople",
+          sortable: true,
+          required: true,
+        },
         // {
         //   name: "hName",
         //   label: Hotel,

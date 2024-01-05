@@ -114,7 +114,7 @@ export default {
     const options = ref([]);
     const selectedOptions = ref(null);
     const myForm = ref(null);
-
+    const selectedMeal = ref(false);
     //Arreglo de vehiculos
     const meals = ref([]);
     const token = localStorage.getItem("token");
@@ -158,6 +158,7 @@ export default {
       name.value = row.name;
       description.value = row.description;
       price.value = row.description;
+      selectedMeal.value = true;
     };
     const procesingForm = async () => {
       myForm.value.resetValidation();
@@ -170,11 +171,19 @@ export default {
         price: price.value,
         hotelId: hotelId,
       };
-      await api.post("/api/Meal", newMeal, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (!selectedMeal.value) {
+        await api.post("/api/Meal", newMeal, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        await api.put("/api/Meal", newMeal, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
       meals.value = [...meals.value, newMeal];
       reset();
       fillTable();

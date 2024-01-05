@@ -64,6 +64,23 @@
             </div>
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div>
+                <q-input
+                  outlined
+                  :label="$t('amountofPeople')"
+                  type="number"
+                  v-model="amountofPeople"
+                  placeholder="2"
+                  min="1"
+                  max="300"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || this.$t('rellene'),
+                  ]"
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+              <div>
                 <q-select
                   outlined
                   v-model="selectedOptions"
@@ -110,6 +127,7 @@ export default {
     const name = ref("");
     const description = ref(null);
     const price = ref("");
+    const amountofPeople = ref(0);
     const options = ref([]);
     const selectedOptions = ref(null);
     const myForm = ref(null);
@@ -158,6 +176,8 @@ export default {
       name.value = row.name;
       description.value = row.description;
       price.value = row.description;
+      amountofPeople.value = row.amountofPeople;
+      selectedRoom.value = true;
     };
     const procesingForm = async () => {
       myForm.value.resetValidation();
@@ -167,13 +187,22 @@ export default {
         name: name.value,
         description: description.value,
         price: price.value,
+        amountofPeople: amountofPeople.value,
         hotelId: hotelId,
       };
-      await api.post("/api/Room", newRoom, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      if (selectedRoom.value) {
+        await api.post("/api/Room", newRoom, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        await api.put("/api/Room", newRoom, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
 
       rooms.value = [...rooms.value, newRoom];
       reset();
@@ -206,6 +235,7 @@ export default {
       selectedOptions,
       options,
       inception: ref(false),
+      amountofPeople,
       procesingForm,
       reset,
       updateRoom,
