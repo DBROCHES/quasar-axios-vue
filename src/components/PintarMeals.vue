@@ -22,7 +22,7 @@
               dense
               text-color="white"
               icon="edit"
-              @click="handleEditClick(props.row)"
+              @click="emitir(props.row)"
             />
           </q-td>
           <!-- Botón "Delete" -->
@@ -78,16 +78,16 @@ export default {
           required: true,
         },
       ],
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
   methods: {
     async handleClick(row) {
       try {
         const response = await api.delete(`/api/Meal/${row.id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         console.log("Fila eliminada", response);
         location.reload();
@@ -96,28 +96,32 @@ export default {
       }
     },
     async confirmDelete(row) {
-      const confirmed = window.confirm("¿Está seguro de borrar este plan de comida?");
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar este plan de comida?"
+      );
 
       if (confirmed) {
-      if (confirmed) {
-        try {
-          const response = await api.delete(`/api/Meal/${row.id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-        });
-          console.log("Fila eliminada", response);
-          window.alert("Fila eliminada");
-          location.reload();
-          location.reload();
-        } catch (error) {
-          console.error("Error al eliminar", error);
+        if (confirmed) {
+          try {
+            const response = await api.delete(`/api/Meal/${row.id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            console.log("Fila eliminada", response);
+            window.alert("Fila eliminada");
+            location.reload();
+            location.reload();
+          } catch (error) {
+            console.error("Error al eliminar", error);
+          }
         }
-      }
       }
       this.confirmationVisible = false;
     },
+    emitir(row) {
+      this.$emit("modifiMeals", row);
+    },
   },
 };
-
 </script>

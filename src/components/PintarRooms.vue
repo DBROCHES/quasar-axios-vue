@@ -21,7 +21,7 @@
               dense
               text-color="white"
               icon="edit"
-              @click="handleEditClick(props.row)"
+              @click="emitir(props.row)"
             />
           </q-td>
           <!-- Botón "Delete" -->
@@ -49,7 +49,7 @@ export default {
   props: {
     rooms: Array,
   },
-  
+
   data() {
     return {
       columns: [
@@ -86,17 +86,17 @@ export default {
         //   required: true,
         // },
       ],
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
-  
+
   methods: {
     async handleClick(row) {
       try {
         const response = await api.delete(`/api/Room/${row.id}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         console.log(this.$t("RowDelet"), response);
         location.reload();
@@ -111,9 +111,9 @@ export default {
         try {
           const response = await api.delete(`/api/Room/${row.id}`, {
             headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        });
+              Authorization: `Bearer ${this.token}`,
+            },
+          });
           console.log(this.$t("RowDelet"), response);
           window.alert(this.$t("RowDelet"));
           location.reload();
@@ -122,6 +122,9 @@ export default {
         }
       }
       this.confirmationVisible = false;
+    },
+    emitir(row) {
+      this.$emit("modifiRooms", row);
     },
   },
 };
