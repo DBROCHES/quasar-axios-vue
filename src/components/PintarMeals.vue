@@ -22,7 +22,7 @@
               dense
               text-color="white"
               icon="edit"
-              @click="handleEditClick(props.row)"
+              @click="emitir(props.row)"
             />
           </q-td>
           <!-- Botón "Delete" -->
@@ -78,7 +78,7 @@ export default {
           required: true,
         },
       ],
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
   methods: {
@@ -96,7 +96,9 @@ export default {
       }
     },
     async confirmDelete(row) {
-      const confirmed = window.confirm("¿Está seguro de borrar este plan de comida?");
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar este plan de comida?"
+      );
 
       if (confirmed) {
         try {
@@ -116,7 +118,9 @@ export default {
       
       this.confirmationVisible = false;
     },
+    emitir(row) {
+      this.$emit("modifiMeals", row);
+    },
   },
 };
-
 </script>

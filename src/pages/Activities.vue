@@ -91,7 +91,10 @@
         </q-form>
       </div>
     </q-dialog>
-    <pintar-actividades :activities="activities" @button-clicked="updatingactivitie"/>
+    <pintar-actividades
+      :activities="activities"
+      @button-clicked="updatingactivitie"
+    />
   </div>
 </template>
 
@@ -99,7 +102,6 @@
 import { ref } from "vue";
 import { api } from "src/boot/axios";
 import PintarActividades from "src/components/PintarActividades.vue";
-import { api } from 'boot/axios';
 
 export default {
   components: { PintarActividades },
@@ -113,7 +115,7 @@ export default {
     const selectedActivitie = ref(false);
     const tempid = ref(""); //Arreglo de vehiculos
     const activities = ref([]);
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const procesingForm = async () => {
       console.log("me diste click");
@@ -128,16 +130,16 @@ export default {
       if (!selectedActivitie.value) {
         await api.post("api/DayliActivities", tempactivitie, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         activities.value.push(tempactivitie);
         //location.reload();
       } else {
         await api.put("api/DayliActivities", tempactivitie, {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         location.reload();
       }

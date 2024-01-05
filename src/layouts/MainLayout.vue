@@ -362,7 +362,7 @@ export default {
     async iniciarSesion() {
       try {
         const response = await api.post(
-          `/api/User/api/login/${this.name}/${this.password}`
+          `/api/User/login/${this.name}/${this.password}`
         );
 
         api.defaults.headers.common["Authorization"] =

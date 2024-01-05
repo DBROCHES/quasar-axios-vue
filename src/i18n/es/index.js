@@ -8,6 +8,7 @@ export default {
   activitiesSelected: "Actividades Seleccionadas",
   address: "Dirección",
   allIncluded: "Todo Incluido",
+  amountofPeople: "Cantidad de Personas",
   atras: "Atrás",
   back: "Costo por regreso",
   breakfastOnly: "Solo Desayuno",

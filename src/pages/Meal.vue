@@ -95,85 +95,99 @@
       </div>
     </q-dialog>
   </div>
-  <pintar-meals :meals="meals" />
+  <pintar-meals :meals="meals" @modifiMeals="updateMeal" />
 </template>
-  
-  
-  <script>
-  import { ref, onMounted } from "vue";
-  import { api } from 'boot/axios';
-  import PintarMeals from "src/components/PintarMeals.vue";
-  
-  export default {
-    components: { PintarMeals },
-  
-    setup() {
-      // Variables reactivas
-      const name = ref("");
-      const description = ref(null);
-      const price = ref("");
-      const options = ref([]);
-      const selectedOptions = ref(null);
-      const myForm = ref(null);
-  
-      //Arreglo de vehiculos
-      const meals = ref([])
-      const token = localStorage.getItem('token');
-      
-      //GETTES SETTES 
-  
-      const getMeals = async () => {
-         await api.get("/api/Meal", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+
+<script>
+import { ref, onMounted } from "vue";
+import { api } from "boot/axios";
+import PintarMeals from "src/components/PintarMeals.vue";
+
+export default {
+  components: { PintarMeals },
+
+  setup() {
+    // Variables reactivas
+    const name = ref("");
+    const description = ref(null);
+    const price = ref("");
+    const options = ref([]);
+    const selectedOptions = ref(null);
+    const myForm = ref(null);
+    const selectedMeal = ref(false);
+    //Arreglo de vehiculos
+    const meals = ref([]);
+    const token = localStorage.getItem("token");
+
+    //GETTES SETTES
+
+    const getMeals = async () => {
+      await api
+        .get("/api/Meal", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
-         .then((response) =>{
-            meals.value = response.data;
-            console.log(meals.value);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-      };
+        .then((response) => {
+          meals.value = response.data;
+          console.log(meals.value);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
 
     const getOptions = async () => {
       try {
         const response = await api.get("/api/Hotel", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-        });   
-        options.value = response.data.map(tupla => ({ 
-          label: tupla.name, 
-          value: tupla.hotelId 
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        options.value = response.data.map((tupla) => ({
+          label: tupla.name,
+          value: tupla.hotelId,
         }));
-        } catch (error) {
-          console.error("Error al obtener las opciones desde la API", error);
-        }
-      };
-  
-  
-        const procesingForm = async() => {
-            myForm.value.resetValidation();
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
 
-          const hotelId = selectedOptions.value ? selectedOptions.value : null;
+    const updateMeal = (row) => {
+      selectedOptions.value = row.hotelId;
+      name.value = row.name;
+      description.value = row.description;
+      price.value = row.description;
+      selectedMeal.value = true;
+    };
+    const procesingForm = async () => {
+      myForm.value.resetValidation();
 
-          const newMeal = {
-            name: name.value,
-            description: description.value,
-            price: price.value,
-            hotelId: hotelId,
-          };
-          await api.post("/api/Meal", newMeal, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });   
-          meals.value = [...meals.value, newMeal];
-          reset();
-          fillTable();
+      const hotelId = selectedOptions.value ? selectedOptions.value : null;
+
+      const newMeal = {
+        name: name.value,
+        description: description.value,
+        price: price.value,
+        hotelId: hotelId,
       };
+      if (!selectedMeal.value) {
+        await api.post("/api/Meal", newMeal, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        await api.put("/api/Meal", newMeal, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      meals.value = [...meals.value, newMeal];
+      reset();
+      fillTable();
+    };
 
     const fillTable = () => {
       console.log("LLenando tabla...");
@@ -186,26 +200,25 @@
       fillTable();
     };
 
-        onMounted(() => {
-            getMeals();
-            getOptions();
-        });
-  
-        return {
-            meals,
-            name,
-            description,
-            price,
-            myForm,
-            selectedOptions,
-            options,
-            token,
-            inception: ref(false),
-            procesingForm,
-            reset,
-        };
-    },
-  
-  };
-  </script>
-  
+    onMounted(() => {
+      getMeals();
+      getOptions();
+    });
+
+    return {
+      meals,
+      name,
+      description,
+      price,
+      myForm,
+      selectedOptions,
+      options,
+      token,
+      inception: ref(false),
+      procesingForm,
+      reset,
+      updateMeal,
+    };
+  },
+};
+</script>
