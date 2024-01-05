@@ -1,49 +1,8 @@
 <template>
   <q-page padding>
-    <h3 class="q-mb-md q-mt-md text-h3 text-center">Confeccione sus vacaciones soñadas</h3>
-    <h3 class="q-mb-md q-mt-md text-h4 text-center">Hoteles</h3>
-    <!-- <div class="q-pa-md">
-      <q-list class="q-gutter-md row" v-for="hotel in hotels" :key="hotel.name">
-        <q-item v-ripple class="q-col-xs-12 q-col-sm-6 q-col-md-4 fit">
-    <h3>{{ $t("planVac") }}</h3>
-
-    <h5>{{ $t("hoteles") }}</h5>
-    <div class="row">
-      <q-list class="row fit" v-for="hotel in hotels" :key="hotel.name">
-        <q-item v-ripple class="fit">
-          <q-item-section>
-            <q-card class="my-card">
-              <q-card-section horizontal>
-                <q-img class="fixed-size" src="https://source.unsplash.com/random?hotels" ratio="16 / 9" />
-                <q-card-section vertical class="fit">
-                  <div class="text-h6">
-                    {{ hotel.chain + " " + hotel.name }}
-                  </div>
-                  <q-rating v-model="hotel.category" size="1.5em" icon="star" />
-                  <div class="text-subtitle2 animated-description">
-                    {{ "$" + hotel.price }}
-                  </div>
-                  <q-card-section>
-                    <q-btn
-                      color="primary"
-                      label="Ver Oferta"
-                      @click="
-                        $router.push({
-                          name: 'PintartourPackage',
-                          params: { datos: datosDeLaCard },
-                        })
-                      "
-                    ></q-btn>
-                  </q-card-section>
-                  <q-card-actions class="absolute-bottom-right">
-                  </q-card-actions>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </div> -->
+    <h3 class="q-mb-md q-mt-md text-h3 text-center">{{ $t("planVac") }}</h3>
+    <h3 class="q-mb-md q-mt-md text-h4 text-center">{{ $t("hoteles") }}</h3>
+    
     <div class="q-pa-md row justify-center items-center">
     <div class="row items-center flex-center" style="height: 300px">
     <div class="q-pa-md row items-start q-gutter-md">
@@ -99,17 +58,17 @@ export default {
     return {
       hotels: [], 
       mostrarComponente: false,
-      // Similar data for Comidas, Habitaciones, Coches, Actividades
+
       token: localStorage.getItem('token'),
       
-      // Similar options for Comidas, Habitaciones, Coches, Actividades
     };
   },
   methods: {
     verOferta(hotel) {
+      const h = JSON.stringify(hotel);
+      sessionStorage.setItem('slchotel',h);
       this.$router.push({
         name: 'PintartourPackage',
-        params: { datos: hotel },
       });
     },
      async getHotels (){

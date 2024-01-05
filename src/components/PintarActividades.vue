@@ -81,7 +81,7 @@ export default {
       await api
         .get("api/Vehicles", {
             headers: {
-              'Authorization': `Bearer ${token}`
+              'Authorization': `Bearer ${this.token}`
             }
         })
         .then((response) => {

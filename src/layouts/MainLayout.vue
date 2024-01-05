@@ -145,10 +145,6 @@
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <!-- drawer content -->
-      <q-scroll-area
-        style="height: calc(100% - 150px); border-right: 1px solid #ddd"
-      >
         <q-list padding>
           <q-item clickable v-ripple to="/" active-class="my-menu-link" exact>
             <q-item-section avatar>
@@ -283,7 +279,6 @@
             </q-item>
           </q-expansion-item>
         </q-list>
-      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>

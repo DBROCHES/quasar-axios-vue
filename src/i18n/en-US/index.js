@@ -133,7 +133,7 @@ export default {
   phone: "Phone",
   phours: "Cost per hour",
   pkilometers: "Cost per kilometers traveled",
-  planVac: "Vacation Planner",
+  planVac: "Make your dream vacation",
   plate: "Plate",
   precio: "Price",
   price: "Price:",
