@@ -352,22 +352,6 @@
                     />
                   </div>
                 </div>
-                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
-                  <div>
-                    <q-input
-                      outlined
-                      :label="$t('plate')"
-                      v-model="matricula"
-                      type="textarea"
-                      rows="1"
-                      maxlength="8"
-                      lazy-rules
-                      :rules="[
-                        (val) => (val && val.length > 0) || this.$t('rellene'),
-                      ]"
-                    />
-                  </div>
-                </div>
               </div>
               <div>
                 <q-btn
@@ -488,7 +472,7 @@ export default {
     const comp = ref([]);
     const hotls = ref([]);
     const transp = ref([]);
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
         if (success) {
@@ -543,19 +527,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/ComplementaryContract", ccomplementario,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/ComplementaryContract", ccomplementario, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         comp.value.push(ccomplementario);
         location.reload();
       } else {
-        await api.put("api/ComplementaryContract", ccomplementario,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/ComplementaryContract", ccomplementario, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
@@ -571,23 +555,23 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/HotelContract", choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-        hotls.value.push(choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/HotelContract", choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        hotls.value.push(choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         //location.reload();
       } else {
-        await api.put("api/HotelContract", choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/HotelContract", choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
@@ -604,19 +588,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/TransportationContract", ctransporte,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/TransportationContract", ctransporte, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         transp.value.push(ctransporte);
         //location.reload();
       } else {
-        await api.put("api/TransportationContract", ctransporte,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/TransportationContract", ctransporte, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };

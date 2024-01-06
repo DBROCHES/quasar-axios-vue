@@ -46,6 +46,7 @@ export default {
   },
 
   setup(props, { emit }) {
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -59,8 +60,8 @@ export default {
       await api
         .get("api/ComplementaryContract", {
           headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           allContracts.value = response.data;
@@ -85,7 +86,7 @@ export default {
       ]),
       handleClick,
       allContracts,
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
 
@@ -98,8 +99,8 @@ export default {
           console.log(row.id + "Hakuna Matata");
           await api.delete(`/api/ComplementaryContract/ ${row.id}`, {
             headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
+              Authorization: `Bearer ${this.token}`,
+            },
           });
           window.alert(this.$t("deleteCont"));
           location.reload();

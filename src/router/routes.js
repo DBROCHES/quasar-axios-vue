@@ -81,6 +81,10 @@ const routes = [
         path: "/users",
         component: () => import("pages/Users.vue"),
       },
+      {
+        path: "/reportTourPackages",
+        component: () => import("pages/ReportTourPackage.vue"),
+      },
     ],
   },
 
