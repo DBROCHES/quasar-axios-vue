@@ -4,7 +4,7 @@
     :title="$t('actividades')"
     :no-data-label="$t('noActivities')"
     :columns="columns"
-    :rows="activities"
+    :rows="allactivities"
   >
     <template v-slot:body="props">
       <q-tr :props="props">
@@ -22,12 +22,25 @@
             @click="handleClick(props.row)"
           />
         </q-td>
+        <q-td auto-width>
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
+          />
+        </q-td>
       </q-tr>
     </template>
   </q-table>
 </template>
 
 <script>
+import { ref, onMounted, toRaw, nextTick, watchEffect } from "vue";
+import { api } from "boot/axios";
 export default {
   props: {
     activities: Array,
@@ -36,17 +49,10 @@ export default {
     return {
       columns: [
         {
-          name: "date",
+          name: "day",
           label: this.$t("fecha"),
           align: "left",
-          field: "date",
-          sortable: true,
-        },
-        {
-          name: "hour",
-          label: this.$t("hora"),
-          align: "left",
-          field: "hour",
+          field: "day",
           sortable: true,
         },
         {
@@ -64,10 +70,10 @@ export default {
           sortable: true,
         },
       ],
-      token: localStorage.getItem('token'),
     };
   },
   setup(props, { emit }) {
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -79,10 +85,10 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/Vehicles", {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
+        .get("api/DayliActivities", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           allactivities.value = response.data;
@@ -92,12 +98,33 @@ export default {
           console.error(error);
         });
     };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm(
+        "¿Está seguro de borrar esta actividad?"
+      );
+
+      if (confirmed) {
+        try {
+          console.log(row.activityId + "Hakuna Matata");
+          await api.delete(`/api/DayliActivities ${row.activityId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          window.alert("Actividad eliminada");
+          location.reload();
+        } catch (error) {
+          console.error("Error Actividad no eliminada no eliminada", error);
+        }
+      }
+    };
     onMounted(() => {
       getall();
     });
     return {
       allactivities,
       handleClick,
+      confirmDelete,
     };
   },
 };

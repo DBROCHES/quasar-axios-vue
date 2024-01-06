@@ -3,10 +3,12 @@
     <q-page-container>
       <q-page padding>
         <q-stepper v-model="step" ref="stepper" color="primary" animated>
+
+          <!---------------------Seleción de Hotel,Room,Meal------------------------>
           <q-step :name="1" title="Hotel" icon="hotel" :done="step > 1">
             <div class="row q-col-gutter-md">
               <q-card class="my-card fit" animated>
-                <q-img src="https://source.unsplash.com/random?hotel" />
+                <q-img src="https://source.unsplash.com/random?hotel"  class="full-width-image" />
                 <q-card-section>
                   <div class="text-h5">
                     {{
@@ -35,7 +37,7 @@
                     <q-card-section v-if="selectedMeal !== null">
                       <div class="text-subtitle2">{{ $t("description") }}</div>
                       <div>
-                        {{ selectedMeal.descripcion }}
+                        {{ selectedMeal.description }}
                       </div>
                     </q-card-section>
                   </q-card-section>
@@ -70,10 +72,12 @@
                   </q-list>
                 </q-card-section>
               </q-card>
-              <!-- Repite el patrón anterior para otros campos como hotel, cuarto del hotel, plan de comida, etc. -->
             </div>
           </q-step>
 
+          <!---------------------------------------------------------------------------->
+
+          <!--------Selecion de vehiculo------------------------------------------------>
           <q-step
             :name="2"
             :title="$t('selectVehicle')"
@@ -92,10 +96,10 @@
                 <q-item-section>
                   <q-card class="fit">
                     <q-card-section horizontal>
-                      <q-img class="fixed-size" :src="vehiculo.image" />
+                      <q-img class="fixed-size" src="https://source.unsplash.com/random?vehicle" />
                       <q-card-section vertical>
-                        <div class="text-h6">{{ vehiculo.nombre }}</div>
-                        <div>{{ vehiculo.descripcion }}</div>
+                        <div class="text-h6">{{ vehiculo.brand }}</div>
+                        <div>{{ vehiculo.license_Plate_Number }}</div>
                         <div>Modalidades:</div>
                         <q-badge
                           :color="white"
@@ -195,6 +199,8 @@
               </q-item>
             </q-list>
           </q-step>
+          <!---------------------------------------------------------------------------->
+          <!--------------------Selecionar actividades diarias-------------------------->
           <q-step
             :name="3"
             :title="$t('selectDailyActivities')"
@@ -210,7 +216,7 @@
                 <q-item-section>
                   <q-card class="fit">
                     <q-card-section horizontal>
-                      <q-img class="fixed-size" :src="activity.image" />
+                      <q-img class="fixed-size" src="https://source.unsplash.com/random?" />
                       <q-card-section vertical>
                         <q-expansion-item
                           :label="$t('seeDescription')"
@@ -218,7 +224,7 @@
                         >
                           <q-card-section>
                             <div class="text-caption">
-                              {{ activity.descripcion }}
+                              {{ activity.description }}
                             </div>
                           </q-card-section>
                         </q-expansion-item>
@@ -251,6 +257,9 @@
               </q-item>
             </q-list>
           </q-step>
+          <!---------------------------------------------------------------------------->
+
+          <!------------------------------Reserva final--------------------------------->
           <q-step
             :name="4"
             :title="$t('reservar')"
@@ -353,6 +362,8 @@
               </q-list>
             </q-form>
           </q-step>
+          <!---------------------------------------------------------------------------->
+
           <template v-slot:navigation>
             <q-badge
               :color="white"
@@ -379,23 +390,7 @@
             </q-stepper-navigation>
           </template>
         </q-stepper>
-        <!--
-        <q-drawer
-          side="right"
-          id="Filterpane"
-          v-model="drawerRight"
-          show-if-above
-          :breakpoint="700"
-          elevated
-          class="bg-white text-black"
-        >
-          <q-scroll-area class="fit">
-            <div class="q-pa-sm">
-              <h5>Filtros</h5>
-              <q-input v-model="text" type="text" label="Destino" />
-            </div>
-          </q-scroll-area>
-        </q-drawer>-->
+        <!---------------------------------------------------------------------------->
       </q-page>
     </q-page-container>
   </q-layout>
@@ -403,9 +398,11 @@
 
 <script>
 import { ref } from "vue";
+import { api } from "boot/axios";
 export default {
   data() {
     return {
+      token: localStorage.getItem('token'),
       selectedRoom: null,
       white: "white",
       selectedRoomindex: -1,
@@ -414,40 +411,7 @@ export default {
       selectedhotel: null,
       selectedMeal: null,
       selectedMealtype: "",
-      mealstypes: [
-        "Todo Incluido",
-        "Solo Comidas",
-        "Solo Desayuno",
-        "Solo Almuerzo",
-        "Solo Comida",
-      ],
-      meals: [
-        {
-          name: this.$t("allIncluded"),
-          descripcion: this.$t("descAllIncluded"),
-          price: 20,
-        },
-        {
-          name: this.$t("mealOnly"),
-          descripcion: "regular",
-          price: 10,
-        },
-        {
-          name: this.$t("breakfastOnly"),
-          descripcion: this.$t("something"),
-          price: 40,
-        },
-        {
-          name: this.$t("lunchOnly"),
-          descripcion: this.$t("something"),
-          price: 60,
-        },
-        {
-          name: "Solo Comida",
-          descripcion: this.$t("something"),
-          price: 60,
-        },
-      ],
+      meals: null,
       provincias: ["Provincia 1", "Provincia 2", "Provincia 3"],
       selectedVehicleIndex: -1,
       selectedModality: 0,
@@ -456,88 +420,76 @@ export default {
       selectedActivities: {},
       activitiesOn: [],
       showMore: false,
-      activities: [
-        {
-          image: "https://source.unsplash.com/random?party",
-          descripcion: this.$t("descAllIncluded"),
-          price: 20,
-        },
-        {
-          image: "https://source.unsplash.com/random?party",
-          descripcion: "regular",
-          price: 10,
-        },
-        {
-          image: "https://source.unsplash.com/random?party",
-          descripcion: this.$t("something"),
-          price: 40,
-        },
-        {
-          image: "https://source.unsplash.com/random?party",
-          descripcion: this.$t("something"),
-          price: 60,
-        },
-      ],
-      vehiculos: [
-        {
-          nombre: this.$t("vehicleA"),
-          descripcion: this.$t("descVehicleA"),
-          precioPorHora: 10,
-          precioPorKilometro: 0.5,
-          precioPorViaje: 50,
-          image: "https://source.unsplash.com/random?vehicle",
-        },
-        {
-          nombre: this.$t("vehicleB"),
-          descripcion: this.$t("descVehicleB"),
-          precioPorHora: 20,
-          precioPorKilometro: 1,
-          precioPorViaje: 100,
-          image: "https://source.unsplash.com/random?vehicle",
-        },
-        {
-          nombre: this.$t("vehicleC"),
-          descripcion: this.$t("descVehicleC"),
-          precioPorHora: 30,
-          precioPorKilometro: 1.5,
-          precioPorViaje: 150,
-          image: "https://source.unsplash.com/random?vehicle",
-        },
-        {
-          nombre: this.$t("vehicleD"),
-          descripcion: this.$t("descVehicleD"),
-          precioPorHora: 15,
-          precioPorKilometro: 0.75,
-          precioPorViaje: 75,
-          image: "https://source.unsplash.com/random?vehicle",
-        },
-      ],
-
-      // Agrega aquí más campos según sea necesario
-      rooms: [
-        {
-          name: this.$t("roomDeluxe"),
-          description: this.$t("descRoomDeluxe"),
-          price: 40,
-        },
-        {
-          name: this.$t("roomDouble"),
-          description: this.$t("descRoomDouble"),
-          price: 40,
-        },
-        {
-          name: this.$t("roomSuite"),
-          description: this.$t("descRoomSuite"),
-          price: 40,
-        },
-      ],
+      activities: null,
+      vehiculos: null,
+      rooms: null,
     };
   },
   methods: {
     gethotel(){
       this.hotel = sessionStorage.getItem('slchotel');
-      console.log(this.hotel.value);
       this.selectedhotel = JSON.parse(this.hotel);
+      console.log(this.selectedhotel.hotelId);
+    },
+    async getRooms (){
+      await api
+        .get(`/api/Room/Hotel/ ${this.selectedhotel.hotelId}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        })   
+        .then((response) => {
+          this.rooms = response.data;
+          console.log(this.rooms);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    async getMeals (){
+      await api
+        .get(`/api/Meal/Hotel/ ${this.selectedhotel.hotelId}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        })   
+        .then((response) => {
+          this.meals = response.data;
+          console.log(this.meals);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    async getVehicles (){
+      await api
+        .get(`/api/Vehicles/Province/ ${this.selectedhotel.provinceId}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        })   
+        .then((response) => {
+          this.vehiculos = response.data;
+          console.log(this.vehiculos);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    async getDactivities (){
+      await api
+        .get(`/api/DayliActivities/Province/ ${this.selectedhotel.provinceId}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        })   
+        .then((response) => {
+          this.activities = response.data;
+          console.log(this.activities);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
     calcularPrecio() {
       // Aquí va la lógica para calcular el precio
@@ -550,6 +502,8 @@ export default {
         this.selectedRoom = this.rooms[index];
         this.selectedRoomindex = index;
       }
+      // const r = JSON.stringify(room);
+      // sessionStorage.setItem('slcroom',r);
     },
     selectVehicle(index) {
       if (this.selectedVehicleIndex === index) {
@@ -623,6 +577,10 @@ export default {
   },
   created() {
     this.gethotel();
+    this.getRooms();
+    this.getMeals ();
+    this.getVehicles ();
+    this.getDactivities ();
   },
 };
 
@@ -640,5 +598,8 @@ export default {
 .fixed-size {
   width: 300px; /* Ajusta este valor al tamaño deseado para tu imagen */
   height: 200px; /* Ajusta este valor al tamaño deseado para tu imagen */
+}
+.full-width-image {
+  height: 250px;
 }
 </style>

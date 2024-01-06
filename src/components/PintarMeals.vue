@@ -85,9 +85,9 @@ export default {
     async handleClick(row) {
       try {
         const response = await api.delete(`/api/Meal/${row.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
         });
         console.log("Fila eliminada", response);
         location.reload();
@@ -101,22 +101,21 @@ export default {
       );
 
       if (confirmed) {
-        if (confirmed) {
-          try {
-            const response = await api.delete(`/api/Meal/${row.id}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            console.log("Fila eliminada", response);
-            window.alert("Fila eliminada");
-            location.reload();
-            location.reload();
-          } catch (error) {
-            console.error("Error al eliminar", error);
-          }
+        try {
+          const response = await api.delete(`/api/Meal/${row.id}`, {
+            headers: {
+              'Authorization': `Bearer ${this.token}`
+            }
+        });
+          console.log("Fila eliminada", response);
+          window.alert("Fila eliminada");
+          location.reload();
+          location.reload();
+        } catch (error) {
+          console.error("Error al eliminar", error);
         }
       }
+      
       this.confirmationVisible = false;
     },
     emitir(row) {
