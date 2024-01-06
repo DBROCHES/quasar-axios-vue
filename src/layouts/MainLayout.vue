@@ -381,6 +381,7 @@ export default {
         );
 
         const data = JSON.parse(jsonPayload);
+
         const roles = Object.keys(data)
           .filter((key) => key.includes("role"))
           .map((key) => data[key]);
@@ -388,6 +389,7 @@ export default {
         localStorage.setItem("username", data.UserName);
         localStorage.setItem("email", data.Email);
         localStorage.setItem("role", roles[0]);
+        localStorage.setItem("userId", data.Id);
 
         this.$router.push("/");
         location.reload();
