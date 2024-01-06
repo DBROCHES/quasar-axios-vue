@@ -31,6 +31,7 @@ export default {
   costPV: "Costo por viaje",
   dairport: "Distancia al aereopuerto",
   date: "Fecha",
+  day: "Día",
   dcity: "Distancia a la ciudad",
   deleteConfCont: "¿Está seguro que desea borrar este contrato?",
   deleteCont: "Contrato eliminado",

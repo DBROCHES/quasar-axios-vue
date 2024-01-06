@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 
 <template>
-  <h1>{{ $t("actividades") }}</h1>
+  <h2>{{ $t("actividades") }}</h2>
   <div class="q-pa-md" id="act">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <q-dialog v-model="inception">
@@ -17,31 +17,14 @@
               <div>
                 <q-input
                   outlined
-                  :label="$t('fecha')"
                   v-model="date"
-                  type="date"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
+                  :label="$t('day')"
+                  type="number"
+                  min="1"
+                  max="31"
                 />
               </div>
             </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-input
-                  outlined
-                  :label="$t('hora')"
-                  v-model="hour"
-                  type="time"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div class="form-floating">
                 <q-input
@@ -62,6 +45,7 @@
               <div>
                 <q-input
                   outlined
+                  type="number"
                   :label="$t('precio')"
                   v-model="price"
                   min="0"
@@ -73,20 +57,35 @@
                 />
               </div>
             </div>
-          </div>
-          <div>
-            <q-btn
-              color="primary"
-              :label="$t('aceptar')"
-              class="q-ml-sm"
-              type="submit"
-            />
-            <q-btn
-              color="primary"
-              :label="$t('reset')"
-              class="q-ml-sm"
-              type="reset"
-            />
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+              <div>
+                <q-select
+                  outlined
+                  v-model="selectedOptions"
+                  :options="options"
+                  :label="$t('province')"
+                  emit-value
+                  map-options
+                  lazy-rules
+                />
+              </div>
+            </div>
+
+            <div>
+              <q-btn
+                color="primary"
+                :label="$t('aceptar')"
+                class="q-ml-sm"
+                type="submit"
+              />
+              <q-btn
+                color="primary"
+                :label="$t('reset')"
+                class="q-ml-sm"
+                type="reset"
+                v-close-popup
+              />
+            </div>
           </div>
         </q-form>
       </div>
@@ -99,7 +98,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { api } from "src/boot/axios";
 import PintarActividades from "src/components/PintarActividades.vue";
 
@@ -115,7 +114,10 @@ export default {
     const selectedActivitie = ref(false);
     const tempid = ref(""); //Arreglo de vehiculos
     const activities = ref([]);
+    const options = ref([]);
+    const selectedOptions = ref(null);
     const token = localStorage.getItem("token");
+    const inception = ref(false);
 
     const procesingForm = async () => {
       console.log("me diste click");
@@ -126,9 +128,10 @@ export default {
         day: date.value,
         description: description.value,
         price: price.value,
+        provinceId: selectedOptions.value,
       };
       if (!selectedActivitie.value) {
-        await api.post("api/DayliActivities", tempactivitie, {
+        await api.post("/api/DayliActivities", tempactivitie, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -136,7 +139,7 @@ export default {
         activities.value.push(tempactivitie);
         //location.reload();
       } else {
-        await api.put("api/DayliActivities", tempactivitie, {
+        await api.put("/api/DayliActivities", tempactivitie, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -147,6 +150,7 @@ export default {
       reset();
     };
     const updatingactivitie = (row) => {
+      selectedOptions.value = row.provinceId;
       date.value = row.day;
       description.value = row.description;
       price.value = row.price;
@@ -160,15 +164,34 @@ export default {
       description.value = null;
       price.value = null;
     };
-
+    const getOptions = async () => {
+      try {
+        const response = await api.get("/api/ProvinceSet", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        options.value = response.data.map((tupla) => ({
+          label: tupla.provinceName,
+          value: tupla.provinceId,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    onMounted(() => {
+      getOptions();
+    });
     return {
+      selectedOptions,
+      options,
       date,
       hour,
       description,
       price,
       myForm,
       token,
-      inception: ref(false),
+      inception,
       activities,
       procesingForm,
       reset,
