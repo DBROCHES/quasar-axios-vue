@@ -1,9 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
+
 <template>
   <h2>{{ $t("provinces") }}</h2>
-  <div>
+  <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <!-- style="margin-left: 18px;" -->
     <q-dialog v-model="inception">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
@@ -27,7 +27,6 @@
               </div>
             </div>
           </div>
-
           <div>
             <q-btn
               color="primary"
@@ -45,72 +44,95 @@
         </q-form>
       </div>
     </q-dialog>
+
+    <PintarProvincias
+      :provinces="provinces"
+      @button-clicked="updatingProvinces"
+    />
   </div>
-  <pintar-provincias :provinces="provinces" />
 </template>
 
 <script>
+import { ref } from "vue";
+import { api } from "src/boot/axios";
 import PintarProvincias from "src/components/PintarProvincias.vue";
-import { ref, onMounted } from "vue";
-import { api } from "boot/axios";
 
 export default {
-  components: { PintarProvincias },
   setup() {
     // Variables reactivas
+    // variables generales
     const name = ref("");
+    //Variables auxiliares
     const myForm = ref(null);
-
-    //Arreglo de provincias
+    const inception = ref(false);
+    const tempid = ref("");
+    const selectedProvince = ref(false);
+    const buttonstate = ref(true);
+    //Arreglos de contratos
     const provinces = ref([]);
-
-    const getProvinces = async () => {
-      await api
-        .get("/api/ProvinceSet")
-        .then((response) => {
-          provinces.value = response.data;
-          console.log(provinces.value);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
-
+    const token = localStorage.getItem("token");
     const procesingForm = async () => {
-      myForm.value.resetValidation();
-      // console.log("Hakuna mATATA"+count);
-      const newProvince = {
-        provinceName: name.value,
-      };
+      myForm.value.validate().then((success) => {
+        if (success) {
+          inception.value = false;
+        }
+      });
+      //myForm.value.resetValidation();
+      console.log("me diste click");
 
-      await api.post("api/ProvinceSet", newProvince);
-      provinces.value.push(newProvince);
-      location.reload();
+      //luego se procesa el formulario
+      prov();
 
+      //restablece los valores del formulario
+      inception.value = false;
       reset();
-      fillTable();
-    };
-
-    const fillTable = () => {
-      console.log(this.$t("llenar"));
     };
     const reset = () => {
       name.value = null;
     };
-
-    onMounted(() => {
-      getProvinces();
-    });
-
+    const prov = async () => {
+      const p = {
+        provinceId: selectedProvince.value ? tempid.value : 0,
+        provinceName: name.value,
+      };
+      if (!selectedProvince.value) {
+        await api.post("api/ProvinceSet", p, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        provinces.value.push(p);
+        location.reload();
+      } else {
+        await api.put("api/ProvinceSet", p, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        location.reload();
+      }
+    };
+    // funciones de modificar
+    const updatingProvinces = (row) => {
+      tempid.value = row.provinceId;
+      name.value = row.provinceName;
+      selectedProvince.value = true;
+      inception.value = true;
+    };
     return {
       name,
       myForm,
+      inception,
       provinces,
-      inception: ref(false),
+      token,
+      buttonstate,
+      updatingProvinces,
       procesingForm,
-      fillTable,
       reset,
     };
+  },
+  components: {
+    PintarProvincias,
   },
 };
 </script>

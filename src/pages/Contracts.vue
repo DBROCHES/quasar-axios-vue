@@ -236,6 +236,32 @@
                     />
                   </div>
                 </div>
+                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+                  <div>
+                    <q-select
+                      outlined
+                      v-model="selectedOptions"
+                      :options="options"
+                      label="Hotel"
+                      emit-value
+                      map-options
+                      lazy-rules
+                    />
+                  </div>
+                </div>
+                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+                  <div>
+                    <q-select
+                      outlined
+                      v-model="selectedOptions"
+                      :options="seasons"
+                      label="Temporada"
+                      emit-value
+                      map-options
+                      lazy-rules
+                    />
+                  </div>
+                </div>
               </div>
               <div>
                 <q-btn
@@ -436,7 +462,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted, toRaw, nextTick } from "vue";
 import { api } from "src/boot/axios";
 import PintarContratosComplementarios from "src/components/PintarContratosComlementarios.vue";
 import PintarContratosHoteles from "src/components/PintarContratosHoteles.vue";
@@ -457,6 +483,7 @@ export default {
     // Variables de Contratos de hoteles
     const direccion = ref("");
     const precio = ref("");
+    const selectedOptions = ref(null);
     //Variables de Contratos de transportes
     const proveedor = ref(null);
     const vehiculos = ref("");
@@ -472,6 +499,8 @@ export default {
     const comp = ref([]);
     const hotls = ref([]);
     const transp = ref([]);
+    const options = ref([]);
+    const seasons = ref([]);
     const token = localStorage.getItem("token");
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
@@ -501,6 +530,42 @@ export default {
       inception.value = false;
       reset();
     };
+    const getHotels = async () => {
+      try {
+        const response = await api.get("/api/Hotel", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        options.value = response.data.map((tupla) => ({
+          label: tupla.name,
+          value: tupla.hotelId,
+        }));
+        console.log(options.value);
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    const getSeasons = async () => {
+      try {
+        const response = await api.get("/api/Season", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        seasons.value = response.data.map((tupla) => ({
+          label: tupla.seasonName,
+          value: tupla.seasonId,
+        }));
+        console.log(seasons.value);
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    onMounted(() => {
+      getHotels();
+      getSeasons();
+    });
     const reset = () => {
       Descp.value = null;
       inicio.value = null;
@@ -544,6 +609,7 @@ export default {
       }
     };
     const contratoHoteles = async () => {
+      const hotelId = selectedOptions.value ? selectedOptions.value : null;
       const choteles = {
         id: selectedContract.value ? tempid.value : 0,
         desc: Descp.value,
@@ -553,6 +619,7 @@ export default {
         address: direccion.value,
         hotelTotalPrice: precio.value,
         enabled: true,
+        hotelId: hotelId,
       };
       if (!selectedContract.value) {
         await api.post("api/HotelContract", choteles, {
@@ -574,6 +641,7 @@ export default {
         });
         location.reload();
       }
+      hotls.value = [...hotls.value, choteles];
     };
     const contratosTransporte = async () => {
       const ctransporte = {
@@ -629,6 +697,7 @@ export default {
       selectedContract.value = true;
       inception.value = true;
       slide.value = "hoteles";
+      selectedOptions.value = row.hotelId;
     };
     const updatingTransportation = (row) => {
       tempid.value = row.id;
@@ -660,8 +729,11 @@ export default {
       vehiculos,
       matricula,
       myForm,
+      selectedOptions,
       inception,
       slide,
+      options,
+      seasons,
       comp,
       hotls,
       token,

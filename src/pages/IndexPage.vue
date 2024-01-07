@@ -36,12 +36,14 @@
             input-debounce="0"
             :options="options"
             @filter="filterFn"
-            label="Destino"
+            :label="$t('destino')"
             class="buscador"
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -51,7 +53,7 @@
               standout
               v-model="dates"
               class="buscador"
-              label="Fecha deseada"
+              :label="$t('fechaDeseada')"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -71,12 +73,12 @@
             class="buscador"
             type="number"
             v-model="personscant"
-            label="Numero de personas"
+            :label="$t('numeroPersonas')"
             min="1"
           />
           <div>
             <q-btn
-              label="Buscar"
+              :label="$t('buscar')"
               type="submit"
               class="buscador"
               color="primary"
@@ -86,11 +88,43 @@
       </div>
     </div>
   </div>
+  <h3 class="text-center">Provincias a visitar</h3>
+  <div class="text-center items-center">
+    <div class="q-pa-md row items-start q-gutter-md">
+      <q-card-section
+        flat
+        bordered
+        v-for="province in provinces"
+        :key="province.provinceName"
+        class="my-card"
+      >
+        <div>
+          <q-img
+            class="full-width-image"
+            :src="'https://source.unsplash.com/random?' + province.provinceName"
+          />
+          <q-card-section>
+            <div class="text-h6">{{ province.provinceName }}</div>
+            <div v-if="!province.showFullText">
+              {{ province.provinceDesc.substring(0, 100) }}...
+            </div>
+            <div v-else>{{ province.provinceDesc }}</div>
+            <q-btn
+              flat
+              :label="$t('leerMas')"
+              @click="province.showFullText = !province.showFullText"
+            />
+          </q-card-section>
+        </div>
+      </q-card-section>
+    </div>
+  </div>
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { defineComponent } from "vue";
+import { api } from "src/boot/axios";
 
 export default defineComponent({
   name: "IndexPage",
@@ -98,16 +132,32 @@ export default defineComponent({
     const amountofPeople = ref(1);
     const destination = ref("");
     const options = ref([]);
+    const provinces = ref([]);
     const date = ref(null);
     const dates = ref("");
     watch(date, (newdate) => {
       dates.value = `${newdate.from} - ${newdate.to}`;
+    });
+    const getProvinces = async () => {
+      await api
+        .get("/api/ProvinceSet")
+        .then((response) => {
+          provinces.value = response.data;
+          console.log(provinces.value);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
+    onMounted(() => {
+      getProvinces();
     });
     return {
       date,
       dates,
       amountofPeople,
       destination,
+      provinces,
       slide: ref(1),
       autoplay: ref(true),
       rol: localStorage.getItem("role"),
@@ -133,5 +183,25 @@ export default defineComponent({
 .form-container {
   background-color: transparent;
   width: 100%;
+}
+
+.ofertas {
+  position: relative;
+}
+
+.my-card {
+  border-radius: 0;
+  width: 300px; /* Ajusta este valor al tamaño deseado para tu tarjeta */
+
+  justify-content: center;
+  display: flex;
+}
+.full-width-image {
+  height: 300px; /* Ajusta este valor al tamaño deseado para tu imagen */
+}
+.absolute-center {
+  top: 0%;
+  left: 0%;
+  transform: translate(-50%, -50%);
 }
 </style>

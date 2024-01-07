@@ -25,24 +25,26 @@
             <img src="https://cdn.quasar.dev/img/avatar2.jpg" />
           </q-avatar>
         </q-btn>
-        <template class="items-center">
+        <template class="row justify-end items-center">
           <q-menu v-model="men">
             <q-list
               class="column justify-center items-start"
               style="min-width: 100px"
             >
               <q-item clickable v-close-popup v-if="rol === null">
-                <q-item-section @click="cardUno = true"
-                  >Registrarse</q-item-section
-                >
+                <q-item-section @click="cardUno = true">{{
+                  $t("registrar")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup v-if="rol === null">
-                <q-item-section @click="card = true"
-                  >Iniciar sesión</q-item-section
-                >
+                <q-item-section @click="card = true">{{
+                  $t("iniSecion")
+                }}</q-item-section>
               </q-item>
               <q-item clickable v-close-popup v-if="rol !== null">
-                <q-item-section @click="clear">Cerrar sesión</q-item-section>
+                <q-item-section @click="clear">{{
+                  $t("cerrarSesion")
+                }}</q-item-section>
               </q-item>
               <q-item v-if="rol !== null">
                 <q-item-section>
@@ -72,28 +74,26 @@
             <q-input
               filled
               v-model="name"
-              label="Su nombre*"
+              :label="$t('name')"
               lazy-rules
-              :rules="[
-                (val) => (val && val.length > 0) || 'Usuario incorrecta',
-              ]"
+              :rules="[(val) => (val && val.length > 0) || this.$t('errUser')]"
             />
 
             <q-input
               filled
               v-model="password"
-              label="Su contraseña *"
+              :label="$t('password')"
               lazy-rules
               :rules="[
-                (val) => (val && val.length > 6) || 'Contraseña incorrecta',
+                (val) => (val && val.length > 6) || this.$t('errPassword'),
               ]"
               type="password"
             />
 
             <div>
-              <q-btn label="Ingresar" type="submit" color="primary" />
+              <q-btn :label="$t('ingresar')" type="submit" color="primary" />
               <q-btn
-                label="Reset"
+                :label="$t('reset')"
                 type="reset"
                 color="primary"
                 flat
@@ -115,37 +115,35 @@
             <q-input
               filled
               v-model="nameU"
-              label="Su nombre*"
+              :label="$t('name')"
               lazy-rules
-              :rules="[
-                (val) => (val && val.length > 0) || 'Usuario incorrecta',
-              ]"
+              :rules="[(val) => (val && val.length > 0) || this.$t('errUser')]"
             />
 
             <q-input
               filled
               v-model="email"
-              label="Email"
+              :label="$t('email')"
               type="email"
               lazy-rules
-              :rules="[(val) => (val && val.length > 0) || 'Rellene el campo']"
+              :rules="[(val) => (val && val.length > 0) || this.$t('rellene')]"
             />
 
             <q-input
               filled
               v-model="passW"
-              label="Su contraseña *"
+              :label="$t('password')"
               lazy-rules
               :rules="[
-                (val) => (val && val.length > 6) || 'Contraseña incorrecta',
+                (val) => (val && val.length > 6) || this.$t('errPassword'),
               ]"
               type="password"
             />
 
             <div>
-              <q-btn label="Registar" type="submit" color="primary" />
+              <q-btn :label="$t('registrarse')" type="submit" color="primary" />
               <q-btn
-                label="Reset"
+                :label="$t('reset')"
                 type="reset"
                 color="primary"
                 flat
@@ -254,34 +252,36 @@
         <q-expansion-item
           v-if="rol === 'Admin' || rol === 'SuperAdmin'"
           icon="list"
-          label="Reportes"
+          :label="$t('reports')"
           caption=""
         >
           <q-item clickable v-ripple to="/reportHotelContracts">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
-            <q-item-section> Contratos de Hoteles Conciliados </q-item-section>
+            <q-item-section> {{ $t("repContConcil") }} </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/reportHotelSeason">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
             <q-item-section>
-              Listado de Temporadas de los Contratos de Hoteles
+              {{ $t("reportTemps") }}
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/reportListTransportContract">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
-            <q-item-section> Listado de Contratos Transporte </q-item-section>
+            <q-item-section>
+              {{ $t("reportTransportContract") }}
+            </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/reportActiveHotels">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
-            <q-item-section> Listado de Hoteles Activos </q-item-section>
+            <q-item-section> {{ $t("reportActivesHotels") }} </q-item-section>
           </q-item>
           <q-item clickable v-ripple to="/reportTourPackages">
             <q-item-section avatar>
