@@ -4,7 +4,7 @@
   <h2>{{ $t("contratos") }}</h2>
   <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div class="q-pa-md q-gutter-sm">
         <q-carousel animated v-model="slide" infinite>
           <q-carousel-slide name="complementarios">
@@ -488,7 +488,7 @@ export default {
     const comp = ref([]);
     const hotls = ref([]);
     const transp = ref([]);
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
         if (success) {
@@ -543,19 +543,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/ComplementaryContract", ccomplementario,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/ComplementaryContract", ccomplementario, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         comp.value.push(ccomplementario);
         location.reload();
       } else {
-        await api.put("api/ComplementaryContract", ccomplementario,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/ComplementaryContract", ccomplementario, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
@@ -571,23 +571,23 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/HotelContract", choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-        hotls.value.push(choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/HotelContract", choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        hotls.value.push(choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         //location.reload();
       } else {
-        await api.put("api/HotelContract", choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/HotelContract", choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
@@ -604,19 +604,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/TransportationContract", ctransporte,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/TransportationContract", ctransporte, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         transp.value.push(ctransporte);
         //location.reload();
       } else {
-        await api.put("api/TransportationContract", ctransporte,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/TransportationContract", ctransporte, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
@@ -659,6 +659,10 @@ export default {
       inception.value = true;
       slide.value = "transportes";
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       Descp,
       inicio,
@@ -684,6 +688,7 @@ export default {
       transp,
       tab: ref("complementaryContract"),
       buttonstate,
+      handleClose,
       updatingComplementary,
       updatingHotels,
       updatingTransportation,

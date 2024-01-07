@@ -4,7 +4,7 @@
   <div>
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <!-- style="margin-left: 18px;" -->
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -162,7 +162,7 @@
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div class="form-floating">
                 <q-input
-                  v-model="location"
+                  v-model="locations"
                   outlined
                   :placeholder="$t('ejAddress')"
                   :label="$t('address')"
@@ -219,7 +219,7 @@
       </div>
     </q-dialog>
   </div>
-  <pintar-hoteles :hoteles="hoteles"/>
+  <pintar-hoteles :hoteles="hoteles" />
 </template>
 
 <script>
@@ -240,12 +240,13 @@ export default {
     const floors = ref("");
     const dairport = ref("");
     const dcity = ref("");
-    const location = ref("");
+    const locations = ref("");
     const price = ref("");
     const chain = ref(null);
     const commercialization = ref(null);
     const myForm = ref(null);
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
+    const inception = ref(false);
     //Arreglo de vehiculos
     const hoteles = ref([]);
 
@@ -260,10 +261,10 @@ export default {
     const getHotels = async () => {
       await api
         .get("/api/Hotel", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-        })   
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           hoteles.value = response.data;
           console.log(hoteles.value);
@@ -287,17 +288,17 @@ export default {
         disNearCity: dcity.value,
         disAirport: dairport.value,
         numberOfFloors: floors.value,
-        address: location.value,
+        address: locations.value,
         comercializationMode: commercialization.value,
         price: price.value,
         enabled: true,
       };
 
       const response = await api.post("/api/Hotel", newHotel, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-      });   
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       hoteles.value = [...hoteles.value, newHotel];
       reset();
@@ -316,7 +317,7 @@ export default {
       floors.value = null;
       dairport.value = null;
       dcity.value = null;
-      location.value = null;
+      locations.value = null;
       price.value = null;
       chain.value = null;
       commercialization.value = null;
@@ -325,7 +326,10 @@ export default {
     onMounted(() => {
       getHotels();
     });
-
+    const handleClose = () => {
+      inception.value = false;
+      location.value;
+    };
     return {
       name,
       chain,
@@ -337,7 +341,7 @@ export default {
       dairport,
       dcity,
       token,
-      location,
+      locations,
       price,
       province,
       commercialization,
@@ -368,6 +372,7 @@ export default {
       getOptions,
       procesingForm,
       reset,
+      handleClose,
     };
   },
 };

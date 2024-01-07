@@ -4,7 +4,7 @@
   <div>
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <!-- style="margin-left: 18px;" -->
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -101,7 +101,10 @@ export default {
     onMounted(() => {
       getProvinces();
     });
-
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       name,
       myForm,
@@ -110,6 +113,7 @@ export default {
       procesingForm,
       fillTable,
       reset,
+      handleClose,
     };
   },
 };

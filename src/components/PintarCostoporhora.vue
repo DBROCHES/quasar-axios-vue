@@ -55,6 +55,7 @@ export default {
   },
 
   setup(props, { emit }) {
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -66,7 +67,11 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/Costperhour")
+        .get("api/Costperhour", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           allhours.value = response.data;
           console.log(allhours.value);
@@ -75,6 +80,24 @@ export default {
           console.error(error);
         });
     };
+    const confirmDelete = async (row) => {
+      const confirmed = window.confirm(this.$t("deleteModalityConf"));
+
+      if (confirmed) {
+        try {
+          console.log(row.modalityId + "Hakuna Matata");
+          await api.delete(`/api/CostPerHour/ ${row.modalityId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          window.alert(this.$t("deletedModality"));
+          location.reload();
+        } catch (error) {
+          console.error(this.$t("errDeletModality"), error);
+        }
+      }
+    };
     onMounted(() => {
       getall();
     });
@@ -82,6 +105,7 @@ export default {
       rows,
       handleClick,
       allhours,
+      confirmDelete,
     };
   },
   data() {
@@ -90,54 +114,33 @@ export default {
         {
           name: "cost_per_hour",
           label: this.$t("costPH"),
-          alingn: "center",
+          align: "center",
           field: "cost_per_hour",
           sortable: true,
         },
         {
           name: "cost_per_kilometer_traveled",
           label: this.$t("pkilometers"),
-          alingn: "center",
+          align: "center",
           field: "cost_per_kilometer_traveled",
           sortable: true,
         },
         {
           name: "extra_kilometer_cost",
           label: this.$t("ekilometers"),
-          alingn: "center",
+          align: "center",
           field: "extra_kilometer_cost",
           sortable: true,
         },
         {
           name: "extra_hour_cost ",
           label: this.$t("ehours"),
-          alingn: "center",
+          align: "center",
           field: "extra_hour_cost",
           sortable: true,
         },
       ],
-      token: localStorage.getItem('token'),
     };
-  },
-  methods: {
-    async confirmDelete(row) {
-      const confirmed = window.confirm(this.$t("deleteModalityConf"));
-
-      if (confirmed) {
-        try {
-          console.log(row.modalityId + "Hakuna Matata");
-          await api.delete(`/api/CostPerHour/ ${row.modalityId}`, {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        });
-          window.alert(this.$t("deletedModality"));
-          location.reload();
-        } catch (error) {
-          console.error(this.$t("errDeletModality"), error);
-        }
-      }
-    },
   },
 };
 </script>

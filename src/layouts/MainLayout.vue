@@ -46,11 +46,15 @@
               </q-item>
               <q-item v-if="rol !== null">
                 <q-item-section>
-                  <img src="https://cdn.quasar.dev/img/avatar2.jpg" alt="Foto de perfil" class="perfil-foto" />
+                  <img
+                    src="https://cdn.quasar.dev/img/avatar2.jpg"
+                    alt="Foto de perfil"
+                    class="perfil-foto"
+                  />
                 </q-item-section>
                 <q-item-section>
                   <div>{{ userName }}</div>
-                  <div>{{ Email}}</div>
+                  <div>{{ Email }}</div>
                 </q-item-section>
               </q-item>
             </q-list>
@@ -154,139 +158,139 @@
     </q-header>
 
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-        <q-list padding>
-          <q-item clickable v-ripple to="/" active-class="my-menu-link" exact>
+      <q-list padding>
+        <q-item clickable v-ripple to="/" active-class="my-menu-link" exact>
+          <q-item-section avatar>
+            <q-icon name="inbox" />
+          </q-item-section>
+
+          <q-item-section> {{ $t("inicio") }}</q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple to="/tourPackage">
+          <q-item-section avatar>
+            <q-icon name="tourPackage" />
+          </q-item-section>
+          <q-item-section> {{ $t("tourPackage") }} </q-item-section>
+        </q-item>
+
+        <q-item clickable v-ripple to="/about" active-class="my-menu-link">
+          <q-item-section avatar>
+            <q-icon name="star" />
+          </q-item-section>
+
+          <q-item-section> {{ $t("about") }} </q-item-section>
+        </q-item>
+
+        <q-expansion-item
+          v-if="rol === 'Admin' || rol === 'SuperAdmin'"
+          icon="inventory_2"
+          :label="$t('gestion')"
+          caption=""
+        >
+          <q-item clickable v-ripple to="/contracts">
             <q-item-section avatar>
-              <q-icon name="inbox" />
+              <q-icon name="book" />
             </q-item-section>
-
-            <q-item-section> {{ $t("inicio") }}</q-item-section>
+            <q-item-section> {{ $t("contracts") }} </q-item-section>
           </q-item>
-
-          <q-item clickable v-ripple to="/tourPackage">
-            <q-item-section avatar>
-              <q-icon name="tourPackage" />
-            </q-item-section>
-            <q-item-section> {{ $t("tourPackage") }} </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple to="/about" active-class="my-menu-link">
-            <q-item-section avatar>
-              <q-icon name="star" />
-            </q-item-section>
-
-            <q-item-section> {{ $t("about") }} </q-item-section>
-          </q-item>
-
-          <q-expansion-item
-            v-if="rol === 'Admin' || rol === 'SuperAdmin'"
-            icon="inventory_2"
-            :label="$t('gestion')"
-            caption=""
-          >
-            <q-item clickable v-ripple to="/contracts">
+          <q-expansion-item icon="business" :label="$t('hotelera')" caption="">
+            <q-item clickable v-ripple to="/hotel">
               <q-item-section avatar>
-                <q-icon name="book" />
+                <q-icon name="hotel" />
               </q-item-section>
-              <q-item-section> {{ $t("contracts") }} </q-item-section>
+              <q-item-section> {{ $t("hoteles") }} </q-item-section>
             </q-item>
-            <q-expansion-item
-              icon="business"
-              :label="$t('hotelera')"
-              caption=""
-            >
-              <q-item clickable v-ripple to="/hotel">
-                <q-item-section avatar>
-                  <q-icon name="hotel" />
-                </q-item-section>
-                <q-item-section> {{ $t("hoteles") }} </q-item-section>
-              </q-item>
-              <q-item clickable v-ripple to="/room">
-                <q-item-section avatar>
-                  <q-icon name="bed" />
-                </q-item-section>
-                <q-item-section> {{ $t("room") }} </q-item-section>
-              </q-item>
-              <q-item clickable v-ripple to="/meal">
-                <q-item-section avatar>
-                  <q-icon name="restaurant_menu" />
-                </q-item-section>
-                <q-item-section> {{ $t("meals") }} </q-item-section>
-              </q-item>
-            </q-expansion-item>
-            <q-item clickable v-ripple to="/activities">
+            <q-item clickable v-ripple to="/room">
               <q-item-section avatar>
-                <q-icon name="directions_run" />
+                <q-icon name="bed" />
               </q-item-section>
-              <q-item-section> {{ $t("actividades") }} </q-item-section>
+              <q-item-section> {{ $t("room") }} </q-item-section>
             </q-item>
-            <q-expansion-item
-              icon="local_shipping"
-              :label="$t('transort')"
-              caption=""
-            >
-              <q-item clickable v-ripple to="/vehicle">
-                <q-item-section avatar>
-                  <q-icon name="directions_car" />
-                </q-item-section>
-                <q-item-section> {{ $t("vehicles") }} </q-item-section>
-              </q-item>
-              <q-item clickable v-ripple to="/modality">
-                <q-item-section avatar>
-                  <q-icon name="grid_view" />
-                </q-item-section>
-                <q-item-section> {{ $t("modality") }}</q-item-section>
-              </q-item>
-            </q-expansion-item>
-            <q-item clickable v-ripple to="/provinces">
+            <q-item clickable v-ripple to="/meal">
               <q-item-section avatar>
-                <q-icon name="travel_explore" />
+                <q-icon name="restaurant_menu" />
               </q-item-section>
-              <q-item-section> {{ $t("provinces") }} </q-item-section>
+              <q-item-section> {{ $t("meals") }} </q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/users">
+            <q-item clickable v-ripple to="/season">
               <q-item-section avatar>
-                <q-icon name="supervisor_account" />
+                <q-icon name="sunny" />
               </q-item-section>
-              <q-item-section> {{ $t("users") }} </q-item-section>
+              <q-item-section> {{ $t("season") }} </q-item-section>
             </q-item>
           </q-expansion-item>
+          <q-item clickable v-ripple to="/activities">
+            <q-item-section avatar>
+              <q-icon name="directions_run" />
+            </q-item-section>
+            <q-item-section> {{ $t("actividades") }} </q-item-section>
+          </q-item>
           <q-expansion-item
-            v-if="rol === 'Admin' || rol === 'SuperAdmin'"
-            icon="list"
-            label="Reportes"
+            icon="local_shipping"
+            :label="$t('transort')"
             caption=""
           >
-            <q-item clickable v-ripple to="/reportHotelContracts">
+            <q-item clickable v-ripple to="/vehicle">
               <q-item-section avatar>
-                <q-icon name="list" />
+                <q-icon name="directions_car" />
               </q-item-section>
-              <q-item-section>
-                Contratos de Hoteles Conciliados
-              </q-item-section>
+              <q-item-section> {{ $t("vehicles") }} </q-item-section>
             </q-item>
-            <q-item clickable v-ripple to="/reportHotelSeason">
+            <q-item clickable v-ripple to="/modality">
               <q-item-section avatar>
-                <q-icon name="list" />
+                <q-icon name="grid_view" />
               </q-item-section>
-              <q-item-section>
-                Listado de Temporadas de los Contratos de Hoteles
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-ripple to="/reportListTransportContract">
-              <q-item-section avatar>
-                <q-icon name="list" />
-              </q-item-section>
-              <q-item-section> Listado de Contratos Transporte </q-item-section>
-            </q-item>
-            <q-item clickable v-ripple to="/reportActiveHotels">
-              <q-item-section avatar>
-                <q-icon name="list" />
-              </q-item-section>
-              <q-item-section> Listado de Hoteles Activos </q-item-section>
+              <q-item-section> {{ $t("modality") }}</q-item-section>
             </q-item>
           </q-expansion-item>
-        </q-list>
+          <q-item clickable v-ripple to="/provinces">
+            <q-item-section avatar>
+              <q-icon name="travel_explore" />
+            </q-item-section>
+            <q-item-section> {{ $t("provinces") }} </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/users">
+            <q-item-section avatar>
+              <q-icon name="supervisor_account" />
+            </q-item-section>
+            <q-item-section> {{ $t("users") }} </q-item-section>
+          </q-item>
+        </q-expansion-item>
+        <q-expansion-item
+          v-if="rol === 'Admin' || rol === 'SuperAdmin'"
+          icon="list"
+          label="Reportes"
+          caption=""
+        >
+          <q-item clickable v-ripple to="/reportHotelContracts">
+            <q-item-section avatar>
+              <q-icon name="list" />
+            </q-item-section>
+            <q-item-section> Contratos de Hoteles Conciliados </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/reportHotelSeason">
+            <q-item-section avatar>
+              <q-icon name="list" />
+            </q-item-section>
+            <q-item-section>
+              Listado de Temporadas de los Contratos de Hoteles
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/reportListTransportContract">
+            <q-item-section avatar>
+              <q-icon name="list" />
+            </q-item-section>
+            <q-item-section> Listado de Contratos Transporte </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple to="/reportActiveHotels">
+            <q-item-section avatar>
+              <q-icon name="list" />
+            </q-item-section>
+            <q-item-section> Listado de Hoteles Activos </q-item-section>
+          </q-item>
+        </q-expansion-item>
+      </q-list>
     </q-drawer>
 
     <q-page-container>
