@@ -46,6 +46,7 @@ export default {
   },
 
   setup(props, { emit }) {
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -58,9 +59,9 @@ export default {
     const getall = async () => {
       await api
         .get("api/HotelContract", {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           allContracts.value = response.data;
@@ -76,7 +77,7 @@ export default {
     return {
       handleClick,
       allContracts,
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
 
@@ -89,8 +90,8 @@ export default {
           console.log(row.id + "Hakuna Matata");
           await api.delete(`/api/HotelContract/ ${row.id}`, {
             headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
+              Authorization: `Bearer ${this.token}`,
+            },
           });
           window.alert(this.$t("deleteCont"));
           location.reload();

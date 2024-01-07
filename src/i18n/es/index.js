@@ -128,6 +128,7 @@ export default {
   noHotels: "Sin hoteles para mostrar",
   noMeals: "Sin plan de comidas para mostrar",
   noProvinces: "Sin provincias para mostrar",
+  noTourPackage: "Sin Paquetes Turísticos para mostrar",
   nombre: "Nombre",
   noModalitys: "Sin Modalidades para mostrar",
   noUsers: "Sin Usuarios para mostrar",

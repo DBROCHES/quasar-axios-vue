@@ -127,6 +127,7 @@ export default {
   noModalitys: "No Modalities to show",
   noUsers: "No Users to show",
   noProvinces: "No provinces to show",
+  noTourPackage: "No Tour Packages to show",
   noRooms: "No rooms to show",
   noVehicles: "No vehicles to show",
   nuevo: "New",

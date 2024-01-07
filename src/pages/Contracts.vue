@@ -352,22 +352,6 @@
                     />
                   </div>
                 </div>
-                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
-                  <div>
-                    <q-input
-                      outlined
-                      :label="$t('plate')"
-                      v-model="matricula"
-                      type="textarea"
-                      rows="1"
-                      maxlength="8"
-                      lazy-rules
-                      :rules="[
-                        (val) => (val && val.length > 0) || this.$t('rellene'),
-                      ]"
-                    />
-                  </div>
-                </div>
               </div>
               <div>
                 <q-btn
