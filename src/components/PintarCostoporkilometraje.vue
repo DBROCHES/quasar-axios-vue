@@ -54,8 +54,7 @@ export default {
   },
 
   setup(props, { emit }) {
-
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const handleClick = (row) => {
       emit("button-clicked", row);
@@ -69,9 +68,9 @@ export default {
     const getall = async () => {
       await api
         .get("api/MilageCost", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           allkilometers.value = response.data;
@@ -91,9 +90,9 @@ export default {
           console.log(row.modalityId + "Hakuna Matata");
           await api.delete(`/api/MilageCost/ ${row.modalityId}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
-        });
+              Authorization: `Bearer ${token}`,
+            },
+          });
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
@@ -119,21 +118,21 @@ export default {
         {
           name: "cost_per_kilometer",
           label: this.$t("kilometer"),
-          alingn: "center",
+          align: "center",
           field: "cost_per_kilometer",
           sortable: true,
         },
         {
           name: "cost_per_round_trip",
           label: this.$t("goback"),
-          alingn: "center",
+          align: "center",
           field: "cost_per_round_trip",
           sortable: true,
         },
         {
           name: "cost_per_waiting_hour",
           label: this.$t("wait"),
-          alingn: "center",
+          align: "center",
           field: "cost_per_waiting_hour",
           sortable: true,
         },

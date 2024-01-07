@@ -4,7 +4,7 @@
   <h2>{{ $t("contratos") }}</h2>
   <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div class="q-pa-md q-gutter-sm">
         <q-carousel animated v-model="slide" infinite>
           <q-carousel-slide name="complementarios">
@@ -712,6 +712,10 @@ export default {
       inception.value = true;
       slide.value = "transportes";
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       Descp,
       inicio,
@@ -740,6 +744,7 @@ export default {
       transp,
       tab: ref("complementaryContract"),
       buttonstate,
+      handleClose,
       updatingComplementary,
       updatingHotels,
       updatingTransportation,

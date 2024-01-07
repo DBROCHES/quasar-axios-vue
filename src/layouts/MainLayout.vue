@@ -211,6 +211,12 @@
               </q-item-section>
               <q-item-section> {{ $t("meals") }} </q-item-section>
             </q-item>
+            <q-item clickable v-ripple to="/season">
+              <q-item-section avatar>
+                <q-icon name="sunny" />
+              </q-item-section>
+              <q-item-section> {{ $t("season") }} </q-item-section>
+            </q-item>
           </q-expansion-item>
           <q-item clickable v-ripple to="/activities">
             <q-item-section avatar>

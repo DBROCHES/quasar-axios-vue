@@ -3,16 +3,21 @@
     <q-page-container>
       <q-page padding>
         <q-stepper v-model="step" ref="stepper" color="primary" animated>
-
           <!---------------------Seleción de Hotel,Room,Meal------------------------>
           <q-step :name="1" title="Hotel" icon="hotel" :done="step > 1">
             <div class="row q-col-gutter-md">
               <q-card class="my-card fit" animated>
-                <q-img src="https://source.unsplash.com/random?hotel"  class="full-width-image" />
+                <q-img
+                  src="https://source.unsplash.com/random?hotel"
+                  class="full-width-image"
+                />
                 <q-card-section>
                   <div class="text-h5">
                     {{
-                      "Hotel " + this.selectedhotel.chain + " " + this.selectedhotel.name
+                      "Hotel " +
+                      this.selectedhotel.chain +
+                      " " +
+                      this.selectedhotel.name
                     }}
                   </div>
                   <q-rating
@@ -96,7 +101,10 @@
                 <q-item-section>
                   <q-card class="fit">
                     <q-card-section horizontal>
-                      <q-img class="fixed-size" src="https://source.unsplash.com/random?vehicle" />
+                      <q-img
+                        class="fixed-size"
+                        src="https://source.unsplash.com/random?vehicle"
+                      />
                       <q-card-section vertical>
                         <div class="text-h6">{{ vehiculo.brand }}</div>
                         <div>{{ vehiculo.license_Plate_Number }}</div>
@@ -113,13 +121,15 @@
                         </q-badge>
                         <q-card-section horizontal>
                           <q-chip
+                            v-for="(modality, index) in modalities"
+                            :key="index"
                             clickable
                             rounded
                             color="blue"
                             text-color="white"
                             @click="selectModality(index, 1)"
                           >
-                            {{ "$" + vehiculo.precioPorHora + "/h" }}
+                            {{ "$" + sumModalitiesCost(modality) + "/h" }}
                             <q-badge
                               color="green"
                               floating
@@ -216,7 +226,10 @@
                 <q-item-section>
                   <q-card class="fit">
                     <q-card-section horizontal>
-                      <q-img class="fixed-size" src="https://source.unsplash.com/random?" />
+                      <q-img
+                        class="fixed-size"
+                        src="https://source.unsplash.com/random?"
+                      />
                       <q-card-section vertical>
                         <q-expansion-item
                           :label="$t('seeDescription')"
@@ -402,7 +415,7 @@ import { api } from "boot/axios";
 export default {
   data() {
     return {
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
       selectedRoom: null,
       white: "white",
       selectedRoomindex: -1,
@@ -411,6 +424,7 @@ export default {
       selectedhotel: null,
       selectedMeal: null,
       selectedMealtype: "",
+      modalities: [],
       meals: null,
       provincias: ["Provincia 1", "Provincia 2", "Provincia 3"],
       selectedVehicleIndex: -1,
@@ -426,18 +440,18 @@ export default {
     };
   },
   methods: {
-    gethotel(){
-      this.hotel = sessionStorage.getItem('slchotel');
+    gethotel() {
+      this.hotel = sessionStorage.getItem("slchotel");
       this.selectedhotel = JSON.parse(this.hotel);
       console.log(this.selectedhotel.hotelId);
     },
-    async getRooms (){
+    async getRooms() {
       await api
         .get(`/api/Room/Hotel/ ${this.selectedhotel.hotelId}`, {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        })   
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        })
         .then((response) => {
           this.rooms = response.data;
           console.log(this.rooms);
@@ -446,13 +460,13 @@ export default {
           console.error(error);
         });
     },
-    async getMeals (){
+    async getMeals() {
       await api
         .get(`/api/Meal/Hotel/ ${this.selectedhotel.hotelId}`, {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        })   
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        })
         .then((response) => {
           this.meals = response.data;
           console.log(this.meals);
@@ -461,13 +475,29 @@ export default {
           console.error(error);
         });
     },
-    async getVehicles (){
+    async getModalities() {
+      await api
+        .get(`/api/Modality/VehicleId/ ${this.selectedVehicles}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        })
+        .then((response) => {
+          this.modalities = response.data;
+          console.log(this.vehiculos);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    async getVehicles() {
       await api
         .get(`/api/Vehicles/Province/ ${this.selectedhotel.provinceId}`, {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        })   
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        })
         .then((response) => {
           this.vehiculos = response.data;
           console.log(this.vehiculos);
@@ -476,13 +506,16 @@ export default {
           console.error(error);
         });
     },
-    async getDactivities (){
+    async getDactivities() {
       await api
-        .get(`/api/DayliActivities/Province/ ${this.selectedhotel.provinceId}`, {
+        .get(
+          `/api/DayliActivities/Province/ ${this.selectedhotel.provinceId}`,
+          {
             headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        })   
+              Authorization: `Bearer ${this.token}`,
+            },
+          }
+        )
         .then((response) => {
           this.activities = response.data;
           console.log(this.activities);
@@ -513,6 +546,7 @@ export default {
       } else {
         this.selectedVehicleIndex = index;
         this.selectedVehicles = this.vehiculos[index];
+        this.getModalities(this.selectedVehicles.vehicleId);
       }
     },
     seleccionarActividad(index) {
@@ -527,6 +561,7 @@ export default {
       }
     },
     selectModality(index, type) {
+      let temp = this.vehiculos[0].Transports.Modality.constructor.name;
       if (this.selectedVehicles === null) {
         this.selectedVehicles = this.vehiculos[index];
         this.selectedVehicleIndex = index;
@@ -574,16 +609,16 @@ export default {
         return 0;
       }
     },
+    sumModalitiesCost(modality) {},
   },
   created() {
     this.gethotel();
     this.getRooms();
-    this.getMeals ();
-    this.getVehicles ();
-    this.getDactivities ();
+    this.getMeals();
+    this.getVehicles();
+    this.getDactivities();
   },
 };
-
 </script>
 
 <style scoped>

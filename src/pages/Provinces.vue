@@ -4,7 +4,8 @@
   <h2>{{ $t("provinces") }}</h2>
   <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <!-- style="margin-left: 18px;" -->
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -119,6 +120,10 @@ export default {
       selectedProvince.value = true;
       inception.value = true;
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       name,
       myForm,
@@ -129,6 +134,7 @@ export default {
       updatingProvinces,
       procesingForm,
       reset,
+      handleClose,
     };
   },
   components: {

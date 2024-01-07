@@ -4,7 +4,7 @@
   <h2>{{ $t("actividades") }}</h2>
   <div class="q-pa-md" id="act">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -179,6 +179,10 @@ export default {
         console.error("Error al obtener las opciones desde la API", error);
       }
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     onMounted(() => {
       getOptions();
     });
@@ -196,6 +200,7 @@ export default {
       procesingForm,
       reset,
       updatingactivitie,
+      handleClose,
     };
   },
 };

@@ -9,7 +9,7 @@
       class="boton"
       @click="inception = true"
     />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -115,9 +115,11 @@ export default {
     const selectedOptions = ref(null);
     const myForm = ref(null);
     const selectedMeal = ref(false);
+    const inception = ref(false);
     //Arreglo de vehiculos
     const meals = ref([]);
     const token = localStorage.getItem("token");
+    const tempid = ref([]);
 
     //GETTES SETTES
 
@@ -157,8 +159,10 @@ export default {
       selectedOptions.value = row.hotelId;
       name.value = row.name;
       description.value = row.description;
-      price.value = row.description;
+      price.value = row.price;
       selectedMeal.value = true;
+      inception.value = true;
+      tempid.value = row.id;
     };
     const procesingForm = async () => {
       myForm.value.resetValidation();
@@ -166,6 +170,7 @@ export default {
       const hotelId = selectedOptions.value ? selectedOptions.value : null;
 
       const newMeal = {
+        id: selectedMeal.value ? tempid.value : 0,
         name: name.value,
         description: description.value,
         price: price.value,
@@ -177,14 +182,16 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+        meals.value = [...meals.value, newMeal];
       } else {
         await api.put("/api/Meal", newMeal, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+        location.reload();
       }
-      meals.value = [...meals.value, newMeal];
+
       reset();
       fillTable();
     };
@@ -197,6 +204,7 @@ export default {
       name.value = null;
       description.value = null;
       price.value = null;
+      selectedOptions.value = null;
       fillTable();
     };
 
@@ -204,7 +212,10 @@ export default {
       getMeals();
       getOptions();
     });
-
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       meals,
       name,
@@ -214,10 +225,11 @@ export default {
       selectedOptions,
       options,
       token,
-      inception: ref(false),
+      inception,
       procesingForm,
       reset,
       updateMeal,
+      handleClose,
     };
   },
 };

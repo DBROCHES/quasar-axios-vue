@@ -106,7 +106,7 @@ export default {
       if (confirmed) {
         try {
           console.log(row.activityId + "Hakuna Matata");
-          await api.delete(`/api/DayliActivities ${row.activityId}`, {
+          await api.delete(`/api/DayliActivities/ ${row.activityId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

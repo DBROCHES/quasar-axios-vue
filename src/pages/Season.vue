@@ -4,7 +4,7 @@
   <h2>Temporadas</h2>
   <div class="q-pa-md">
     <q-btn label="Nuevo" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -143,6 +143,10 @@ export default {
       const [year, month, dayh] = date.split("/");
       return year === currentYear.toString();
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       date,
       name,
@@ -153,7 +157,7 @@ export default {
       updatingseason,
       procesingForm,
       reset,
-
+      handleClose,
       optionsFn,
     };
   },
