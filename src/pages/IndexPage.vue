@@ -20,8 +20,8 @@
       <q-carousel-slide :name="6" img-src="~assets/lighthouse.jpg" />
       <q-carousel-slide :name="7" img-src="~assets/safari.jpg" />
     </q-carousel>
-    <div class="form-overlay">
-      <div v-if="rol !== null" id="centrar">
+    <div  v-if="rol !== null" class="form-overlay">
+      <div id="centrar">
         <q-form
           class="q-pa-md q-gutter-md row items-center justify-center form-container"
           id="q-toolbar"
@@ -35,7 +35,6 @@
             fill-input
             input-debounce="0"
             :options="options"
-            @filter="filterFn"
             label="Destino"
             class="buscador"
           >
@@ -70,7 +69,7 @@
           <q-input
             class="buscador"
             type="number"
-            v-model="personscant"
+            v-model="amountofPeople"
             label="Numero de personas"
             min="1"
           />
@@ -78,8 +77,9 @@
             <q-btn
               label="Buscar"
               type="submit"
-              class="buscador"
               color="primary"
+              class ="buscador"
+              @click="submitForm"
             />
           </div>
         </q-form>
@@ -89,8 +89,9 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { defineComponent } from "vue";
+import { api } from "src/boot/axios";
 
 export default defineComponent({
   name: "IndexPage",
@@ -100,12 +101,45 @@ export default defineComponent({
     const options = ref([]);
     const date = ref(null);
     const dates = ref("");
+    const token = localStorage.getItem('token');
+
     watch(date, (newdate) => {
       dates.value = `${newdate.from} - ${newdate.to}`;
     });
+    const submitForm = () => {
+
+      if(destination.value != null && dates.value.start != null && dates.value.end != null && amountofPeople.value != null){
+        localStorage.setItem('prov',destination.value);
+        localStorage.setItem('starDate',dates.value.start);
+        localStorage.setItem('endDate',dates.value.end);
+        localStorage.setItem('amountP',amountofPeople.value);
+      }
+    };
+    const getOptions = async () => {
+      try {
+        const response = await api.get("/api/ProvinceSet", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        options.value = response.data.map((tupla) => ({
+          label: tupla.provinceName,
+          value: tupla.provinceId,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    onMounted(() => {
+      getOptions();
+    });
+
     return {
+      options,
       date,
       dates,
+      token,
+      submitForm,
       amountofPeople,
       destination,
       slide: ref(1),

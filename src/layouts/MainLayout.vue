@@ -389,7 +389,7 @@ export default {
         localStorage.setItem("username", data.UserName);
         localStorage.setItem("email", data.Email);
         localStorage.setItem("role", roles[0]);
-        localStorage.setItem("userId", data.Id);
+        localStorage.setItem("userId", data.UserId);
 
         this.$router.push("/");
         location.reload();

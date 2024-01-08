@@ -85,7 +85,6 @@ export default {
 
       await api.post("api/ProvinceSet", newProvince);
       provinces.value.push(newProvince);
-      location.reload();
 
       reset();
       fillTable();
@@ -97,11 +96,6 @@ export default {
     const reset = () => {
       name.value = null;
     };
-
-    onMounted(() => {
-      getProvinces();
-    });
-
     return {
       name,
       myForm,
@@ -109,8 +103,12 @@ export default {
       inception: ref(false),
       procesingForm,
       fillTable,
+      getProvinces,
       reset,
     };
   },
+  created() {
+      this.getProvinces();
+    },
 };
 </script>
