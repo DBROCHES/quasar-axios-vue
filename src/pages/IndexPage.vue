@@ -20,11 +20,12 @@
       <q-carousel-slide :name="6" img-src="~assets/lighthouse.jpg" />
       <q-carousel-slide :name="7" img-src="~assets/safari.jpg" />
     </q-carousel>
-    <div  v-if="rol !== null" class="form-overlay">
+    <div v-if="rol !== null" class="form-overlay">
       <div id="centrar">
         <q-form
           class="q-pa-md q-gutter-md row items-center justify-center form-container"
           id="q-toolbar"
+          @submit.prevent="submitForm"
         >
           <!--------------------------Destino---------------------------------->
           <q-select
@@ -35,7 +36,6 @@
             fill-input
             input-debounce="0"
             :options="options"
-            @filter="filterFn"
             :label="$t('destino')"
             class="buscador"
           >
@@ -81,7 +81,7 @@
               :label="$t('buscar')"
               type="submit"
               color="primary"
-              class ="buscador"
+              class="buscador"
               @click="submitForm"
             />
           </div>
@@ -89,6 +89,7 @@
       </div>
     </div>
   </div>
+
   <h3 class="text-center">Provincias a visitar</h3>
   <div class="text-center items-center">
     <div class="q-pa-md row items-start q-gutter-md">
@@ -124,7 +125,7 @@
 
 <script>
 import { ref, watch, onMounted } from "vue";
-import { ref, watch, onMounted } from "vue";
+
 import { defineComponent } from "vue";
 import { api } from "src/boot/axios";
 
@@ -137,18 +138,24 @@ export default defineComponent({
     const provinces = ref([]);
     const date = ref(null);
     const dates = ref("");
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     watch(date, (newdate) => {
       dates.value = `${newdate.from} - ${newdate.to}`;
     });
     const submitForm = () => {
+      const [start, end] = dates.value.split("-");
 
-      if(destination.value != null && dates.value.start != null && dates.value.end != null && personscant.value != null){
-        localStorage.setItem('prov',destination.value);
-        localStorage.setItem('starDate',dates.value.start);
-        localStorage.setItem('endDate',dates.value.end);
-        localStorage.setItem('amountP',amountofPeople.value);
+      if (
+        destination.value != null &&
+        start != null &&
+        end != null &&
+        personscant.value != null
+      ) {
+        localStorage.setItem("prov", destination.value);
+        localStorage.setItem("starDate", dates.value.start);
+        localStorage.setItem("endDate", dates.value.end);
+        localStorage.setItem("amountP", personscant.value);
       }
     };
     const getOptions = async () => {
