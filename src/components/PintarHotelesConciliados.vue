@@ -26,6 +26,16 @@
           style="min-width: 150px"
         />
       </template>
+      <template v-slot:body-cell-roomType="props">
+        <div v-if="props.row.roomType && props.row.roomType.length > 0">
+          <ul>
+            <li v-for="room in props.row.roomType" :key="room">
+              {{ room }}
+            </li>
+          </ul>
+        </div>
+        <div v-else>Campo vacío</div>
+      </template>
     </q-table>
   </div>
 </template>

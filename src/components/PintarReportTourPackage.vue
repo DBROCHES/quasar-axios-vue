@@ -26,12 +26,10 @@
           style="min-width: 150px"
         />
       </template>
-      <template v-slot:body-cell-userName="props">
-        <q-td :props="props">
-          <div v-for="(user, index) in props.row.userName" :key="index">
-            {{ user }}
-          </div>
-        </q-td>
+      <template v-slot:body-cell-roomType="props">
+        <div v-if="props.columns == null">
+          <div>Campo vacío</div>
+        </div>
       </template>
     </q-table>
   </div>
@@ -89,10 +87,10 @@ export default {
           sortable: true,
         },
         {
-          name: "activity",
-          label: this.$t("actividades"),
+          name: "peopleCant",
+          label: this.$t("amountofPeople"),
           align: "left",
-          field: "activity",
+          field: "peopleCant",
           sortable: true,
         },
         {
@@ -123,7 +121,7 @@ export default {
         "provinceName",
         "hotelName",
         "vehicle",
-        "activity",
+        "peopleCant",
         "totalprice",
       ]),
     };

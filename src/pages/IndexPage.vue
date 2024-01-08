@@ -47,7 +47,6 @@
               </q-item>
             </template>
           </q-select>
-          <!------------------FECHAS------------------------------->
           <div class="form-floating">
             <q-input
               standout
@@ -68,7 +67,6 @@
               </template>
             </q-input>
           </div>
-          <!----------------Numero de personas---------------------------------------------->
           <q-input
             class="buscador"
             type="number"
@@ -79,7 +77,6 @@
           <div>
             <q-btn
               :label="$t('buscar')"
-              type="submit"
               color="primary"
               class="buscador"
               @click="submitForm"
@@ -128,7 +125,6 @@ import { ref, watch, onMounted } from "vue";
 
 import { defineComponent } from "vue";
 import { api } from "src/boot/axios";
-
 export default defineComponent({
   name: "IndexPage",
   setup() {
@@ -146,15 +142,19 @@ export default defineComponent({
     const submitForm = () => {
       const [start, end] = dates.value.split("-");
 
+      const [starDate, endDate] = dates.value.split("-");
+
       if (
         destination.value != null &&
-        start != null &&
-        end != null &&
+        starDate != null &&
+        endDate != null &&
         personscant.value != null
       ) {
-        localStorage.setItem("prov", destination.value);
-        localStorage.setItem("starDate", dates.value.start);
-        localStorage.setItem("endDate", dates.value.end);
+        const p = JSON.stringify(destination.value);
+        localStorage.setItem("prov", p);
+
+        localStorage.setItem("starDate", starDate);
+        localStorage.setItem("endDate", endDate);
         localStorage.setItem("amountP", personscant.value);
       }
     };
@@ -212,15 +212,12 @@ export default defineComponent({
   background-color: transparent;
   width: 100%;
 }
-
 .ofertas {
   position: relative;
 }
-
 .my-card {
   border-radius: 0;
   width: 300px; /* Ajusta este valor al tamaño deseado para tu tarjeta */
-
   justify-content: center;
   display: flex;
 }
