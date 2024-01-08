@@ -4,7 +4,7 @@
   <h2>Temporadas</h2>
   <div class="q-pa-md">
     <q-btn label="Nuevo" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -27,14 +27,28 @@
                 />
               </div>
             </div>
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
+              <div>
+                <q-input
+                  outlined
+                  label="Porciento"
+                  v-model="percent"
+                  type="number"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Rellene el campo',
+                  ]"
+                />
+              </div>
+            </div>
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div class="form-floating">
                 <q-input
+                  outlined
                   filled
-                  v-model="date"
-                  label="Fecha de Inicio"
+                  v-model="dates"
+                  label="Fecha de inicio - Fecha Final"
                   mask="date"
-                  :rules="['date']"
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
@@ -43,7 +57,7 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="date" :options="optionsFn">
+                        <q-date v-model="date" range :options="optionsFn">
                           <div class="row items-center justify-end">
                             <q-btn
                               v-close-popup
@@ -59,30 +73,21 @@
                 </q-input>
               </div>
             </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <q-input
-                outlined
-                label="fecha"
-                v-model="name"
-                type="date"
-                lazy-rules
-                :rules="['date']"
+
+            <div>
+              <q-btn
+                color="primary"
+                label="Aceptar"
+                class="q-ml-sm"
+                type="submit"
+              />
+              <q-btn
+                color="primary"
+                label="Cancelar"
+                class="q-ml-sm"
+                type="reset"
               />
             </div>
-          </div>
-          <div>
-            <q-btn
-              color="primary"
-              label="Aceptar"
-              class="q-ml-sm"
-              type="submit"
-            />
-            <q-btn
-              color="primary"
-              label="Cancelar"
-              class="q-ml-sm"
-              type="reset"
-            />
           </div>
         </q-form>
       </div>
@@ -92,14 +97,14 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, watch } from "vue";
 import PintarSeason from "src/components/PintarSeason.vue";
+import { api } from "src/boot/axios";
 
 export default {
   components: { PintarSeason },
   setup() {
     // Variables reactivas
-    const date = ref("");
     const name = ref("");
     const myForm = ref(null);
     const selectedSeason = ref(false);
@@ -107,6 +112,12 @@ export default {
     const Seasons = ref([]);
     const currentYear = new Date().getFullYear();
     const inception = ref(false);
+    const date = ref(null);
+    const dates = ref("");
+    const token = localStorage.getItem("token");
+    watch(date, (newdate) => {
+      dates.value = `${newdate.from} - ${newdate.to}`;
+    });
     const procesingForm = async () => {
       console.log("me diste click");
       myForm.value.resetValidation();
@@ -117,12 +128,18 @@ export default {
         startDate: date.value,
       };
       if (!selectedSeason.value) {
-        await api.post("api/Season", tempSeason);
+        await api.post("api/Season", tempSeason, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         phour.value.push(cphour);
-        //location.reload();
       } else {
-        await api.put("api/Season", tempSeason);
-        location.reload();
+        await api.put("api/Season", tempSeason, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
       }
       //restablece los valores del formulario
       reset();
@@ -143,8 +160,13 @@ export default {
       const [year, month, dayh] = date.split("/");
       return year === currentYear.toString();
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       date,
+      dates,
       name,
       myForm,
       Seasons,
@@ -153,7 +175,7 @@ export default {
       updatingseason,
       procesingForm,
       reset,
-
+      handleClose,
       optionsFn,
     };
   },

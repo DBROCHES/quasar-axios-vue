@@ -2,9 +2,9 @@
   <div class="q-mt-md">
     <!-- q-pa-md -->
     <q-table
-      :no-data-label="$t('noContracts')"
+      :no-data-label="$t('noTourPackage')"
       :columns="columns"
-      :rows="contracts"
+      :rows="packages"
       row-key="name"
       :visible-columns="visibleColumns"
     >
@@ -26,6 +26,13 @@
           style="min-width: 150px"
         />
       </template>
+      <template v-slot:body-cell-userName="props">
+        <q-td :props="props">
+          <div v-for="(user, index) in props.row.userName" :key="index">
+            {{ user }}
+          </div>
+        </q-td>
+      </template>
     </q-table>
   </div>
 </template>
@@ -34,58 +41,16 @@ import { ref } from "vue";
 
 export default {
   props: {
-    contracts: Array,
+    packages: Array,
   },
   data() {
     return {
       columns: [
         {
-          name: "date",
-          label: this.$t("date"),
+          name: "userName",
+          label: this.$t("userName"),
           align: "left",
-          field: "date",
-          sortable: true,
-        },
-        {
-          name: "name",
-          label: this.$t("hotelName"),
-          align: "left",
-          field: "name",
-          sortable: true,
-        },
-        {
-          name: "chain",
-          label: this.$t("chain"),
-          align: "left",
-          field: "chain",
-          sortable: true,
-        },
-        {
-          name: "provinceName",
-          label: this.$t("province"),
-          align: "left",
-          field: "provinceName",
-          sortable: true,
-        },
-        {
-          name: "category",
-          label: this.$t("category"),
-          align: "left",
-          field: "category",
-          sortable: true,
-        },
-        {
-          name: "phone",
-          label: this.$t("phone"),
-          align: "left",
-          field: "phone",
-          sortable: true,
-        },
-        {
-          name: "address",
-          label: this.$t("address"),
-          align: "left",
-          field: "address",
+          field: "userName",
           sortable: true,
         },
         {
@@ -96,49 +61,70 @@ export default {
           sortable: true,
         },
         {
-          name: "disNearCity",
-          label: this.$t("dcity"),
+          name: "provinceName",
+          label: this.$t("province"),
           align: "left",
-          field: "disNearCity",
+          field: "provinceName",
           sortable: true,
         },
         {
-          name: "disAirport",
-          label: this.$t("dairport"),
+          name: "hotelName",
+          label: "Hotel",
           align: "left",
-          field: "disAirport",
+          field: "hotelName",
           sortable: true,
         },
         {
-          name: "numberOfRooms",
-          label: this.$t("rooms"),
+          name: "vehicle",
+          label: this.$t("vehicle"),
           align: "left",
-          field: "numberOfRooms",
-          sortable: true,
-        },
-
-        {
-          name: "numberOfFloors",
-          label: this.$t("floors"),
-          align: "left",
-          field: "numberOfFloors",
+          field: "vehicle",
           sortable: true,
         },
         {
-          name: "comercializationMode",
-          label: this.$t("commercialization"),
+          name: "modality",
+          label: this.$t("modality"),
           align: "left",
-          field: "comercializationMode",
+          field: "modality",
+          sortable: true,
+        },
+        {
+          name: "activity",
+          label: this.$t("actividades"),
+          align: "left",
+          field: "activity",
+          sortable: true,
+        },
+        {
+          name: "startDate",
+          label: this.$t("startDate"),
+          align: "left",
+          field: "startDate",
+          sortable: true,
+        },
+        {
+          name: "endDate",
+          label: this.$t("endTime"),
+          align: "left",
+          field: "endDate",
+          sortable: true,
+        },
+        {
+          name: "totalprice",
+          label: this.$t("totalPrice"),
+          align: "left",
+          field: "totalprice",
           sortable: true,
         },
       ],
       visibleColumns: ref([
-        "name",
-        "chain",
-        "category",
-        "phone",
-        "address",
+        "userName",
         "email",
+        "provinceName",
+        "hotelName",
+        "vehicle",
+        "activity",
+        "totalprice",
       ]),
     };
   },

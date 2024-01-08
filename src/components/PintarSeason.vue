@@ -70,9 +70,11 @@ export default {
   },
 
   setup(props, { emit }) {
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
+
     let allSeasons = ref([...props.seasons]);
     //Esta funcion hace que los cambios en la propiedad hours del props se reflejen tambien en el arreglo
     watchEffect(() => {
@@ -81,10 +83,14 @@ export default {
     //Funcion de llenar la tabla
     const getall = async () => {
       await api
-        .get("api/Season")
+        .get("api/Season", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
-          allhours.value = response.data;
-          console.log(allhours.value);
+          allSeasons.value = response.data;
+          console.log(allSeasons.value);
         })
         .catch((error) => {
           console.error(error);
@@ -98,7 +104,11 @@ export default {
       if (confirmed) {
         try {
           console.log(row.seasonId + "Hakuna Matata");
-          await api.delete(`/api/CostPerHour/ ${row.seasonId}`);
+          await api.delete(`/api/CostPerHour/ ${row.seasonId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
           window.alert("Temporada eliminada");
           location.reload();
         } catch (error) {

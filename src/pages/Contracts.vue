@@ -4,7 +4,7 @@
   <h2>{{ $t("contratos") }}</h2>
   <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div class="q-pa-md q-gutter-sm">
         <q-carousel animated v-model="slide" infinite>
           <q-carousel-slide name="complementarios">
@@ -352,22 +352,6 @@
                     />
                   </div>
                 </div>
-                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
-                  <div>
-                    <q-input
-                      outlined
-                      :label="$t('plate')"
-                      v-model="matricula"
-                      type="textarea"
-                      rows="1"
-                      maxlength="8"
-                      lazy-rules
-                      :rules="[
-                        (val) => (val && val.length > 0) || this.$t('rellene'),
-                      ]"
-                    />
-                  </div>
-                </div>
               </div>
               <div>
                 <q-btn
@@ -452,7 +436,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, onMounted, toRaw, nextTick } from "vue";
 import { api } from "src/boot/axios";
 import PintarContratosComplementarios from "src/components/PintarContratosComlementarios.vue";
 import PintarContratosHoteles from "src/components/PintarContratosHoteles.vue";
@@ -473,6 +457,7 @@ export default {
     // Variables de Contratos de hoteles
     const direccion = ref("");
     const precio = ref("");
+    const selectedOptions = ref(null);
     //Variables de Contratos de transportes
     const proveedor = ref(null);
     const vehiculos = ref("");
@@ -488,7 +473,9 @@ export default {
     const comp = ref([]);
     const hotls = ref([]);
     const transp = ref([]);
-    const token = localStorage.getItem('token');
+    const options = ref([]);
+    const seasons = ref([]);
+    const token = localStorage.getItem("token");
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
         if (success) {
@@ -517,6 +504,42 @@ export default {
       inception.value = false;
       reset();
     };
+    const getHotels = async () => {
+      try {
+        const response = await api.get("/api/Hotel", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        options.value = response.data.map((tupla) => ({
+          label: tupla.name,
+          value: tupla.hotelId,
+        }));
+        console.log(options.value);
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    const getSeasons = async () => {
+      try {
+        const response = await api.get("/api/Season", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        seasons.value = response.data.map((tupla) => ({
+          label: tupla.seasonName,
+          value: tupla.seasonId,
+        }));
+        console.log(seasons.value);
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    onMounted(() => {
+      getHotels();
+      getSeasons();
+    });
     const reset = () => {
       Descp.value = null;
       inicio.value = null;
@@ -543,23 +566,24 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/ComplementaryContract", ccomplementario,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/ComplementaryContract", ccomplementario, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         comp.value.push(ccomplementario);
         location.reload();
       } else {
-        await api.put("api/ComplementaryContract", ccomplementario,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/ComplementaryContract", ccomplementario, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
     const contratoHoteles = async () => {
+      const hotelId = selectedOptions.value ? selectedOptions.value : null;
       const choteles = {
         id: selectedContract.value ? tempid.value : 0,
         desc: Descp.value,
@@ -569,27 +593,29 @@ export default {
         address: direccion.value,
         hotelTotalPrice: precio.value,
         enabled: true,
+        hotelId: hotelId,
       };
       if (!selectedContract.value) {
-        await api.post("api/HotelContract", choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-        hotls.value.push(choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/HotelContract", choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        hotls.value.push(choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         //location.reload();
       } else {
-        await api.put("api/HotelContract", choteles,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/HotelContract", choteles, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
+      hotls.value = [...hotls.value, choteles];
     };
     const contratosTransporte = async () => {
       const ctransporte = {
@@ -604,19 +630,19 @@ export default {
         enabled: true,
       };
       if (!selectedContract.value) {
-        await api.post("api/TransportationContract", ctransporte,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.post("api/TransportationContract", ctransporte, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         transp.value.push(ctransporte);
         //location.reload();
       } else {
-        await api.put("api/TransportationContract", ctransporte,{
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
+        await api.put("api/TransportationContract", ctransporte, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         location.reload();
       }
     };
@@ -645,6 +671,7 @@ export default {
       selectedContract.value = true;
       inception.value = true;
       slide.value = "hoteles";
+      selectedOptions.value = row.hotelId;
     };
     const updatingTransportation = (row) => {
       tempid.value = row.id;
@@ -659,6 +686,10 @@ export default {
       inception.value = true;
       slide.value = "transportes";
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       Descp,
       inicio,
@@ -672,18 +703,22 @@ export default {
       direccion,
       precio,
       proveedor,
-      providers: ["Transtour", "Gaviota"],
+      providers: ["Transtur", "Gaviota"],
       vehiculos,
       matricula,
       myForm,
+      selectedOptions,
       inception,
       slide,
+      options,
+      seasons,
       comp,
       hotls,
       token,
       transp,
       tab: ref("complementaryContract"),
       buttonstate,
+      handleClose,
       updatingComplementary,
       updatingHotels,
       updatingTransportation,

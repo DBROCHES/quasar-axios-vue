@@ -35,12 +35,15 @@
             fill-input
             input-debounce="0"
             :options="options"
-            label="Destino"
+            @filter="filterFn"
+            :label="$t('destino')"
             class="buscador"
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No results </q-item-section>
+                <q-item-section class="text-grey">
+                  {{ $t("noResults") }}
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -50,7 +53,7 @@
               standout
               v-model="dates"
               class="buscador"
-              label="Fecha deseada"
+              :label="$t('fechaDeseada')"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -69,13 +72,13 @@
           <q-input
             class="buscador"
             type="number"
-            v-model="amountofPeople"
-            label="Numero de personas"
+            v-model="personscant"
+            :label="$t('numeroPersonas')"
             min="1"
           />
           <div>
             <q-btn
-              label="Buscar"
+              :label="$t('buscar')"
               type="submit"
               color="primary"
               class ="buscador"
@@ -86,9 +89,41 @@
       </div>
     </div>
   </div>
+  <h3 class="text-center">Provincias a visitar</h3>
+  <div class="text-center items-center">
+    <div class="q-pa-md row items-start q-gutter-md">
+      <q-card-section
+        flat
+        bordered
+        v-for="province in provinces"
+        :key="province.provinceName"
+        class="my-card"
+      >
+        <div>
+          <q-img
+            class="full-width-image"
+            :src="'https://source.unsplash.com/random?' + province.provinceName"
+          />
+          <q-card-section>
+            <div class="text-h6">{{ province.provinceName }}</div>
+            <div v-if="!province.showFullText">
+              {{ province.provinceDesc.substring(0, 100) }}...
+            </div>
+            <div v-else>{{ province.provinceDesc }}</div>
+            <q-btn
+              flat
+              :label="$t('leerMas')"
+              @click="province.showFullText = !province.showFullText"
+            />
+          </q-card-section>
+        </div>
+      </q-card-section>
+    </div>
+  </div>
 </template>
 
 <script>
+import { ref, watch, onMounted } from "vue";
 import { ref, watch, onMounted } from "vue";
 import { defineComponent } from "vue";
 import { api } from "src/boot/axios";
@@ -96,9 +131,10 @@ import { api } from "src/boot/axios";
 export default defineComponent({
   name: "IndexPage",
   setup() {
-    const amountofPeople = ref(1);
+    const personscant = ref(1);
     const destination = ref("");
     const options = ref([]);
+    const provinces = ref([]);
     const date = ref(null);
     const dates = ref("");
     const token = localStorage.getItem('token');
@@ -108,7 +144,7 @@ export default defineComponent({
     });
     const submitForm = () => {
 
-      if(destination.value != null && dates.value.start != null && dates.value.end != null && amountofPeople.value != null){
+      if(destination.value != null && dates.value.start != null && dates.value.end != null && personscant.value != null){
         localStorage.setItem('prov',destination.value);
         localStorage.setItem('starDate',dates.value.start);
         localStorage.setItem('endDate',dates.value.end);
@@ -140,8 +176,9 @@ export default defineComponent({
       dates,
       token,
       submitForm,
-      amountofPeople,
+      personscant,
       destination,
+      provinces,
       slide: ref(1),
       autoplay: ref(true),
       rol: localStorage.getItem("role"),
@@ -167,5 +204,25 @@ export default defineComponent({
 .form-container {
   background-color: transparent;
   width: 100%;
+}
+
+.ofertas {
+  position: relative;
+}
+
+.my-card {
+  border-radius: 0;
+  width: 300px; /* Ajusta este valor al tamaño deseado para tu tarjeta */
+
+  justify-content: center;
+  display: flex;
+}
+.full-width-image {
+  height: 300px; /* Ajusta este valor al tamaño deseado para tu imagen */
+}
+.absolute-center {
+  top: 0%;
+  left: 0%;
+  transform: translate(-50%, -50%);
 }
 </style>

@@ -13,7 +13,7 @@ const routes = [
       },
       {
         path: "/about",
-        component: () => import("pages/About.vue"),
+        component: () => import("pages/AboutUs.vue"),
       },
       {
         path: "/vehicle",
@@ -80,6 +80,10 @@ const routes = [
       {
         path: "/users",
         component: () => import("pages/Users.vue"),
+      },
+      {
+        path: "/reportTourPackages",
+        component: () => import("pages/ReportTourPackage.vue"),
       },
     ],
   },

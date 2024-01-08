@@ -24,151 +24,199 @@
 
         <!-- Botón "Delete" -->
         <q-td auto-width>
-            <q-btn
-              size="sm"
-              color="red"
-              round
-              dense
-              text-color="white"
-              icon="delete"
-              @click="confirmDelete(props.row)"
-            />
-          </q-td> 
+          <q-btn
+            size="sm"
+            color="red"
+            round
+            dense
+            text-color="white"
+            icon="delete"
+            @click="confirmDelete(props.row)"
+          />
+        </q-td>
       </q-tr>
     </template>
   </q-table>
 
-  <q-dialog v-model="dialog" persistent>
-    <q-card class="q-col-gutter-y-sm">
-      <div padding class="bg-white q-pa-xl" style="width: 80%">
-        <q-form
-          @submit.prevent="saveVehicle()"
-          @reset="reset"
-          ref="myForm"
-          style="width: 100%"
-        >
-          <div padding class="q-col-gutter-y-sm">
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
-              <div>
-                <q-input
-                  outlined
-                  :label="$t('plate')"
-                  v-model="selectedVehicle.license_Plate_Number"
-                  pattern="[A-Z]\d{5}"
-                  placeholder="******"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-select
-                  outlined
-                  v-model="model"
-                  :options="options"
-                  :label="$t('model')"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-input
-                  outlined
-                  :label="$t('capacity_without')"
-                  v-model="capacity_without"
-                  placeholder="2"
-                  min="2"
-                  max="40"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-input
-                  outlined
-                  :label="$t('capacity_with')"
-                  v-model="capacity_with"
-                  placeholder="2"
-                  min="2"
-                  max="40"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-input
-                  outlined
-                  :label="$t('totalCapacity')"
-                  v-model="total"
-                  placeholder="2"
-                  min="2"
-                  max="40"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
-                <q-select
-                  v-model="selectedYear"
-                  outlined
-                  :options="optionsyear"
-                  :label="$t('selectedYear')"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div class="form-floating">
-                <q-input
-                  v-model="manufacturing"
-                  outlined
-                  type="textarea"
-                  :label="$t('manufacturing')"
-                  rows="3"
-                  maxlength="200"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
+  <q-dialog v-model="dialog" persistent @hide="handleClose">
+    <div padding class="bg-white q-pa-xl q-col-gutter-y-sm" style="width: 80%">
+      <q-form
+        @submit.prevent="savevehicles()"
+        @reset="reset"
+        ref="myForm"
+        style="width: 100%"
+      >
+        <div padding class="q-col-gutter-y-sm">
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3">
+            <div>
+              <q-input
+                outlined
+                :label="$t('plate')"
+                v-model="plate"
+                pattern="[A-Z]\d{5}"
+                placeholder="******"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
             </div>
           </div>
-        </q-form>
-      </div>
-
-      <q-card-actions align="right">
-        <q-btn flat :label="$t('cancel')" color="primary" v-close-popup />
-        <q-btn
-          flat
-          :label="$t('guardar')"
-          color="primary"
-          @click="saveVehicle"
-        />
-      </q-card-actions>
-    </q-card>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-select
+                outlined
+                v-model="model"
+                :options="options"
+                :label="$t('model')"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-input
+                type="number"
+                outlined
+                :label="$t('capacity_without')"
+                v-model="capacity_without"
+                placeholder="2"
+                min="2"
+                max="40"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-input
+                type="number"
+                outlined
+                :label="$t('capacity_with')"
+                v-model="capacity_with"
+                placeholder="2"
+                min="2"
+                max="40"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-input
+                type="number"
+                outlined
+                :label="$t('totalCapacity')"
+                v-model="total"
+                placeholder="2"
+                min="2"
+                max="40"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-input
+                type="number"
+                outlined
+                :label="$t('precio')"
+                v-model="price"
+                placeholder="2"
+                min="1"
+                max="10000"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-select
+                v-model="selectedYear"
+                outlined
+                :options="optionsyear"
+                :label="$t('selectedYear')"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-select
+                outlined
+                v-model="selectedOptions"
+                :options="optionsProvince"
+                :label="$t('province')"
+                emit-value
+                map-options
+                lazy-rules
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-select
+                outlined
+                v-model="selectedOptionsContract"
+                :options="optionsContract"
+                :label="$t('contratos')"
+                emit-value
+                map-options
+                lazy-rules
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div class="form-floating">
+              <q-input
+                v-model="manufacturing"
+                outlined
+                type="textarea"
+                :label="$t('manufacturing')"
+                rows="3"
+                maxlength="200"
+                lazy-rules
+                :rules="[
+                  (val) => (val && val.length > 0) || this.$t('rellene'),
+                ]"
+              />
+            </div>
+          </div>
+          <div>
+            <q-btn
+              color="primary"
+              :label="$t('aceptar')"
+              class="q-ml-sm"
+              type="submit"
+            />
+            <q-btn
+              color="primary"
+              :label="$t('reset')"
+              class="q-ml-sm"
+              type="reset"
+            />
+          </div>
+        </div>
+      </q-form>
+    </div>
   </q-dialog>
 </template>
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { api } from "boot/axios";
 
 export default {
@@ -176,62 +224,73 @@ export default {
     vehicles: Array,
   },
   data() {
-
-  return {
-    columns: [
-      {
-        name: "plate",
-        label: this.$t("plate"),
-        alingn: "center",
-        field: "license_Plate_Number",
-        sortable: true,
-      },
-      {
-        name: "model",
-        label: this.$t("chain"),
-        alingn: "center",
-        field: "brand",
-        sortable: true,
-      },
-      {
-        name: "capacity_without",
-        label: this.$t("capacity_without"),
-        alingn: "center",
-        field: "capacity_Without_Equipement",
-        sortable: true,
-      },
-      {
-        name: "capacity_with",
-        label: this.$t("capacity_with"),
-        alingn: "center",
-        field: "capacity_With_Equipement",
-        sortable: true,
-      },
-      {
-        name: "total",
-        label: this.$t("totalCapacity"),
-        alingn: "center",
-        field: "total_Capacity",
-        sortable: true,
-      },
-      {
-        name: "year",
-        label: this.$t("year"),
-        alingn: "center",
-        field: "year_of_Manufacture",
-        sortable: true,
-      },
-      {
-        name: "manufacturing",
-        label: this.$t("manufacturing"),
-        alingn: "center",
-        field: "manufacturing_Mode",
-        sortable: true,
-      },
-    ],
-  };
+    return {
+      columns: [
+        {
+          name: "plate",
+          label: this.$t("plate"),
+          align: "center",
+          field: "license_Plate_Number",
+          sortable: true,
+        },
+        {
+          name: "model",
+          label: this.$t("chain"),
+          align: "center",
+          field: "brand",
+          sortable: true,
+        },
+        {
+          name: "capacity_without",
+          label: this.$t("capacity_without"),
+          align: "center",
+          field: "capacity_Without_Equipement",
+          sortable: true,
+        },
+        {
+          name: "capacity_with",
+          label: this.$t("capacity_with"),
+          align: "center",
+          field: "capacity_With_Equipement",
+          sortable: true,
+        },
+        {
+          name: "total",
+          label: this.$t("totalCapacity"),
+          align: "center",
+          field: "total_Capacity",
+          sortable: true,
+        },
+        {
+          name: "price",
+          label: this.$t("precio"),
+          align: "center",
+          field: "price",
+          sortable: true,
+        },
+        {
+          name: "year",
+          label: this.$t("year"),
+          align: "center",
+          field: "year_of_Manufacture",
+          sortable: true,
+        },
+        {
+          name: "manufacturing",
+          label: this.$t("manufacturing"),
+          align: "center",
+          field: "manufacturing_Mode",
+          sortable: true,
+        },
+      ],
+    };
   },
   setup() {
+    const optionsContract = ref(0);
+    const selectedOptionsContract = ref(null);
+    const price = ref([]);
+    const optionsProvince = ref([]);
+    const selectedOptions = ref([]);
     const optionsyear = ref([]);
     const plate = ref("");
     const capacity_without = ref("");
@@ -242,24 +301,27 @@ export default {
     const selectedYear = ref(null);
     const myForm = ref(null);
     const tempid = ref("");
-    const token = localStorage.getItem('token');
-
+    const token = localStorage.getItem("token");
+    const dialog = ref(false);
     const savevehicles = async () => {
       const temp = {
-        VehicleId: this.tempid,
-        capacity_With_Equipement: this.capacity_with,
-        capacity_Without_Equipement: this.capacity_without,
-        year_of_Manufacture: this.selectedYear,
-        total_Capacity: this.total,
-        manufacturing_Mode: this.manufacturing,
-        brand: this.model,
-        license_Plate_Number: this.plate,
+        vehicleId: tempid.value,
+        capacity_With_Equipement: capacity_with.value,
+        capacity_Without_Equipement: capacity_without.value,
+        year_of_Manufacture: selectedYear.value,
+        total_Capacity: total.value,
+        manufacturing_Mode: manufacturing.value,
+        brand: model.value,
+        license_Plate_Number: plate.value,
+        price: price.value,
+        provinceId: selectedOptions.value,
+        contractId: selectedOptionsContract.value,
       };
 
-      await api.put("api/Vehicle", temp, {
+      await api.put("/api/Vehicles", temp, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       location.reload();
       this.dialog = false;
@@ -271,8 +333,8 @@ export default {
         try {
           const response = await api.delete(`/api/Vehicles/${row.vehicleId}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
+              Authorization: `Bearer ${token}`,
+            },
           });
           window.alert("Vehículo eliminado");
           location.reload();
@@ -282,18 +344,64 @@ export default {
       }
       this.confirmationVisible = false;
     };
+    const getOptions = async () => {
+      try {
+        const response = await api.get("/api/ProvinceSet", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        optionsProvince.value = response.data.map((tupla) => ({
+          label: tupla.provinceName,
+          value: tupla.provinceId,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    const getContracts = async () => {
+      try {
+        const response = await api.get("/api/TransportationContract", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        optionsContract.value = response.data.map((tupla) => ({
+          label: tupla.id,
+          value: tupla.id,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
     const openDialog = async (row) => {
-      this.tempid = row.VehicleId;
-      this.capacity_with = row.capacity_With_Equipement;
-      this.capacity_without = row.capacity_Without_Equipement;
-      this.selectedYear = row.year_of_Manufacture;
-      this.total = row.total_Capacity;
-      this.manufacturing = row.manufacturing_Mode;
-      this.model = row.brand;
-      this.plate = row.license_Plate_Number;
+      tempid.value = row.vehicleId;
+      capacity_with.value = row.capacity_With_Equipement;
+      capacity_without.value = row.capacity_Without_Equipement;
+      selectedYear.value = row.year_of_Manufacture;
+      total.value = row.total_Capacity;
+      manufacturing.value = row.manufacturing_Mode;
+      model.value = row.brand;
+      plate.value = row.license_Plate_Number;
+      selectedOptions.value = row.provinceId;
+      price.value = row.price;
+      dialog.value = true;
+    };
+    onMounted(() => {
+      getOptions();
+      getContracts();
+    });
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
     };
     return {
-      dialog: false,
+      optionsContract,
+      selectedOptionsContract,
+      optionsProvince,
+      selectedOptions,
+      price,
+      dialog,
       selectedVehicle: null,
       optionsyear,
       plate,
@@ -302,13 +410,16 @@ export default {
       total,
       manufacturing,
       model,
+      options: ["Mercedez", "Audi", "Lada", "Mazda", "Peugot"],
       selectedYear,
       myForm,
       tempid,
       token,
+      getOptions,
       confirmDelete,
       savevehicles,
       openDialog,
+      handleClose,
     };
   },
 };

@@ -4,7 +4,7 @@
   <h2>{{ $t("actividades") }}</h2>
   <div class="q-pa-md" id="act">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -62,7 +62,7 @@
                 <q-select
                   outlined
                   v-model="selectedOptions"
-                  :options="options"
+                  :options="optionsProvince"
                   :label="$t('province')"
                   emit-value
                   map-options
@@ -70,7 +70,19 @@
                 />
               </div>
             </div>
-
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+              <div>
+                <q-select
+                  outlined
+                  v-model="selectedOptionsContract"
+                  :options="optionsContract"
+                  :label="$t('contratos')"
+                  emit-value
+                  map-options
+                  lazy-rules
+                />
+              </div>
+            </div>
             <div>
               <q-btn
                 color="primary"
@@ -106,6 +118,9 @@ export default {
   components: { PintarActividades },
   setup() {
     // Variables reactivas
+
+    const optionsContract = ref(0);
+    const selectedOptionsContract = ref(null);
     const date = ref("");
     const hour = ref("");
     const description = ref("");
@@ -114,7 +129,7 @@ export default {
     const selectedActivitie = ref(false);
     const tempid = ref(""); //Arreglo de vehiculos
     const activities = ref([]);
-    const options = ref([]);
+    const optionsProvince = ref([]);
     const selectedOptions = ref(null);
     const token = localStorage.getItem("token");
     const inception = ref(false);
@@ -129,6 +144,7 @@ export default {
         description: description.value,
         price: price.value,
         provinceId: selectedOptions.value,
+        contractId: selectedOptionsContract.value,
       };
       if (!selectedActivitie.value) {
         await api.post("/api/DayliActivities", tempactivitie, {
@@ -146,6 +162,21 @@ export default {
         });
         location.reload();
       }
+      const getContracts = async () => {
+        try {
+          const response = await api.get("/api/ComplementaryContract", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          optionsContract.value = response.data.map((tupla) => ({
+            label: tupla.id,
+            value: tupla.id,
+          }));
+        } catch (error) {
+          console.error("Error al obtener las opciones desde la API", error);
+        }
+      };
       //restablece los valores del formulario
       reset();
     };
@@ -157,12 +188,15 @@ export default {
       tempid.value = row.activityId;
       selectedActivitie.value = true;
       inception.value = true;
+      selectedOptionsContract.value = row.contractId;
     };
     const reset = () => {
       date.value = null;
       hour.value = null;
       description.value = null;
       price.value = null;
+      selectedOptions.value = null;
+      selectedOptionsContract.value = null;
     };
     const getOptions = async () => {
       try {
@@ -171,7 +205,7 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
-        options.value = response.data.map((tupla) => ({
+        optionsProvince.value = response.data.map((tupla) => ({
           label: tupla.provinceName,
           value: tupla.provinceId,
         }));
@@ -179,12 +213,18 @@ export default {
         console.error("Error al obtener las opciones desde la API", error);
       }
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     onMounted(() => {
       getOptions();
     });
     return {
+      optionsContract,
+      selectedOptionsContract,
       selectedOptions,
-      options,
+      optionsProvince,
       date,
       hour,
       description,
@@ -196,6 +236,7 @@ export default {
       procesingForm,
       reset,
       updatingactivitie,
+      handleClose,
     };
   },
 };

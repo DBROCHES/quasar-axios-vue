@@ -4,7 +4,7 @@
   <h2>{{ $t("modality") }}</h2>
   <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div class="q-pa-md q-gutter-sm">
         <q-carousel animated v-model="slide" infinite>
           <q-carousel-slide name="hora">
@@ -279,9 +279,9 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="cost_per_hour" :label="$t('costPH')" />
-        <q-tab name="cost_per_tour" :label="$t('costPV')" />
-        <q-tab name="mileage_cost" :label="$t('kilometer')" />
+        <q-tab name="hour" :label="$t('costPH')" />
+        <q-tab name="travel" :label="$t('costPV')" />
+        <q-tab name="kilometer" :label="$t('kilometer')" />
       </q-tabs>
 
       <q-separator />
@@ -302,13 +302,13 @@
           <PintarCostoporViaje
             :tours="ptravel"
             @button-clicked="updatingTour"
-          />
+          ></PintarCostoporViaje>
         </q-tab-panel>
         <q-tab-panel name="kilometer" class="bg-lime-1 text-dark">
           <PintarCostoporkilometraje
             :kilometers="pkilometer"
             @button-clicked="updatingMileage"
-          />
+          ></PintarCostoporkilometraje>
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
@@ -344,14 +344,13 @@ export default {
     const inception = ref(false);
     const tempid = ref("");
     const selectedModalitY = ref(false);
-    const slide = ref("hora");
+    const slide = ref("hour");
     const buttonstate = ref(true);
     //Arreglos de modalidades
     const phour = ref([]);
     const ptravel = ref([]);
     const pkilometer = ref([]);
-    const token = localStorage.getItem('token');
-
+    const token = localStorage.getItem("token");
 
     const procesingForm = async () => {
       myForm.value.validate().then((success) => {
@@ -400,20 +399,21 @@ export default {
         cost_per_kilometer_traveled: pkilometers.value,
         extra_kilometer_cost: ekilometers.value,
         extra_hour_cost: ehours.value,
+        type: "Costo por Hora",
       };
       if (!selectedModalitY.value) {
         await api.post("api/Costperhour", cphour, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         phour.value.push(cphour);
         //location.reload();
       } else {
         await api.put("api/Costperhour", cphour, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         location.reload();
       }
@@ -424,20 +424,21 @@ export default {
         rout_description: description.value,
         route_cost: rute.value,
         round_trip_cost: goback.value,
+        type: "Costo por viaje",
       };
       if (!selectedModalitY.value) {
         await api.post("api/CostPerTour", cptour, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         ptravel.value.push(cptour);
         //location.reload();
       } else {
         await api.put("api/CostPerTour", cptour, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         location.reload();
       }
@@ -448,20 +449,21 @@ export default {
         cost_per_kilometer: kilometer.value,
         cost_per_round_trip: back.value,
         cost_per_waiting_hour: wait.value,
+        type: "Costo por kilometraje",
       };
       if (!selectedModalitY.value) {
         await api.post("api/MilageCost", mileagec, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         pkilometer.value.push(mileagec);
         //location.reload();
       } else {
         await api.put("api/MilageCost", mileagec, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         location.reload();
       }
@@ -495,6 +497,10 @@ export default {
       inception.value = true;
       slide.value = "kilometraje";
     };
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       phours,
       ehours,
@@ -520,6 +526,7 @@ export default {
       updatingTour,
       procesingForm,
       reset,
+      handleClose,
     };
   },
   components: {

@@ -8,7 +8,7 @@
       class="boton"
       @click="inception = true"
     />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -132,10 +132,11 @@ export default {
     const selectedOptions = ref(null);
     const myForm = ref(null);
     const selectedRoom = ref(false);
+    const tempid = ref(0);
     //Arreglo de vehiculos
     const rooms = ref([]);
     const token = localStorage.getItem("token");
-
+    const inception = ref(false);
     //GETTES SETTES
 
     const getRooms = async () => {
@@ -175,22 +176,25 @@ export default {
       selectedOptions.value = row.hotelId;
       name.value = row.name;
       description.value = row.description;
-      price.value = row.description;
+      price.value = row.price;
       amountofPeople.value = row.amountofPeople;
       selectedRoom.value = true;
+      tempid.value = row.id;
+      inception.value = true;
     };
     const procesingForm = async () => {
       myForm.value.resetValidation();
 
       const hotelId = selectedOptions.value ? selectedOptions.value : null;
       const newRoom = {
+        id: selectedRoom.value ? tempid.value : 0,
         name: name.value,
         description: description.value,
         price: price.value,
         amountofPeople: amountofPeople.value,
         hotelId: hotelId,
       };
-      if (selectedRoom.value) {
+      if (!selectedRoom.value) {
         await api.post("/api/Room", newRoom, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -217,6 +221,8 @@ export default {
       name.value = null;
       description.value = null;
       price.value = null;
+      amountofPeople.value = null;
+      selectedOptions.value = null;
       fillTable();
     };
 
@@ -224,7 +230,10 @@ export default {
       getRooms();
       getOptions();
     });
-
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
       rooms,
       name,
@@ -234,11 +243,12 @@ export default {
       token,
       selectedOptions,
       options,
-      inception: ref(false),
+      inception,
       amountofPeople,
       procesingForm,
       reset,
       updateRoom,
+      handleClose,
     };
   },
 };

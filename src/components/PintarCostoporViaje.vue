@@ -55,7 +55,7 @@ export default {
   },
 
   setup(props, { emit }) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -68,9 +68,9 @@ export default {
     const getall = async () => {
       await api
         .get("api/CostPerTour", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           alltours.value = response.data;
@@ -90,9 +90,9 @@ export default {
           console.log(row.modalityId + "Hakuna Matata");
           await api.delete(`/api/CostPerTour/ ${row.modalityId}`, {
             headers: {
-              'Authorization': `Bearer ${token}`
-            }
-        });
+              Authorization: `Bearer ${token}`,
+            },
+          });
           window.alert("Modalidad eliminada");
           location.reload();
         } catch (error) {
@@ -117,7 +117,7 @@ export default {
       columns: [
         {
           name: "rout_description",
-          alingn: "center",
+          align: "center",
           label: this.$t("tripDesc"),
           field: "rout_description",
           sortable: true,
@@ -125,14 +125,14 @@ export default {
         {
           name: "route_cost",
           label: this.$t("routCost"),
-          alingn: "center",
+          align: "center",
           field: "route_cost",
           sortable: true,
         },
         {
           name: "round_trip_cost",
           label: this.$t("goback"),
-          alingn: "center",
+          align: "center",
           field: "round_trip_cost",
           sortable: true,
         },

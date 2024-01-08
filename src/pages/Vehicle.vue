@@ -4,7 +4,7 @@
   <h1>{{ $t("vehicle") }}</h1>
   <div class="q-pa-md">
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <save-vehicle :vehicle="vehicle" />
       </div>
@@ -38,14 +38,14 @@ export default {
 
     //Arreglo de vehiculos
     const vehicles = ref([]);
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const prueba = async () => {
       await api
         .get("api/Vehicles", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           vehicles.value = response.data;
@@ -59,8 +59,12 @@ export default {
     onMounted(() => {
       prueba();
     });
-
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
+      handleClose,
       inception: ref(false),
       vehicle,
       vehicles,

@@ -4,7 +4,26 @@
     :no-data-label="$t('noContracts')"
     :columns="columns"
     :rows="allContracts"
+    :visible-columns="visibleColumns"
   >
+    <template v-slot:top>
+      <q-space />
+
+      <q-select
+        v-model="visibleColumns"
+        multiple
+        outlined
+        dense
+        options-dense
+        :display-value="$q.lang.table.columns"
+        emit-value
+        map-options
+        :options="columns"
+        option-value="name"
+        options-cover
+        style="min-width: 150px"
+      />
+    </template>
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td v-for="col in props.cols" :key="col.field">
@@ -46,6 +65,7 @@ export default {
   },
 
   setup(props, { emit }) {
+    const token = localStorage.getItem("token");
     const handleClick = (row) => {
       emit("button-clicked", row);
     };
@@ -59,8 +79,8 @@ export default {
       await api
         .get("api/ComplementaryContract", {
           headers: {
-            'Authorization': `Bearer ${this.token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((response) => {
           allContracts.value = response.data;
@@ -74,18 +94,9 @@ export default {
       getall();
     });
     return {
-      visibleColumns: ref([
-        "desc",
-        "starDate",
-        "endTime",
-        "serviceType",
-        "costPerPerson",
-        "complementaryServiceProvince",
-        "enabled",
-      ]),
       handleClick,
       allContracts,
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
 
@@ -98,8 +109,8 @@ export default {
           console.log(row.id + "Hakuna Matata");
           await api.delete(`/api/ComplementaryContract/ ${row.id}`, {
             headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
+              Authorization: `Bearer ${this.token}`,
+            },
           });
           window.alert(this.$t("deleteCont"));
           location.reload();
@@ -170,6 +181,14 @@ export default {
           sortable: true,
         },
       ],
+      visibleColumns: ref([
+        "desc",
+        "starDate",
+        "endTime",
+        "serviceType",
+        "costPerPerson",
+        "enabled",
+      ]),
     };
   },
 };

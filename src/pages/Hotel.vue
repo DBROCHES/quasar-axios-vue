@@ -4,7 +4,7 @@
   <div>
     <q-btn :label="$t('nuevo')" color="positive" @click="inception = true" />
     <!-- style="margin-left: 18px;" -->
-    <q-dialog v-model="inception">
+    <q-dialog v-model="inception" @hide="handleClose()">
       <div padding class="bg-white q-pa-xl" style="width: 80%">
         <q-form
           @submit.prevent="procesingForm"
@@ -42,20 +42,6 @@
             </div>
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div>
-                <q-select
-                  outlined
-                  v-model="province"
-                  :options="provinces"
-                  :label="$t('province')"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || this.$t('rellene'),
-                  ]"
-                />
-              </div>
-            </div>
-            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-              <div>
                 <q-input
                   outlined
                   :label="$t('category')"
@@ -73,7 +59,7 @@
                   outlined
                   :label="$t('phone')"
                   v-model="phone"
-                  mask="7#######"
+                  mask="53########"
                   lazy-rules
                   :rules="[
                     (val) => (val && val.length > 0) || this.$t('rellene'),
@@ -162,7 +148,7 @@
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div class="form-floating">
                 <q-input
-                  v-model="location"
+                  v-model="locations"
                   outlined
                   :placeholder="$t('ejAddress')"
                   :label="$t('address')"
@@ -180,6 +166,7 @@
             <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
               <div>
                 <q-input
+                  type="number"
                   outlined
                   :label="$t('precio')"
                   v-model="price"
@@ -199,27 +186,66 @@
                 />
               </div>
             </div>
-          </div>
 
-          <div>
-            <q-btn
-              color="primary"
-              :label="$t('aceptar')"
-              class="q-ml-sm"
-              type="submit"
-            />
-            <q-btn
-              color="primary"
-              :label="$t('reset')"
-              class="q-ml-sm"
-              type="reset"
-            />
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+              <div>
+                <q-select
+                  outlined
+                  v-model="selectedOptions"
+                  :options="optionsProvince"
+                  :label="$t('province')"
+                  emit-value
+                  map-options
+                  lazy-rules
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+              <div>
+                <q-select
+                  outlined
+                  v-model="selectedOptionsContract"
+                  :options="optionsContract"
+                  :label="$t('contratos')"
+                  emit-value
+                  map-options
+                  lazy-rules
+                />
+              </div>
+            </div>
+            <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+              <div>
+                <q-select
+                  outlined
+                  v-model="enabled"
+                  :options="optionsEnabled"
+                  :label="$t('enabled')"
+                  emit-value
+                  map-options
+                  lazy-rules
+                />
+              </div>
+            </div>
+            <div>
+              <q-btn
+                color="primary"
+                :label="$t('aceptar')"
+                class="q-ml-sm"
+                type="submit"
+              />
+              <q-btn
+                color="primary"
+                :label="$t('reset')"
+                class="q-ml-sm"
+                type="reset"
+              />
+            </div>
           </div>
         </q-form>
       </div>
     </q-dialog>
   </div>
-  <pintar-hoteles :hoteles="hoteles"/>
+  <pintar-hoteles :hoteles="hoteles" @buttonClicked="updateHotel" />
 </template>
 
 <script>
@@ -231,6 +257,12 @@ export default {
   components: { PintarHoteles },
   setup() {
     // Variables reactivas
+    const optionsProvince = ref([]);
+    const selectedOptions = ref(null);
+    const optionsContract = ref(0);
+    const selectedOptionsContract = ref(null);
+    const enabled = ref(null);
+    const optionsEnabled = ref("");
     const name = ref("");
     const province = ref(null);
     const category = ref("");
@@ -240,13 +272,16 @@ export default {
     const floors = ref("");
     const dairport = ref("");
     const dcity = ref("");
-    const location = ref("");
+    const locations = ref("");
     const price = ref("");
     const chain = ref(null);
     const commercialization = ref(null);
     const myForm = ref(null);
-    const token = localStorage.getItem('token');
-    //Arreglo de vehiculos
+    const token = localStorage.getItem("token");
+    const inception = ref(false);
+    const tempid = ref(0);
+    const selectedHotel = ref(false);
+    //Arreglo de hoteles
     const hoteles = ref([]);
 
     const lang = ref("es");
@@ -256,14 +291,43 @@ export default {
         ? ["Alto", "Medio", "Bajo"]
         : ["High", "Medium", "Low"];
     };
-
+    const getOptionsProvince = async () => {
+      try {
+        const response = await api.get("/api/ProvinceSet", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        optionsProvince.value = response.data.map((tupla) => ({
+          label: tupla.provinceName,
+          value: tupla.provinceId,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
+    const getContracts = async () => {
+      try {
+        const response = await api.get("/api/HotelContract", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        optionsContract.value = response.data.map((tupla) => ({
+          label: tupla.id,
+          value: tupla.id,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
     const getHotels = async () => {
       await api
         .get("/api/Hotel", {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-        })   
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           hoteles.value = response.data;
           console.log(hoteles.value);
@@ -277,6 +341,7 @@ export default {
       myForm.value.resetValidation();
       // console.log("Hakuna mATATA"+count);
       const newHotel = {
+        hotelId: selectedHotel.value ? tempid.value : 0,
         name: name.value,
         chain: chain.value,
         province: province.value,
@@ -287,23 +352,51 @@ export default {
         disNearCity: dcity.value,
         disAirport: dairport.value,
         numberOfFloors: floors.value,
-        address: location.value,
+        address: locations.value,
         comercializationMode: commercialization.value,
         price: price.value,
         enabled: true,
+        provinceId: selectedOptions.value,
+        contractId: selectedOptionsContract.value,
       };
+      if (!selectedHotel.value) {
+        const response = await api.post("/api/Hotel", newHotel, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        hoteles.value = [...hoteles.value, newHotel];
+      } else {
+        const response = await api.put("/api/Hotel", newHotel, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
 
-      const response = await api.post("/api/Hotel", newHotel, {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-      });   
-
-      hoteles.value = [...hoteles.value, newHotel];
       reset();
       fillTable();
     };
-
+    const updateHotel = async (row) => {
+      tempid.value = row.hotelId;
+      name.value = row.name;
+      chain.value = row.chain;
+      category.value = row.category;
+      phone.value = row.phone;
+      email.value = row.email;
+      rooms.value = row.numberOfRooms;
+      dcity.value = row.disNearCity;
+      dairport.value = row.disAirport;
+      floors.value = row.numberOfFloors;
+      locations.value = row.address;
+      commercialization.value = row.comercializationMode;
+      price.value = row.price;
+      selectedOptions.value = row.provinceId;
+      selectedOptionsContract.value = row.contractId;
+      enabled.value = row.enabled;
+      inception.value = true;
+      selectedHotel.value = true;
+    };
     const fillTable = () => {
       console.log(this.$t("llenar"));
     };
@@ -316,17 +409,27 @@ export default {
       floors.value = null;
       dairport.value = null;
       dcity.value = null;
-      location.value = null;
+      locations.value = null;
       price.value = null;
       chain.value = null;
       commercialization.value = null;
+      enabled.value = null;
     };
 
     onMounted(() => {
       getHotels();
+      getOptionsProvince();
+      getContracts();
     });
-
+    const handleClose = () => {
+      inception.value = false;
+      location.reload();
+    };
     return {
+      optionsContract,
+      selectedOptionsContract,
+      selectedOptions,
+      optionsProvince,
       name,
       chain,
       category,
@@ -336,38 +439,33 @@ export default {
       floors,
       dairport,
       dcity,
+      enabled,
+      optionsEnabled: [
+        {
+          label: "Activo",
+          value: true,
+        },
+        {
+          label: "Inactivo",
+          value: false,
+        },
+      ],
       token,
-      location,
+      locations,
       price,
       province,
       commercialization,
-      // optionscom: ["Alto", "Medio", "Bajo"],
+      optionscom: ["Alto", "Medio", "Bajo"],
       myForm,
-      inception: ref(false),
+      inception,
       options: ["Melia", "Iberostar", "GranCaribe", "Royalton", "Barcelo"],
-      provinces: [
-        "Pinar del Río",
-        "Artemisa",
-        "La Habana",
-        "Mayabeque",
-        "Matanzas",
-        "Cienfuegos",
-        "Villa Clara",
-        "Sancti Spíritus",
-        "Ciego de Ávila",
-        "Camagüey",
-        "Las Tunas",
-        "Granma",
-        "Holguín",
-        "Santiago de Cuba",
-        "Guantánamo",
-        " Isla de la Juventud",
-      ],
       hoteles,
       lang,
       getOptions,
       procesingForm,
       reset,
+      handleClose,
+      updateHotel,
     };
   },
 };
