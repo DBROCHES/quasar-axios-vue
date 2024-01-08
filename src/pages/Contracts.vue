@@ -236,32 +236,6 @@
                     />
                   </div>
                 </div>
-                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-                  <div>
-                    <q-select
-                      outlined
-                      v-model="selectedOptions"
-                      :options="options"
-                      label="Hotel"
-                      emit-value
-                      map-options
-                      lazy-rules
-                    />
-                  </div>
-                </div>
-                <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
-                  <div>
-                    <q-select
-                      outlined
-                      v-model="selectedOptions"
-                      :options="seasons"
-                      label="Temporada"
-                      emit-value
-                      map-options
-                      lazy-rules
-                    />
-                  </div>
-                </div>
               </div>
               <div>
                 <q-btn
@@ -729,7 +703,7 @@ export default {
       direccion,
       precio,
       proveedor,
-      providers: ["Transtour", "Gaviota"],
+      providers: ["Transtur", "Gaviota"],
       vehiculos,
       matricula,
       myForm,

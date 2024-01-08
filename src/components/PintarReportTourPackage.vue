@@ -26,6 +26,13 @@
           style="min-width: 150px"
         />
       </template>
+      <template v-slot:body-cell-userName="props">
+        <q-td :props="props">
+          <div v-for="(user, index) in props.row.userName" :key="index">
+            {{ user }}
+          </div>
+        </q-td>
+      </template>
     </q-table>
   </div>
 </template>

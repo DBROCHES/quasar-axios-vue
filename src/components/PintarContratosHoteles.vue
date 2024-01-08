@@ -4,7 +4,26 @@
     :no-data-label="$t('noContracts')"
     :columns="columns"
     :rows="allContracts"
+    :visible-columns="visibleColumns"
   >
+    <template v-slot:top>
+      <q-space />
+
+      <q-select
+        v-model="visibleColumns"
+        multiple
+        outlined
+        dense
+        options-dense
+        :display-value="$q.lang.table.columns"
+        emit-value
+        map-options
+        :options="columns"
+        option-value="name"
+        options-cover
+        style="min-width: 150px"
+      />
+    </template>
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td v-for="col in props.cols" :key="col.field">
@@ -155,6 +174,15 @@ export default {
           sortable: true,
         },
       ],
+      visibleColumns: ref([
+        "desc",
+        "starDate",
+        "endTime",
+        "phone",
+        "address",
+        "hotelTotalPrice",
+        "enabled",
+      ]),
     };
   },
 };

@@ -267,14 +267,14 @@
             </q-item-section>
             <q-item-section> {{ $t("repContConcil") }} </q-item-section>
           </q-item>
-          <q-item clickable v-ripple to="/reportHotelSeason">
+          <!-- <q-item clickable v-ripple to="/reportHotelSeason">
             <q-item-section avatar>
               <q-icon name="list" />
             </q-item-section>
             <q-item-section>
               {{ $t("reportTemps") }}
             </q-item-section>
-          </q-item>
+          </q-item> -->
           <q-item clickable v-ripple to="/reportListTransportContract">
             <q-item-section avatar>
               <q-icon name="list" />
