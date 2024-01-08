@@ -47,7 +47,6 @@
               </q-item>
             </template>
           </q-select>
-          <!------------------FECHAS------------------------------->
           <div class="form-floating">
             <q-input
               standout
@@ -68,7 +67,6 @@
               </template>
             </q-input>
           </div>
-          <!----------------Numero de personas---------------------------------------------->
           <q-input
             class="buscador"
             type="number"
@@ -125,7 +123,6 @@
 import { ref, watch, onMounted } from "vue";
 import { defineComponent } from "vue";
 import { api } from "src/boot/axios";
-
 export default defineComponent({
   name: "IndexPage",
   setup() {
@@ -184,15 +181,12 @@ export default defineComponent({
   background-color: transparent;
   width: 100%;
 }
-
 .ofertas {
   position: relative;
 }
-
 .my-card {
   border-radius: 0;
   width: 300px; /* Ajusta este valor al tamaño deseado para tu tarjeta */
-
   justify-content: center;
   display: flex;
 }
