@@ -130,7 +130,19 @@
           />
         </div>
       </div>
-
+      <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+        <div>
+          <q-select
+            outlined
+            v-model="selectedOptionsContract"
+            :options="optionsContract"
+            :label="$t('contrato')"
+            emit-value
+            map-options
+            lazy-rules
+          />
+        </div>
+      </div>
       <div>
         <q-btn
           color="primary"
@@ -157,6 +169,8 @@ export default {
 
   setup() {
     // Variables reactivas
+    const optionsContract = ref(0);
+    const selectedOptionsContract = ref(null);
     const price = ref([]);
     const optionsProvince = ref([]);
     const selectedOptions = ref(null);
@@ -196,6 +210,7 @@ export default {
         manufacturing_Mode: manufacturing.value,
         provinceId: selectedOptions.value,
         price: price.value,
+        contractId: selectedOptionsContract.value,
       };
       //luego se procesa el formulario
       await api.post("api/Vehicles", NewVehicle, {
@@ -233,6 +248,7 @@ export default {
       model.value = null;
       selectedYear.value = null;
       selectedOptions.value = null;
+      selectedOptionsContract.value = null;
     };
     const getOptions = async () => {
       try {
@@ -249,12 +265,30 @@ export default {
         console.error("Error al obtener las opciones desde la API", error);
       }
     };
+    const getContracts = async () => {
+      try {
+        const response = await api.get("/api/TransportationContract", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        optionsContract.value = response.data.map((tupla) => ({
+          label: tupla.id,
+          value: tupla.id,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
     onMounted(() => {
       prueba();
       generateYears();
       getOptions();
+      getContracts();
     });
     return {
+      optionsContract,
+      selectedOptionsContract,
       price,
       optionsProvince,
       selectedOptions,

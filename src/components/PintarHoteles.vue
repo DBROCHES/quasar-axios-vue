@@ -29,11 +29,7 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            <div
-              v-if="col.name === 'enabled'"
-              class="q-gutter-md"
-              @click.stop="changeStatus(props.row)"
-            >
+            <div v-if="col.name === 'enabled'" class="q-gutter-md">
               <q-badge
                 v-if="props.row.enabled"
                 outline
@@ -196,13 +192,13 @@ export default {
         "phone",
         "enabled",
       ]),
-      token: localStorage.getItem('token'),
+      token: localStorage.getItem("token"),
     };
   },
 
   methods: {
-    handleClick(row){
-        this.$emit("buttonClicked", row);
+    handleClick(row) {
+      this.$emit("buttonClicked", row);
     },
     async confirmDelete(row) {
       const confirmed = window.confirm(this.$t("deletHotel"));
@@ -211,9 +207,9 @@ export default {
         try {
           const response = await api.delete(`/api/Hotel/${row.hotelId}`, {
             headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        });
+              Authorization: `Bearer ${this.token}`,
+            },
+          });
           window.alert(this.$t("deletConfHotel"));
           location.reload();
         } catch (error) {
@@ -222,17 +218,6 @@ export default {
       }
       this.confirmationVisible = false;
     },
-
-    async changeStatus(row) {
-
-      await api.patch(`/api/Hotel/${row.HotelId}/${row.enabled}`, {
-            headers: {
-              'Authorization': `Bearer ${this.token}`
-            }
-        });
-        row.enabled = !row.enabled;
-    },
   },
-  
 };
 </script>

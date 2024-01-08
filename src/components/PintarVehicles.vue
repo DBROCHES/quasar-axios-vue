@@ -168,6 +168,19 @@
             </div>
           </div>
           <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
+            <div>
+              <q-select
+                outlined
+                v-model="selectedOptionsContract"
+                :options="optionsContract"
+                :label="$t('contratos')"
+                emit-value
+                map-options
+                lazy-rules
+              />
+            </div>
+          </div>
+          <div class="col-12 col-sm-4 col-md-4 col-xxl-3 mb-3" id="imp">
             <div class="form-floating">
               <q-input
                 v-model="manufacturing"
@@ -216,56 +229,56 @@ export default {
         {
           name: "plate",
           label: this.$t("plate"),
-          alingn: "center",
+          align: "center",
           field: "license_Plate_Number",
           sortable: true,
         },
         {
           name: "model",
           label: this.$t("chain"),
-          alingn: "center",
+          align: "center",
           field: "brand",
           sortable: true,
         },
         {
           name: "capacity_without",
           label: this.$t("capacity_without"),
-          alingn: "center",
+          align: "center",
           field: "capacity_Without_Equipement",
           sortable: true,
         },
         {
           name: "capacity_with",
           label: this.$t("capacity_with"),
-          alingn: "center",
+          align: "center",
           field: "capacity_With_Equipement",
           sortable: true,
         },
         {
           name: "total",
           label: this.$t("totalCapacity"),
-          alingn: "center",
+          align: "center",
           field: "total_Capacity",
           sortable: true,
         },
         {
           name: "price",
           label: this.$t("precio"),
-          alingn: "center",
+          align: "center",
           field: "price",
           sortable: true,
         },
         {
           name: "year",
           label: this.$t("year"),
-          alingn: "center",
+          align: "center",
           field: "year_of_Manufacture",
           sortable: true,
         },
         {
           name: "manufacturing",
           label: this.$t("manufacturing"),
-          alingn: "center",
+          align: "center",
           field: "manufacturing_Mode",
           sortable: true,
         },
@@ -273,6 +286,8 @@ export default {
     };
   },
   setup() {
+    const optionsContract = ref(0);
+    const selectedOptionsContract = ref(null);
     const price = ref([]);
     const optionsProvince = ref([]);
     const selectedOptions = ref([]);
@@ -300,6 +315,7 @@ export default {
         license_Plate_Number: plate.value,
         price: price.value,
         provinceId: selectedOptions.value,
+        contractId: selectedOptionsContract.value,
       };
 
       await api.put("/api/Vehicles", temp, {
@@ -343,6 +359,21 @@ export default {
         console.error("Error al obtener las opciones desde la API", error);
       }
     };
+    const getContracts = async () => {
+      try {
+        const response = await api.get("/api/TransportationContract", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        optionsContract.value = response.data.map((tupla) => ({
+          label: tupla.id,
+          value: tupla.id,
+        }));
+      } catch (error) {
+        console.error("Error al obtener las opciones desde la API", error);
+      }
+    };
     const openDialog = async (row) => {
       tempid.value = row.vehicleId;
       capacity_with.value = row.capacity_With_Equipement;
@@ -358,12 +389,15 @@ export default {
     };
     onMounted(() => {
       getOptions();
+      getContracts();
     });
     const handleClose = () => {
       inception.value = false;
       location.reload();
     };
     return {
+      optionsContract,
+      selectedOptionsContract,
       optionsProvince,
       selectedOptions,
       price,
