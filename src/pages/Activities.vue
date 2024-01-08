@@ -219,6 +219,7 @@ export default {
     };
     onMounted(() => {
       getOptions();
+      getContracts();
     });
     return {
       optionsContract,
