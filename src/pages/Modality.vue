@@ -344,7 +344,7 @@ export default {
     const inception = ref(false);
     const tempid = ref("");
     const selectedModalitY = ref(false);
-    const slide = ref("hora");
+    const slide = ref("hour");
     const buttonstate = ref(true);
     //Arreglos de modalidades
     const phour = ref([]);
@@ -399,6 +399,7 @@ export default {
         cost_per_kilometer_traveled: pkilometers.value,
         extra_kilometer_cost: ekilometers.value,
         extra_hour_cost: ehours.value,
+        type: "Costo por Hora",
       };
       if (!selectedModalitY.value) {
         await api.post("api/Costperhour", cphour, {
@@ -423,6 +424,7 @@ export default {
         rout_description: description.value,
         route_cost: rute.value,
         round_trip_cost: goback.value,
+        type: "Costo por viaje",
       };
       if (!selectedModalitY.value) {
         await api.post("api/CostPerTour", cptour, {
@@ -447,6 +449,7 @@ export default {
         cost_per_kilometer: kilometer.value,
         cost_per_round_trip: back.value,
         cost_per_waiting_hour: wait.value,
+        type: "Costo por kilometraje",
       };
       if (!selectedModalitY.value) {
         await api.post("api/MilageCost", mileagec, {

@@ -58,8 +58,11 @@ export default {
     return {
       hotels: [], 
       mostrarComponente: false,
-
       token: localStorage.getItem('token'),
+      prov: null,
+      starDate: null,
+      endDate: null,
+      amountP: null,
       
     };
   },
@@ -71,9 +74,15 @@ export default {
         name: 'PintartourPackage',
       });
     },
+    getSelecctions(){
+      this.prov = localStorage.getItem('prov');
+      this.starDate = localStorage.getItem('starDate');
+      this.endDate =  localStorage.getItem('endDate');
+      this.amountP = localStorage.getItem('amountP');
+    },
      async getHotels (){
       await api
-        .get("/api/Hotel", {
+        .get(`/api/Hotel/Province/ ${this.prov}/${this.starDate}/${this.endDate}/${this.amountP}`, {
             headers: {
               'Authorization': `Bearer ${this.token}`
             }
@@ -87,7 +96,9 @@ export default {
         });
     },
   },
+
   created() {
+    this.getSelecctions();
     this.getHotels();
   },
 };
