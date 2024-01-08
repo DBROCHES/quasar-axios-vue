@@ -13,7 +13,7 @@ const routes = [
       },
       {
         path: "/about",
-        component: () => import("pages/About.vue"),
+        component: () => import("pages/AboutUs.vue"),
       },
       {
         path: "/vehicle",
