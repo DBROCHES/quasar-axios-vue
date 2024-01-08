@@ -79,7 +79,6 @@
           <div>
             <q-btn
               :label="$t('buscar')"
-              type="submit"
               color="primary"
               class ="buscador"
               @click="submitForm"
@@ -124,7 +123,6 @@
 
 <script>
 import { ref, watch, onMounted } from "vue";
-import { ref, watch, onMounted } from "vue";
 import { defineComponent } from "vue";
 import { api } from "src/boot/axios";
 
@@ -144,11 +142,16 @@ export default defineComponent({
     });
     const submitForm = () => {
 
-      if(destination.value != null && dates.value.start != null && dates.value.end != null && personscant.value != null){
-        localStorage.setItem('prov',destination.value);
-        localStorage.setItem('starDate',dates.value.start);
-        localStorage.setItem('endDate',dates.value.end);
-        localStorage.setItem('amountP',amountofPeople.value);
+      const [starDate,endDate] = dates.value.split("-");
+  
+      if(destination.value != null && starDate!= null && endDate != null && personscant.value != null){
+
+        const p = JSON.stringify(destination.value);
+        localStorage.setItem('prov',p);
+
+        localStorage.setItem('starDate',starDate);
+        localStorage.setItem('endDate',endDate);
+        localStorage.setItem('amountP',personscant.value);
       }
     };
     const getOptions = async () => {

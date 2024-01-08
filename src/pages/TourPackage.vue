@@ -63,6 +63,7 @@ export default {
       starDate: null,
       endDate: null,
       amountP: null,
+      province: null,
       
     };
   },
@@ -75,14 +76,16 @@ export default {
       });
     },
     getSelecctions(){
-      this.prov = localStorage.getItem('prov');
+      this.province = localStorage.getItem('prov');
+      this.prov = JSON.parse(this.province);
+
       this.starDate = localStorage.getItem('starDate');
       this.endDate =  localStorage.getItem('endDate');
-      this.amountP = localStorage.getItem('amountP');
+      this.personscant = localStorage.getItem('amountP');
     },
      async getHotels (){
       await api
-        .get(`/api/Hotel/Province/ ${this.prov}/${this.starDate}/${this.endDate}/${this.amountP}`, {
+        .get(`/api/Hotel/Province/ ${this.prov.value}/${this.starDate}/${this.endDate}/${this.personscant}`, {
             headers: {
               'Authorization': `Bearer ${this.token}`
             }
