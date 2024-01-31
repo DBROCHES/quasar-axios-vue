@@ -76,9 +76,9 @@ export default {
       mostrarComponente: false,
       token: localStorage.getItem("token"),
       prov: null,
-      starDate: null,
-      enddate: null,
-      amountP: null,
+      starDate: "",
+      endDate: "",
+      personscant: null,
       province: null,
     };
   },
@@ -100,14 +100,11 @@ export default {
     },
     async getHotels() {
       await api
-        .get(
-          `/api/Hotel/Province/ ${this.prov.value}/${this.starDate}/${this.endDate}/${this.personscant}`,
-          {
-            headers: {
-              Authorization: `Bearer ${this.token}`,
-            },
-          }
-        )
+        .get(`/api/Hotel/Province/${this.prov.value}/${this.personscant}`, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        })
         .then((response) => {
           this.hotels = response.data;
           console.log(this.hotels);

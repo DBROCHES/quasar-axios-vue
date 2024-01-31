@@ -127,37 +127,18 @@
                             rounded
                             color="blue"
                             text-color="white"
-                            @click="selectModality(index, 1)"
+                            @click="
+                              selectModality(index, 'Costo por kilometro')
+                            "
                           >
-                            {{ "$" + sumModalitiesCost(modality) + "/h" }}
+                            km
                             <q-badge
                               color="green"
                               floating
                               rounded
                               v-if="
-                                selectedModality !== 0 &&
-                                selectedModality ==
-                                  vehiculos[index].precioPorHora
-                              "
-                            >
-                              <q-icon name="check"
-                            /></q-badge>
-                          </q-chip>
-                          <q-chip
-                            clickable
-                            color="orange"
-                            text-color="white"
-                            @click="selectModality(index, 2)"
-                          >
-                            {{ "$" + vehiculo.precioPorKilometro + "/k" }}
-                            <q-badge
-                              color="green"
-                              floating
-                              rounded
-                              v-if="
-                                selectedModality !== 0 &&
-                                selectedModality ==
-                                  vehiculos[index].precioPorKilometro
+                                selectedModality !== null &&
+                                selectedModality.type === 'Costo por kilometro'
                               "
                             >
                               <q-icon name="check"
@@ -166,20 +147,38 @@
                           <q-chip
                             clickable
                             rounded
-                            color="purple"
+                            color="blue"
                             text-color="white"
-                            @click="selectModality(index, 3)"
+                            @click="selectModality(index, 'Costo por hora')"
                           >
-                            {{ "$" + vehiculo.precioPorViaje + "/Viaje" }}
-
+                            hrs
                             <q-badge
                               color="green"
                               floating
                               rounded
                               v-if="
-                                selectedModality !== 0 &&
-                                selectedModality ==
-                                  vehiculos[index].precioPorViaje
+                                selectedModality !== null &&
+                                selectedModality.type === 'Costo por hora'
+                              "
+                            >
+                              <q-icon name="check"
+                            /></q-badge>
+                          </q-chip>
+                          <q-chip
+                            clickable
+                            rounded
+                            color="blue"
+                            text-color="white"
+                            @click="selectModality(index, 'Costo por viaje')"
+                          >
+                            viaje
+                            <q-badge
+                              color="green"
+                              floating
+                              rounded
+                              v-if="
+                                selectedModality !== null &&
+                                selectedModality.type === 'Costo por viaje'
                               "
                             >
                               <q-icon name="check"
@@ -334,7 +333,7 @@
                   <q-item-section>
                     <q-item-label>Modalidad</q-item-label>
                     <div class="text-subtitle2">
-                      {{ "$" + selectedModality }}
+                      {{ "$" + selectedVehicles.price }}
                     </div>
                   </q-item-section>
                   <q-item-section>
@@ -342,7 +341,7 @@
                       Total:
                     </div>
                     <div class="text-h6 text-bold" style="text-align: end">
-                      {{ "$" + selectedModality }}
+                      {{ "$" + selectedVehicles.price + 50 }}
                     </div>
                   </q-item-section>
                 </q-item>
@@ -387,10 +386,17 @@
             </q-badge>
             <q-stepper-navigation>
               <q-btn
+                v-if="step !== 4"
                 @click="$refs.stepper.next()"
                 color="primary"
-                :label="step === 4 ? 'Reservar' : 'Continuar'"
+                label="Continuar"
                 :disable="buttonValidation()"
+              />
+              <q-btn
+                v-if="step === 4"
+                @click="reservar()"
+                color="primary"
+                label="Reservar"
               />
               <q-btn
                 v-if="step > 1"
@@ -428,7 +434,7 @@ export default {
       meals: null,
       provincias: ["Provincia 1", "Provincia 2", "Provincia 3"],
       selectedVehicleIndex: -1,
-      selectedModality: 0,
+      selectedModality: { type: null, modalityid: null },
       step: 1,
       selectedVehicles: null,
       selectedActivities: {},
@@ -437,6 +443,7 @@ export default {
       activities: null,
       vehiculos: null,
       rooms: null,
+      tipos: [],
     };
   },
   methods: {
@@ -477,7 +484,7 @@ export default {
     },
     async getModalities() {
       await api
-        .get(`/api/Modality/VehicleId/ ${this.selectedVehicles}`, {
+        .get(`/api/Modality/VehicleId/ ${this.selectedVehicles.vehicleId}`, {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },
@@ -561,18 +568,24 @@ export default {
       }
     },
     selectModality(index, type) {
-      let temp = this.vehiculos[0].Transports.Modality.constructor.name;
       if (this.selectedVehicles === null) {
+        getModalities(this.vehiculos[index]);
         this.selectedVehicles = this.vehiculos[index];
         this.selectedVehicleIndex = index;
       }
+      this.s;
+      let i = 0;
+      let find = false;
 
-      if (type === 1)
-        this.selectedModality = this.vehiculos[index].precioPorHora;
-      else if (type === 2)
-        this.selectedModality = this.vehiculos[index].precioPorKilometro;
-      else if (type === 3)
-        this.selectedModality = this.vehiculos[index].precioPorViaje;
+      while (!find) {
+        var c = this.modalities[i].type;
+
+        if (c === type) {
+          this.selectedModality.type = c;
+          this.selectedModality.modalityid = this.modalities[i].modalityId;
+          find = true;
+        } else i++;
+      }
     },
     sumallactivities() {
       let sum = 0;
@@ -602,15 +615,48 @@ export default {
         return (
           this.rooms[this.selectedRoomindex].price +
           this.selectedMeal.price +
-          this.selectedModality +
+          this.selectedVehicles.price +
           this.sumallactivities()
         );
       else {
         return 0;
       }
     },
-    sumModalitiesCost(modality) {},
+    sumModalitiesCost(modality) {
+      if (modality.type === "Costo por hora") {
+        return "$" + modality.cost_per_hour + "/h";
+      } else if (modality.type === "Costo por viaje") {
+        return "$" + modality.route_cost + "/k";
+      } else if (modality.type === "Costo por kilometraje") {
+        return "$" + modality.cost_per_kilometer + "/viaje";
+      }
+    },
+    async reservar() {
+      const paquete = {
+        package: 1,
+        provinceId: this.selectedhotel.provinceId,
+        hotelId: this.selectedhotel.hotelId,
+        roomId: this.selectedRoom.id,
+        mealId: this.selectedMeal.id,
+        vehicleId: this.selectedVehicles ? this.selectedVehicles.vehicleId : 0,
+        modalityId: this.selectedModality
+          ? this.selectedModality.modalityId
+          : 0,
+        userId: localStorage.getItem("userId"),
+        peopleCant: localStorage.getItem("amountP"),
+        startDate: new Date(localStorage.getItem("startDate")),
+        endDate: new Date(localStorage.getItem("endDate")),
+        totalPrice: this.calcularTotal(),
+        dayliActivities: this.activitiesOn,
+      };
+      await api.post("/api/TourPackage", paquete, {
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+        },
+      });
+    },
   },
+
   created() {
     this.gethotel();
     this.getRooms();
